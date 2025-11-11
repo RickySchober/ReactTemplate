@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/client";
 import CardList from "../components/CardList";
-import SearchCard from "../components/SearchCard";
-
+import NavBar from "../components/NavBar";
 export default function ProfilePage() {
   const [cards, setCards] = useState([]);
   const [search, setSearch] = useState("");
@@ -45,13 +44,12 @@ export default function ProfilePage() {
   }
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">My Collection</h2>
-      <SearchCard
-        value={search}
-        onChange={setSearch}
+      <NavBar  
+        search={search}
+        setSearch={setSearch}
         onSelect={handleSelectCard}
-        placeholder="Search Card..."
-      />
+        placeholder="Search for a card..."
+        />
       <button onClick={addCard} className="bg-blue-600 text-white rounded p-2 mb-4">
         Add Card
       </button>

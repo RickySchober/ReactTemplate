@@ -1,8 +1,12 @@
 import CardItem from "./CardItem";
-export default function CardList({ cards }) {
+export default function CardList({ cards, onSelect }) {
   if (!cards || !cards.length) return <p>No cards found.</p>;
-
+  function handleClick(card){
+    onSelect?.(card);
+  }
   return (
+    
+
     <div
       style={{
         display: "grid",
@@ -11,8 +15,8 @@ export default function CardList({ cards }) {
         alignItems: "start",
       }}>
       {cards.map((card) => (
-        <div key={card.id}>
-            <CardItem card={card} />
+        <div key={card.id} onClick={() => handleClick(card)}>
+          <CardItem card={card} />
         </div>
       ))}
     </div>

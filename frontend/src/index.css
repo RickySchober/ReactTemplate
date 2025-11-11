@@ -1,14 +1,31 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Typography */
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --base-line-height: 1.5;
+  --base-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Palette */
+  --bg: #0f1720; /* dark slate */
+  --surface: #111318; /* slightly lighter panel */
+  --muted-surface: #0b0d10;
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --accent: #4f7cff; /* blue accent */
+  --accent-hover: #3b66f0;
+  --success: #22c55e;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  /* Layout niceties */
+  --radius: 8px;
+  --control-padding: 0.5rem 0.75rem;
+
+  font-family: var(--font-sans);
+  line-height: var(--base-line-height);
+  font-weight: var(--base-weight);
+
+  color-scheme: dark;
+  color: var(--text);
+  background-color: var(--bg);
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -22,36 +39,77 @@ a:hover {
   color: #535bf2;
 }
 
+/* Keep body layout neutral — avoid global flex rules so component layouts aren't overridden */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Optional root container to center content without forcing all pages */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
+h1, h2, h3, h4, h5 {
+  color: var(--text);
+  margin: 0 0 0.35rem 0;
+  line-height: 1.15;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.125rem; }
+
+/* Buttons: clean flat with blue accent */
 button {
-  border-radius: 8px;
+  border-radius: var(--radius);
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  padding: var(--control-padding);
+  font-size: 1rem;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--surface);
+  color: var(--text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.12s;
 }
-button:hover {
-  border-color: #646cff;
+
+button.primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  color: white;
+  border: 1px solid rgba(255,255,255,0.06);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+button:hover { transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button:focus { box-shadow: 0 0 0 4px rgba(79,124,255,0.12); outline: none; }
+
+/* Form controls */
+input, select, textarea {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: var(--control-padding);
+  border-radius: 6px;
+}
+
+input::placeholder, textarea::placeholder { color: var(--muted); }
+
+/* Links */
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+/* Small utilities */
+.muted { color: var(--muted); }
+.card {
+  background: linear-gradient(180deg, var(--surface), var(--muted-surface));
+  border-radius: var(--radius);
+  padding: 12px;
 }
 
 @media (prefers-color-scheme: light) {

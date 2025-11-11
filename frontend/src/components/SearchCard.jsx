@@ -65,6 +65,7 @@ export default function SearchCard({
   }
 
   function handleSelect(card) {
+    onChange?.(card.name);
     setSuggestions([]);
     setActiveIndex(-1);
     onSelect?.(card);
@@ -88,7 +89,23 @@ export default function SearchCard({
       setActiveIndex(-1);
     }
   }
+  function makePrintDescription(scryfallCard) {
+    const parts = [];
+    if (scryfallCard.border_color === "borderless") parts.push("Borderless");
+    if (scryfallCard.promo) parts.push("Promo");
+    if (scryfallCard.variation) parts.push("Variant");
+    if (Array.isArray(scryfallCard.frame_effects)) {
+      if (scryfallCard.frame_effects.includes("extendedart") || scryfallCard.frame_effects.includes("extended art")) {
+        parts.push("Extended Art");
+      }
+      if (scryfallCard.frame_effects.includes("etched")) parts.push("Etched Foil");
+    }
+    // Some card objects include foil/nonfoil booleans
+    if (scryfallCard.foil === true) parts.push("Foil");
+    else if (scryfallCard.nonfoil === true) parts.push("Nonfoil");
 
+    return parts.join(" · ");
+  }
   // click outside to close suggestions
   useEffect(() => {
     function onDocClick(e) {
@@ -103,7 +120,7 @@ export default function SearchCard({
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
+    <div ref={containerRef} style={{ width: "90%", padding: 16, position: "relative" }}>
       <input
         value={value}
         onChange={handleInput}
@@ -127,7 +144,7 @@ export default function SearchCard({
             background: "#fff",
             border: "1px solid #ddd",
             zIndex: 50,
-            maxHeight: 300,
+            maxHeight: 800,
             overflowY: "auto",
           }}
         >
@@ -138,7 +155,7 @@ export default function SearchCard({
               s.image_uris?.small ||
               s.card_faces?.[0]?.image_uris?.small ||
               "";
-
+            const printing = makePrintDescription(s);
             const isActive = idx === activeIndex;
 
             return (
@@ -165,12 +182,13 @@ export default function SearchCard({
                   <img
                     src={img}
                     alt={cardName}
-                    style={{ width: 40, height: 56, objectFit: "cover", borderRadius: 4 }}
+                    style={{ width: 120, height: 180, objectFit: "cover", borderRadius: 4 }}
                   />
                 )}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600 }}>{cardName}</div>
-                  <div style={{ fontSize: 12, color: "#666" }}>{setName}</div>
+                  <div style={{ fontWeight: 600 , fontStyle: "italic", fontSize: 35 ,color: "#666" }}>{cardName}</div>
+                  <div style={{ fontWeight: 600 , fontSize: 22, fontStyle: "italic", color: "#666" }}>{setName}</div>
+                  <div style={{ fontWeight: 600 , fontSize: 22, fontStyle: "italic", color: "#666" }}>{printing}</div>
                 </div>
               </div>
             );

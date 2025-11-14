@@ -5,7 +5,9 @@ import SearchCard from "../components/SearchCard";
 import SortDropdown from "../components/SortDropdown";
 import NavBar from "../components/NavBar";
 import ToggleSwitch from "../components/ToggleSwitch";
+import Backsplash from "../components/Backsplash";
 import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
+
 export default function ProfilePage() {
   const [cards, setCards] = useState([]);
   const [searchRedirect, setSearchRedirect] = useState("");
@@ -62,7 +64,7 @@ export default function ProfilePage() {
   useEffect(() => {
     fetchMyCards();
   }, []);
-  
+
   function handleSelectCard(card) {
     setForm({
       name: card.name,
@@ -104,32 +106,8 @@ export default function ProfilePage() {
             placeholder="Search for a card..."
           />
       </div>
-        <div
-          style={{
-            height: heroHeight,
-            position: 'absolute',
-            inset: 0,
-            marginTop: 100,
-            backgroundImage: `url(${bgArt})`,
-            maskImage:
-              "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            zIndex: 0,
-            pointerEvents: 'none',
-          }}
-      />
-
-      <div style={{ //Position all following content above bg image
-        position: 'relative',
-        zIndex: 2,
-        marginTop: 250,
-        marginLeft: 48,
-        marginRight: 48,
-      }}>
+        
+      <Backsplash heroHeight={heroHeight} bgArt={bgArt}>
       <div style={{
         position: 'relative',
         display: "flex",
@@ -199,7 +177,7 @@ export default function ProfilePage() {
           <CardList cards={sortedCards} triggerUpdate={fetchMyCards} modifiable={true} />
         </div>
       )}
-      </div>
+      </Backsplash>
     </div>
   );
 

@@ -4,6 +4,9 @@ import api from "../api/client";
 import CardList from "../components/CardList";
 import NavBar from "../components/NavBar";
 import SortDropdown from "../components/SortDropdown";
+import Backsplash from "../components/Backsplash";
+import bgArt from "../assets/Treasure-Cruise-MtG-Art.jpg";
+
 
 export default function SearchPage() {
   const [search, setSearch] = useState("");
@@ -62,13 +65,13 @@ export default function SearchPage() {
       onSelect={handleSearch}
       placeholder="Search for a card..."
       />
+      <Backsplash bgArt={bgArt} heroHeight={1000} >
       {/* ─── FILTER BAR ──────────────────────────── */}
       <section style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",
         gap: 12,
-        padding: "12px 16px",
       }}>
         <SortDropdown 
           sortField={sortOption} 
@@ -88,6 +91,7 @@ export default function SearchPage() {
           </p>
         )}
       </main>
+      </Backsplash>
     </>
   );
 }

@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlmodel
+sqlalchemy
+pydantic
+bcrypt
+python-jose
+

@@ -2,6 +2,7 @@ fastapi
 uvicorn
 sqlmodel
 sqlalchemy
+passlib
 psycopg2-binary
 python-dotenv
 pydantic

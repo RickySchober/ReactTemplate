@@ -1,32 +1,9 @@
-annotated-types @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/annotated-types_1728600810161/work
-anyio @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_14cmpboz6t/croot/anyio_1745334650823/work
-argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
-argon2-cffi-bindings @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_a2dqjqi0nt/croot/argon2-cffi-bindings_1736182447763/work
-bcrypt @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_0c0dthfief/croot/bcrypt_1747402781362/work
-cffi @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_51d1gdg4kr/croot/cffi_1736183297412/work
-click @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_060m0m8my8/croot/click_1754477944034/work
-cryptography @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_c6xgxzladj/croot/cryptography_1753084589802/work
-ecdsa @ file:///croot/ecdsa_1731939382395/work
-fastapi @ file:///Users/builder/cbouss/buildout/croot/fastapi_1735846963233/work
-greenlet @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_a6r9b0ikr4/croot/greenlet_1733860079251/work
-h11 @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_9cj196i94c/croot/h11_1748442224214/work
-idna @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/idna_1728594952911/work
-passlib==1.7.4
-psycopg2-binary==2.9.11
-pyasn1 @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/pyasn1_1731743072458/work
-pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
-pydantic @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_a9o0gu9zoe/croot/pydantic_1750768791008/work
-pydantic_core @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_61l2kqcxd3/croot/pydantic-core_1750754748005/work
-python-dotenv==1.2.1
-python-jose @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_927f6nrjg8/croot/python-jose_1750965410850/work
-rsa @ file:///tmp/build/80754af9/rsa_1614366226499/work
-setuptools==78.1.1
-six @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_2e3n1z57yz/croot/six_1744271514562/work
-sniffio @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/sniffio_1728596491064/work
-SQLAlchemy @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_abep0thc62/croot/sqlalchemy_1752524440403/work
-sqlmodel @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_183yben3yc/croot/sqlmodel_1751497753091/work
-starlette @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/starlette-recipe_1731720647817/work
-typing-inspection @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_d2qskgb6a7/croot/typing-inspection_1746023564931/work
-typing_extensions @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_6dn2s8ln8g/croot/typing_extensions_1734714858107/work
-uvicorn @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_cemotqijmb/croot/uvicorn-split_1751615744466/work
-wheel==0.45.1
+fastapi
+uvicorn
+sqlmodel
+sqlalchemy
+psycopg2-binary
+python-dotenv
+pydantic
+bcrypt
+python-jose

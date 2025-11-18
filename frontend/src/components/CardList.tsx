@@ -6,30 +6,35 @@ interface CardListProps {
   cards: card[];
   onSelect?: (card: card) => void;
   triggerUpdate?: () => void;
-  modifiable?: boolean;
+  modJuant?: (card: card, amount: number) => void;
+  children?: (card: card) => React.ReactNode;
 }
 
 const CardList: React.FC<CardListProps> = ({
   cards,
   onSelect,
   triggerUpdate,
-  modifiable = false,
+  modJuant,
+  children
 }) => {
   if (!cards || !cards.length) return <p>No cards found.</p>;
-  function handleClick(card) {
+  function handleClick(card: card) {
     onSelect?.(card);
   }
   return (
-    <div className= "grid grid-cols-4 gap-2">
+    <div className="@container">
+    <div className= "grid grid-cols-1 @2xl:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 gap-2 onSelect:cursor-pointer">
       {cards.map((card) => (
         <div key={card.id} onClick={() => handleClick(card)}>
           <CardItem
             card={card}
             triggerUpdate={triggerUpdate}
-            modifiable={modifiable}
+            modJuant={modJuant}
+            children={children?.(card)}
           />
         </div>
       ))}
+    </div>
     </div>
   );
 };

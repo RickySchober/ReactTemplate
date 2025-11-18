@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
       }
     });
   async function fetchMyCards() {
-    const res = await api.get("/auth/me");
+    const res = await api.get("/auth/my_cards");
     setCards(res.data);
   }
 

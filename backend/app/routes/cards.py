@@ -10,6 +10,7 @@ router = APIRouter(prefix="/cards", tags=["cards"])
 @router.post("/", response_model=Card)
 def create_card(card: Card, user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     card.owner_id = user.id
+    card.owner = user
     if card.intent not in ("have", "want"):
         raise HTTPException(status_code=400, detail="intent must be 'have' or 'want'")
     if card.quantity is None or card.quantity < 1:
@@ -50,7 +51,7 @@ def modify_quantity(card_id: int, update: CardUpdate, session: Session = Depends
     session.refresh(card)
     return 
 
-@router.get("/users/{user_id}/", response_model=list[Card])
+@router.get("/user/{user_id}/", response_model=list[Card])
 def get_user_cards(user_id: int, session: Session = Depends(get_session)):
     return session.exec(select(Card).where(Card.owner_id == user_id)).all()
 

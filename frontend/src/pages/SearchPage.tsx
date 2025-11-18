@@ -11,13 +11,16 @@ import { card } from "../../types";
 
 const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");
+  const myId = api.get('auth/me').then(res => res.data.id);
   const [results, setResults] = useState<card[]>([]);
   const [sortOption, setSortOption] = useState<string>("dateSort");
   const [ascending, setAscending] = useState<boolean>(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const sortedResults = [...results].sort((a, b) => {
+  const sortedResults = [...results]
+  .filter((card) => card.owner_id !== myId)
+  .sort((a, b) => {
     const dir = ascending ? 1 : -1;
     switch (sortOption) {
       case "price":
@@ -43,6 +46,19 @@ const SearchPage: React.FC = () => {
       console.error("Search failed", err);
     }
     setSearch(card.name);
+  }
+  // Begin a trade with the owner of the selected card
+  async function beginTrade(card: card) {
+    const me = await api.get('auth/me')
+    const myID = me.data.id;
+    const traderID = card.owner_id;
+    navigate("/trade", {
+      state: {
+        myID,
+        traderID,
+        traderOffer: [card],
+      },
+    });
   }
   // Navigate to user profile on card owner select
   function handleSelectCard(card) {
@@ -80,7 +96,13 @@ const SearchPage: React.FC = () => {
         {/* ─── RESULTS ─────────────────────────────── */}
         <div>
           {results.length > 0 ? (
-            <CardList cards={sortedResults} onSelect={handleSelectCard} />
+            <CardList 
+              cards={sortedResults} 
+              children={(card) => (
+                <button onClick={() => beginTrade(card)}>
+                  Begin Trade
+                </button>
+              )} />
           ) : (
             <p>No results yet. Try searching for a card name.</p>
           )}

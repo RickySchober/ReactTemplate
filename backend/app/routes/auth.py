@@ -63,6 +63,10 @@ def login(email: str, password: str, session: Session = Depends(get_session)):
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
-@router.get("/me", response_model=list[Card])
+@router.get("/me", response_model=User)
+def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.get("/my_cards", response_model=list[Card])
 def my_cards(user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     return session.exec(select(Card).where(Card.owner_id == user.id)).all()

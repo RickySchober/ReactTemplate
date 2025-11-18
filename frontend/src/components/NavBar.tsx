@@ -3,6 +3,7 @@ import SearchCard from "./SearchCard";
 import icon from "/favicon.png";
 import * as React from "react";
 import { card } from "../../types";
+import AnimatedDropDown from "./AnimatedDropDown";
 
 interface NavBarProps {
   search: string;
@@ -67,19 +68,12 @@ const NavBar: React.FC<NavBarProps> = ({
       <div className="flex items-center gap-4">
         {token ? (
           <>
-            <button
-              onClick={() => navigate("/profile")}
-              className="whitespace-nowrap hover:text-gray-300 transition"
-            >
-              Profile
-            </button>
-
-            <button
-              onClick={handleSignOut}
-              className="whitespace-nowrap hover:text-gray-300 transition"
-            >
-              Sign Out
-            </button>
+            <AnimatedDropDown options={[
+              {name: "Profile", onClick: ()=>navigate("/profile")},
+              {name: "Settings", onClick: ()=>navigate("/profile")},
+              {name: "Trades", onClick: ()=>navigate("/profile")},
+              {name: "Sign Out", onClick: handleSignOut},
+            ]}/>
           </>
         ) : (
           <button

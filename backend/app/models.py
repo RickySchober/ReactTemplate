@@ -29,6 +29,6 @@ class TradeOffer(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     from_user_id: int = Field(foreign_key="user.id")
     to_user_id: int = Field(foreign_key="user.id")
-    card_offered_id: int = Field(foreign_key="card.id")
-    card_requested_id: int = Field(foreign_key="card.id")
+    card_offered_id: Optional[int] = Field(foreign_key="card.id")
+    card_requested_id: Optional[int] = Field(foreign_key="card.id")
     status: str = Field(default="pending")  # pending/accepted/rejected

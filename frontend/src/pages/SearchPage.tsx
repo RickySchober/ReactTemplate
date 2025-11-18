@@ -26,7 +26,7 @@ const SearchPage: React.FC = () => {
       case "price":
         return (a.price - b.price) * dir;
       case "dateSort":
-        return a.id - b.id * dir;
+        return (a.id - b.id) * dir;
       case "nameSort":
         a.name.localeCompare(b.name) * dir;
       case "setName":

@@ -8,6 +8,7 @@ import CardList from "../components/CardList";
 import Backsplash from "../components/Backsplash";
 import SortDropdown from "../components/SortDropdown";
 import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
+import ToggleSwitch from "../components/ToggleSwitch";
 
 const TradePage: React.FC = () => {
     const { tradeID } = useParams();
@@ -31,6 +32,7 @@ const TradePage: React.FC = () => {
     const [sortOption, setSortOption] = useState<string>("dateSort");
     const [ascending, setAscending] = useState<boolean>(true);
     const [myOffer, setMyOffer] = useState<card[]>([]);
+    const [autoMatch, setAutoMatch] = useState<boolean>(false)
     const navigate = useNavigate();
     const [searchRedirect, setSearchRedirect] = useState<string>("");
     const [viewMyCards, setViewMyCards] = useState<boolean>(false);
@@ -45,9 +47,12 @@ const TradePage: React.FC = () => {
         }
     },[]);
 
-    // Sorted list of user's cards not already in their offer
+    // Sorted list of user's cards 
     const sortMyCards = [...myCards]
-    .filter((card) => !myOffer.includes(card))
+    .filter((card) => card.intent==="have") //Only show haves
+    .filter((card) => autoMatch? true : traderCards.filter(( //Only matches on automatch
+        card) => card.intent==="want").includes(card)) 
+    .filter((card) => !myOffer.includes(card)) //Exclude cards in offer already
     .sort((a, b) => {
         const dir = ascending ? 1 : -1;
         switch (sortOption) {
@@ -63,15 +68,19 @@ const TradePage: React.FC = () => {
             return a.name.localeCompare(b.name) * dir;
         }
     });
+    // Sorted list of trade partners cards
     const sortTraderCards = [...traderCards]
-    .filter((card) => !traderOffer.includes(card))
+    .filter((card) => card.intent==="have") //Only show haves
+    .filter((card) => autoMatch? true : myCards.filter(( //Only matches on automatch
+            card) => card.intent==="want").includes(card)) 
+    .filter((card) => !traderOffer.includes(card)) //Exclude cards in offer already
     .sort((a, b) => {
         const dir = ascending ? 1 : -1;
         switch (sortOption) {
         case "price":
             return (a.price - b.price) * dir;
         case "dateSort":
-            return a.id - b.id * dir;
+            return (a.id - b.id) * dir;
         case "nameSort":
             a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -80,6 +89,7 @@ const TradePage: React.FC = () => {
             return a.name.localeCompare(b.name) * dir;
         }
     });
+
     async function refreshTrade() {
         const my = await api.get('cards/user/' + myID)
         const trader = await api.get('cards/user/' + traderID)
@@ -150,7 +160,13 @@ const TradePage: React.FC = () => {
                     ascending={ascending}
                     setAscending={setAscending}
                 />
-                <button>Auto Match</button>
+                <ToggleSwitch
+                    value={autoMatch}
+                    onChange={setAutoMatch}
+                    leftLabel="Auto Match"
+                    rightLabel=""
+                    id="auto-match-toggle"
+                />
                 <button onClick={()=>{
                     setViewTraderCards(false);
                     setViewMyCards(false);
@@ -173,7 +189,13 @@ const TradePage: React.FC = () => {
                     ascending={ascending}
                     setAscending={setAscending}
                 />
-                <button>Auto Match</button>
+                <ToggleSwitch
+                    value={autoMatch}
+                    onChange={setAutoMatch}
+                    leftLabel="Auto Match"
+                    rightLabel=""
+                    id="auto-match-toggle"
+                />
                 <button onClick={()=>{
                     setViewTraderCards(false);
                     setViewMyCards(false);

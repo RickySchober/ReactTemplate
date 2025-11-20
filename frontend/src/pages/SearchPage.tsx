@@ -11,30 +11,32 @@ import { card } from "../../types";
 
 const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");
-  const myId = api.get('auth/me').then(res => res.data.id);
+  const [myID, setMyID] = useState<number>(0);
   const [results, setResults] = useState<card[]>([]);
   const [sortOption, setSortOption] = useState<string>("dateSort");
   const [ascending, setAscending] = useState<boolean>(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const sortedResults = [...results]
-  .filter((card) => card.owner_id !== myId)
-  .sort((a, b) => {
-    const dir = ascending ? 1 : -1;
-    switch (sortOption) {
-      case "price":
-        return (a.price - b.price) * dir;
-      case "dateSort":
-        return (a.id - b.id) * dir;
-      case "nameSort":
-        a.name.localeCompare(b.name) * dir;
-      case "setName":
-        return a.set_name.localeCompare(b.set_name) * dir;
-      default:
-        return a.name.localeCompare(b.name) * dir;
-    }
-  });
+  useEffect(() => {
+    const fetchUserId = async () => {
+        try {
+            const response = await api.get('/auth/me');
+            setMyID(response.data.id);
+        } catch (error) {
+            console.error("Failed to fetch user ID", error);
+        }
+    };
+
+    fetchUserId();
+    const q = searchParams.get("q") || "";
+      if (q && q.length > 0) {
+        setSearch(q);
+        // run search using current filters
+        handleSearch({ name: q });
+      }
+  }, [searchParams]);
+
   async function handleSearch(card) {
     try {
       const name = typeof card === "string" ? card : card?.name;
@@ -65,15 +67,24 @@ const SearchPage: React.FC = () => {
     console.log("Selected card:", card);
     navigate(`/user/${card.owner_id}`);
   }
-  // Trigger search when ?q= is present in the URL
-  useEffect(() => {
-    const q = searchParams.get("q") || "";
-    if (q && q.length > 0) {
-      setSearch(q);
-      // run search using current filters
-      handleSearch({ name: q });
+
+  const sortedResults = [...results]
+  .filter((card) => card.owner_id !== myID)
+  .sort((a, b) => {
+    const dir = ascending ? 1 : -1;
+    switch (sortOption) {
+      case "price":
+        return (a.price - b.price) * dir;
+      case "dateSort":
+        return (a.id - b.id) * dir;
+      case "nameSort":
+        a.name.localeCompare(b.name) * dir;
+      case "setName":
+        return a.set_name.localeCompare(b.set_name) * dir;
+      default:
+        return a.name.localeCompare(b.name) * dir;
     }
-  }, [searchParams]);
+  });
   return (
     <>
       <NavBar

@@ -5,7 +5,7 @@ import sys
 from sqlmodel import Session, select
 from datetime import timedelta
 from ..database import get_session
-from ..models import User, Card
+from ..models import User, Card, UserRead
 from ..auth import hash_password, verify_password, create_access_token
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
@@ -70,3 +70,7 @@ def read_users_me(current_user: User = Depends(get_current_user)):
 @router.get("/my_cards", response_model=list[Card])
 def my_cards(user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     return session.exec(select(Card).where(Card.owner_id == user.id)).all()
+
+@router.get("/user/{user_id}", response_model=UserRead)
+def get_user(user_id: int, session: Session = Depends(get_session)):
+    return session.get(User, user_id)

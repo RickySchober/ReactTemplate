@@ -12,18 +12,73 @@ import { card } from "../../types";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
-  const [searchRedirect, setSearchRedirect] = useState<string>("");
-  const [search, setSearch] = useState<string>("");
   const [add, setAdd] = useState<boolean>(false); // toggle state between viewing and adding cards
   const [haves, setHaves] = useState<boolean>(false); // toggle state between wants and haves
   const [recentAdded, setRecentAdded] = useState<card[]>([]); // track recently added cards during add session
+  //UI utilities
+  const [searchRedirect, setSearchRedirect] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
   const [showListInput, setShowListInput] = useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("newest");
   const [ascending, setAscending] = useState<boolean>(true);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [listText, setListText] = useState<string>("");
-  const [form, setForm] = useState<card | null>(null);
 
+  useEffect(() => {
+    fetchMyCards();
+  }, []);
+
+  async function fetchMyCards() {
+    const res = await api.get("/auth/my_cards");
+    setCards(res.data);
+  }
+
+  async function addFromSearch(card) {
+    let payload: card = {
+      name: card.name,
+      set_name: card.set_name || card.set || "",
+      rarity: card.rarity || "",
+      price: card.prices?.usd ? parseFloat(card.prices.usd) : 0,
+      image_url:
+        card.image_uris?.normal ||
+        card.card_faces?.[0]?.image_uris?.normal ||
+        "",
+      quantity: 1,
+      intent: haves ? "have" : "want",
+    };
+    console.log(payload);
+    try {
+      const res = await api.post("/cards/", payload);
+      await fetchMyCards();
+      if (res) {
+        setRecentAdded((s) => [res.data, ...s]);
+      }
+      setSearch("");
+    } catch (err) {
+      alert("Failed to add card");
+      return null;
+    }
+    setSearch(card.name);
+  }
+  async function updateRecent() {
+    for (let i = 0; i < recentAdded.length; i++) {
+      if (recentAdded[i].quantity <= 0) {
+        recentAdded.splice(i, 1);
+        i--;
+      }
+    }
+    setRecentAdded([...recentAdded]);
+  }
+  async function modifyQuantity(card: card, quantity: number) {
+    try {
+      await api.patch(`/cards/${card.id}`, { quantity });
+      card.quantity = quantity;
+      await updateRecent();
+    } catch (err) {
+      console.error("Failed to modify quantity", err);
+    }
+  }
+  const heroHeight = 1000; // px - the background image area height
   const sortedCards = [...cards]
     .filter((card) => card.intent === (haves ? "have" : "want"))
     .sort((a, b) => {
@@ -41,56 +96,12 @@ const ProfilePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  async function fetchMyCards() {
-    const res = await api.get("/auth/my_cards");
-    setCards(res.data);
-  }
-
-  async function addCard() {
-    try {
-      const res = await api.post("/cards/", form);
-      await fetchMyCards();
-      return res.data;
-    } catch (err) {
-      alert("Failed to add card");
-      return null;
-    }
-  }
-
-  useEffect(() => {
-    fetchMyCards();
-  }, []);
-
-  function handleSelectCard(card: card) {
-    setForm(card);
-    setSearch(card.name);
-  }
-  async function updateRecent() {
-    for (let i = 0; i < recentAdded.length; i++) {
-      if (recentAdded[i].quantity <= 0) {
-        recentAdded.splice(i, 1);
-        i--;
-      }
-    }
-    setRecentAdded([...recentAdded]);
-  }
-  async function onSelect(card: card) {
-    handleSelectCard(card);
-    const created = await addCard();
-    if (created) {
-      setRecentAdded((s) => [created, ...s]);
-    }
-    setSearch("");
-  }
-  const heroHeight = 1000; // px - the background image area height
-
   return (
     <div className="position-relative">
       <div>
         <NavBar
           search={searchRedirect}
           setSearch={setSearchRedirect}
-          onSelect={handleSelectCard}
           placeholder="Search for a card..."
         />
       </div>
@@ -138,13 +149,13 @@ const ProfilePage: React.FC = () => {
               Add by List
             </button>
           )}
-          {add && <button>Add by Photo</button>}
+          {/* Later feature add && <button>Add by Photo</button>*/}
         </div>
         {showSearch && add && (
           <SearchCard
             value={search}
             onChange={setSearch}
-            onSelect={onSelect}
+            onSelect={addFromSearch}
             placeholder="Search for a card to add..."
           />
         )}
@@ -184,7 +195,7 @@ const ProfilePage: React.FC = () => {
             <CardList
               cards={recentAdded}
               triggerUpdate={updateRecent}
-              modifiable={true}
+              modQuant={modifyQuantity}
             />
           </div>
         )}
@@ -193,7 +204,7 @@ const ProfilePage: React.FC = () => {
             <CardList
               cards={sortedCards}
               triggerUpdate={fetchMyCards}
-              modifiable={true}
+              modQuant={modifyQuantity}
             />
           </div>
         )}

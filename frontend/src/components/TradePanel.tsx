@@ -4,22 +4,23 @@ import CardList from "../components/CardList";
 import { card, TradeItem, trade, TradeStatus, ActiveUser } from "../../types";
 
 interface TradePanelProps {
-  title: string;
   trade: trade;
   userA: boolean; // True if panel is for userA flase for userB
+  close?: () => void; 
   onAddCardsClick: () => void;
-  onProposeClick: () => void;
+  onProposeClick?: () => void;
   updateAmount: (card: card, amount: number) => void;
 }
 
 const TradePanel: React.FC<TradePanelProps> = ({
-  title,
   trade,
   userA,
+  close,
   onAddCardsClick,
   onProposeClick,
   updateAmount,
 }) => {
+
   const userID: number = userA ? trade.a_user.id : trade.b_user.id;
   const myOffer: TradeItem[] = trade.trade_items.filter(
     (item) => item.card.owner_id === userID
@@ -37,7 +38,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
       case TradeStatus.PENDING:
         return active ? "Propose Trade" : "";
       case TradeStatus.PROPOSE:
-        return active ? "Proposed" : "Accept";
+        return active ? "Proposed Trade" : (close ? "Accept" : "Reviewing Trade");
       case TradeStatus.SHIP:
         return active ? "Shipped" : "Ship";
       case TradeStatus.RECEIVE:
@@ -54,7 +55,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
     <div className="w-1/2 p-4 m-4 bg-neutral-900 rounded-2xl shadow-lg">
       <div className="flex justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white mb-1">{title}</h2>
+          <h2 className="text-2xl font-semibold text-white mb-1">{userA ? trade.a_user.username : trade.b_user.username}</h2>
           <p className="text-gray-300 mb-4">Total Value: ${offerPrice}</p>
         </div>
         <div className="flex justify-between">
@@ -77,6 +78,11 @@ const TradePanel: React.FC<TradePanelProps> = ({
           `}>
             {getStatusMessage(trade.status)}
           </button>}
+          {(close && (trade.status == TradeStatus.PENDING || trade.status == TradeStatus.PROPOSE)) 
+          &&<button onClick={close}>
+            Close
+          </button>
+          }
         </div>
       </div>
       <div

@@ -15,6 +15,7 @@ import {
 } from "../../types";
 import CardList from "../components/CardList";
 import Backsplash from "../components/Backsplash";
+import StatusBar from "../components/StatusBar";
 import SortDropdown from "../components/SortDropdown";
 import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
 import ToggleSwitch from "../components/ToggleSwitch";
@@ -119,6 +120,12 @@ const TradePage: React.FC = () => {
       setTraderCards(trader.data);
     }
   }
+  async function closeTrade() {
+    let users = userA ? ActiveUser.A : ActiveUser.B
+    let updateTrade = {...trade, status: TradeStatus.CANCELED, activeUser: users}
+    await postTrade (updateTrade)
+    setTrade(updateTrade)
+  }
   async function updateStatus() {
     let users: ActiveUser
     let status: TradeStatus
@@ -182,24 +189,19 @@ const TradePage: React.FC = () => {
     if (tradeID && (await api.get("/trades/" + tradeID))) {
       console.log("trade found patching");
       const res = await api.patch("/trades/" + tradeID, tradePayload)
-    } else {
+    } else if(trade.status==TradeStatus.CANCELED){ //Do post trade if its immediately canceled
       console.log("trade not found creating new one");
       const res = await api.post("/trades/", tradePayload);
     }
-  }
-  // If user modifies trade update status accordingly
-  function modifiedTrade(){
-    let updateTrade = {...trade, 
-            status: TradeStatus.PENDING, 
-            activeUser: userA? ActiveUser.A : ActiveUser.B}
-        setTrade(updateTrade) 
   }
   function handleSelectCard(card: card) {}
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
     let newTradeItem: TradeItem = { quantity: 1, card: card };
-    setTrade({ ...trade, trade_items: [...trade.trade_items, newTradeItem] });
-    modifiedTrade()
+    setTrade({ ...trade,
+        status: TradeStatus.PENDING, 
+        activeUser: userA? ActiveUser.A : ActiveUser.B,
+        trade_items: [...trade.trade_items, newTradeItem] });
   }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
@@ -218,9 +220,10 @@ const TradePage: React.FC = () => {
     });
     setTrade({
       ...trade,
+      status: TradeStatus.PENDING, 
+      activeUser: userA? ActiveUser.A : ActiveUser.B,
       trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
     });
-    modifiedTrade()
   }
   // Sorted list of user's cards
   const sortMyCards = [...myCards]
@@ -285,11 +288,11 @@ const TradePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-
+  
   const currentUserPanelProps = {
-    title: "My Cards",
     trade: trade,
     userA: userA, // Pass whether current user is a_user
+    close: closeTrade,
     onAddCardsClick: () => setViewMyCards(true),
     onProposeClick: () => updateStatus(),
     updateAmount: updateAmount,
@@ -297,7 +300,6 @@ const TradePage: React.FC = () => {
 
   // Define props for the Trader's Panel
   const traderPanelProps = {
-    title: "Trader Cards",
     trade: trade,
     userA: !userA,
     onAddCardsClick: () => setViewTraderCards(true),
@@ -313,9 +315,12 @@ const TradePage: React.FC = () => {
         placeholder="Search for a card..."
       />
       {!viewMyCards && !viewTraderCards && (
+        <div className = "mt-5">
+        <StatusBar status={trade.status} />
         <div className="flex gap-6 w-full">
           <TradePanel {...currentUserPanelProps} />
           <TradePanel {...traderPanelProps} />
+        </div>
         </div>
       )}
       {/* Popupp window to add cards from my collection */}

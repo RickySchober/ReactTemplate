@@ -40,11 +40,10 @@ class CardUpdate(SQLModel, table=False):
 
 #All possible trade statuses
 class TradeStatus(str, Enum):
-  PROPOSED = "proposed"
-  COUNTERED = "countered"
-  ACCEPTED = "accepted"
-  SHIPPED = "shipped"
-  RECEIVED = "received"
+  PENDING = "pending"
+  PROPOSE = "propose"
+  SHIP = "ship"
+  RECEIVE = "receive"
   COMPLETED = "completed"
   CANCELED = "canceled"
 #User driving current status
@@ -87,19 +86,20 @@ class TradeOffer(SQLModel, table=True):
 
 
 #
-# Return models to return relevant information in nested relations
-#
+# Models for reading and writing to relational DB entries
+# limiting data to what is accessible to end user.
 
-class TradeItemCreate(SQLModel):
+class TradeItemWrite(SQLModel):
+    id: Optional[int] = None
     card_id: int
     quantity: int
 
-class TradeOfferCreate(SQLModel):
+class TradeOfferWrite(SQLModel):
     a_user_id: int
     b_user_id: int
-    status: TradeStatus = TradeStatus.PROPOSED
+    status: TradeStatus = TradeStatus.PENDING
     activeUser: ActiveUser = ActiveUser.NONE
-    trade_items: List[TradeItemCreate]
+    trade_items: List[TradeItemWrite]
 
 class UserRead(SQLModel):
     id: int

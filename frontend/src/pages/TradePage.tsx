@@ -3,23 +3,32 @@ import api from "../api/client";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import * as React from "react";
 import NavBar from "../components/NavBar";
-import { ActiveUser, card, trade, TradeStatus, TradeItem, User, TradePayload, TradeItemPayload } from "../../types";
+import {
+  ActiveUser,
+  card,
+  trade,
+  TradeStatus,
+  TradeItem,
+  User,
+  TradePayload,
+  TradeItemPayload,
+} from "../../types";
 import CardList from "../components/CardList";
 import Backsplash from "../components/Backsplash";
 import SortDropdown from "../components/SortDropdown";
 import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
 import ToggleSwitch from "../components/ToggleSwitch";
-import TradePanel from "./TradePanel";
+import TradePanel from "../components/TradePanel";
 
 const EmptyUser: User = {
   id: 0,
-  username: 'Loading...',
+  username: "Loading...",
 };
 
 // Define the default trade object
 const DefaultTrade: trade = {
   id: 0,
-  status: TradeStatus.PROPOSED, // or some default status
+  status: TradeStatus.PENDING,
   activeUser: ActiveUser.NONE,
   a_user: EmptyUser,
   b_user: EmptyUser,
@@ -46,65 +55,172 @@ const TradePage: React.FC = () => {
   const [viewTraderCards, setViewTraderCards] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(isExistingTrade)
+    console.log(isExistingTrade);
     if (isExistingTrade) {
       fetchTrade();
     } else {
       initializeTrade();
     }
   }, []);
+  // On assigning trade users fetch their collections
   useEffect(() => {
     if (trade?.a_user && trade.b_user) {
-        refreshCollection();
+      refreshCollection();
     }
-}, [trade?.a_user, trade?.b_user]); 
+  }, [trade?.a_user, trade?.b_user]);
   /* If new trade being created read in arguments and create trade object
-  */
-  async function initializeTrade(){
-    console.log(newTradeInfo)
-    let a_user = await api.get("/auth/user/"+newTradeInfo.myID)
-    let b_user = await api.get("/auth/user/"+newTradeInfo.traderID)
-    let cards = newTradeInfo.traderOffer
-    let trade_items: TradeItem[] = []
-    cards.forEach((card: card)=>(
-        trade_items.push({
-            card: card,
-            quantity: 1,
-        })
-    ))
+   */
+  async function initializeTrade() {
+    console.log(newTradeInfo);
+    let a_user = await api.get("/auth/user/" + newTradeInfo.myID);
+    let b_user = await api.get("/auth/user/" + newTradeInfo.traderID);
+    let cards = newTradeInfo.traderOffer;
+    let trade_items: TradeItem[] = [];
+    cards.forEach((card: card) =>
+      trade_items.push({
+        card: card,
+        quantity: 1,
+      })
+    );
     let trade: trade = {
-        status: TradeStatus.PROPOSED,
-        activeUser: ActiveUser.A,
-        a_user: a_user.data,
-        b_user: b_user.data,
-        trade_items: trade_items,
-    }
-    setTrade(trade)
-    console.log(trade)
-    refreshCollection()
+      status: TradeStatus.PENDING,
+      activeUser: ActiveUser.A,
+      a_user: a_user.data,
+      b_user: b_user.data,
+      trade_items: trade_items,
+    };
+    setTrade(trade);
+    console.log(trade);
+    refreshCollection();
   }
   /* Fetch both users' cards and the trade details.
        Validate that all cards in trade still exist and are owned by the correct users.
     */
   async function fetchTrade() {
-    console.log("fetching trade")
+    console.log("fetching trade");
     const tradeResponse = await api.get("/trades/" + tradeID);
-    console.log(tradeResponse.data)
-    setTrade(tradeResponse.data)
-    console.log(trade)
+    console.log(tradeResponse.data);
+    setTrade(tradeResponse.data);
   }
   /* Fetch collection of both users to view and add other cards
-  */
+   */
   async function refreshCollection() {
-    if(trade){
-        const me = await api.get("/auth/me/")
-        let isUserA = trade?.a_user.id==me.data.id ? true : false
-        setUserA(isUserA)
-        const my = await api.get("/cards/user/" + (isUserA ? trade?.a_user.id : trade?.b_user.id));
-        const trader = await api.get("/cards/user/" + (!isUserA ? trade?.a_user.id : trade?.b_user.id));
-        setMyCards(my.data);
-        setTraderCards(trader.data);
+    if (trade) {
+      const me = await api.get("/auth/me/");
+      let isUserA = trade?.a_user.id == me.data.id ? true : false;
+      setUserA(isUserA);
+      const my = await api.get(
+        "/cards/user/" + (isUserA ? trade?.a_user.id : trade?.b_user.id)
+      );
+      const trader = await api.get(
+        "/cards/user/" + (!isUserA ? trade?.a_user.id : trade?.b_user.id)
+      );
+      setMyCards(my.data);
+      setTraderCards(trader.data);
     }
+  }
+  async function updateStatus() {
+    let users: ActiveUser
+    let status: TradeStatus
+    let updateTrade: trade
+    switch (trade.status) {
+      case TradeStatus.PENDING:
+        updateTrade = {...trade, status: TradeStatus.PROPOSE}
+        await postTrade (updateTrade)
+        setTrade(updateTrade)
+        break
+      case TradeStatus.PROPOSE:
+        updateTrade = {...trade, status: TradeStatus.SHIP, activeUser: ActiveUser.NONE}
+        await postTrade (updateTrade)
+        setTrade(updateTrade)
+        break
+      case TradeStatus.SHIP:
+        users = trade.activeUser == ActiveUser.NONE ? (userA ? ActiveUser.A : ActiveUser.B): ActiveUser.NONE
+        status = users == ActiveUser.NONE ? TradeStatus.RECEIVE : TradeStatus.SHIP
+        updateTrade = {...trade, status: status, activeUser: users}
+        await postTrade (updateTrade)
+        setTrade(updateTrade)
+        break
+      case TradeStatus.RECEIVE:
+        users = trade.activeUser == ActiveUser.NONE ? (userA ? ActiveUser.A : ActiveUser.B) : ActiveUser.NONE
+        status = users == ActiveUser.NONE ? TradeStatus.COMPLETED : TradeStatus.RECEIVE
+        updateTrade = {...trade, status: status, activeUser: users}
+        await postTrade (updateTrade)
+        console.log(updateTrade)
+        console.log(userA)
+        setTrade(updateTrade)
+        break
+      case TradeStatus.COMPLETED:
+          console.log("Completed");
+          break
+      case TradeStatus.CANCELED:
+        console.log("Cancelled");
+        break
+      default:
+        console.log("Unknown status");
+        break
+    }
+  }
+  /* Posts a new trade to database
+   */
+  async function postTrade(trade: trade) {
+    console.log(trade)
+      let tradeItemsPayload: TradeItemPayload[] = [];
+      trade?.trade_items.forEach((item) =>
+        tradeItemsPayload.push({
+          card_id: item.card.id ?? 0,
+          quantity: item.quantity,
+        })
+      );
+      let tradePayload: TradePayload = {
+        a_user_id: trade.a_user.id,
+        b_user_id: trade.b_user.id,
+        status: trade.status,
+        activeUser: trade.activeUser,
+        trade_items: tradeItemsPayload,
+      };
+    if (tradeID && (await api.get("/trades/" + tradeID))) {
+      console.log("trade found patching");
+      const res = await api.patch("/trades/" + tradeID, tradePayload)
+    } else {
+      console.log("trade not found creating new one");
+      const res = await api.post("/trades/", tradePayload);
+    }
+  }
+  // If user modifies trade update status accordingly
+  function modifiedTrade(){
+    let updateTrade = {...trade, 
+            status: TradeStatus.PENDING, 
+            activeUser: userA? ActiveUser.A : ActiveUser.B}
+        setTrade(updateTrade) 
+  }
+  function handleSelectCard(card: card) {}
+  // Moves card from user's collection to their trade offer
+  function addCardToTrade(card: card) {
+    let newTradeItem: TradeItem = { quantity: 1, card: card };
+    setTrade({ ...trade, trade_items: [...trade.trade_items, newTradeItem] });
+    modifiedTrade()
+  }
+  // This function updates the quantity of a card in either offer removing if 0
+  function updateAmount(card: card, amount: number) {
+    let index: number = trade.trade_items.findIndex(
+      (item) => item.card.id == card.id
+    );
+    if (index === -1) {
+      console.warn("Trade item not found for update.");
+      return;
+    }
+    const updatedTradeItems = trade.trade_items.map((item, ind) => {
+      if (ind === index) {
+        return { ...item, quantity: amount };
+      }
+      return item;
+    });
+    setTrade({
+      ...trade,
+      trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
+    });
+    modifiedTrade()
   }
   // Sorted list of user's cards
   const sortMyCards = [...myCards]
@@ -112,23 +228,20 @@ const TradePage: React.FC = () => {
     .filter((card) =>
       autoMatch
         ? true
-        : traderCards
-            .filter(
-              (
-                //Only matches on automatch
-                card
-              ) => card.intent === "want"
-            )
-            .includes(card)
+        : traderCards.filter((card) => card.intent === "want").includes(card)
     )
-    .filter((card) => trade ? !trade.trade_items.some(item => item.card.id === card.id) : false) //Exclude cards in offer already
+    .filter((card) =>
+      trade
+        ? !trade.trade_items.some((item) => item.card.id === card.id)
+        : false
+    ) //Exclude cards in offer already
     .sort((a, b) => {
       const dir = ascending ? 1 : -1;
       switch (sortOption) {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return a.id - b.id * dir;
+          return a.id ?? 0 - (b.id ?? 0) * dir;
         case "nameSort":
           a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -152,14 +265,18 @@ const TradePage: React.FC = () => {
             )
             .includes(card)
     )
-    .filter((card) => trade ? !trade.trade_items.some(item => item.card.id === card.id) : false) //Exclude cards in offer already
+    .filter((card) =>
+      trade
+        ? !trade.trade_items.some((item) => item.card.id === card.id)
+        : false
+    ) //Exclude cards in offer already
     .sort((a, b) => {
       const dir = ascending ? 1 : -1;
       switch (sortOption) {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return (a.id - b.id) * dir;
+          return (a.id ?? 0 - (b.id ?? 0)) * dir;
         case "nameSort":
           a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -168,76 +285,22 @@ const TradePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  const aTradeItems: TradeItem[] =
-    trade?.trade_items
-    ?.filter((item) => item.card?.owner_id === trade?.a_user?.id) ?? [];
 
-  const bTradeItems: TradeItem[] =
-    trade?.trade_items
-    ?.filter((item) => item.card?.owner_id === trade?.b_user?.id) ?? [];
-
-  const aOfferPrice = aTradeItems.reduce((sum, item) => {
-    return sum + item.card.price
-  }, 0);
-  const bOfferPrice = aTradeItems.reduce((sum, item) => {
-    return sum + item.card.price
-  }, 0);
-
-  async function postTrade() {
-    if(tradeID && await api.get("/trades/" + tradeID)){
-        console.log("trade found")
-    }
-    else if(trade){
-        console.log("trade not found creating new one")
-        let tradeItemsPayload: TradeItemPayload[] = []
-        trade?.trade_items.forEach(item =>
-            tradeItemsPayload.push({card_id: item.card.id, quantity: item.quantity})
-        )
-        let tradePayload: TradePayload = {
-            a_user_id: trade.a_user.id,
-            b_user_id: trade.b_user.id,
-            status: trade.status,
-            activeUser: trade.activeUser,
-            trade_items: tradeItemsPayload
-        }               
-        const res = await api.post("/trades/", tradePayload);
-    }
-  }
-  
-  function handleSelectCard(card: card) {}
-  // Moves card from user's collection to their trade offer
-  function addCardToTrade(card: card) {
-    let newTradeItem: TradeItem = {quantity: 1, card: card}
-    trade?.trade_items.push(newTradeItem)
-  }
-  // This function updates the quantity of a card in either offer
-  function updateAmount(card: card, amount: number) {
-    let index: number = trade.indexOf(card);
-    array[index].quantity = amount;
-    if (array[index].quantity <= 0) {
-      array.splice(index, 1);
-    }
-    setArray([...array]);
-  }
-
-    const currentUserPanelProps = {
+  const currentUserPanelProps = {
     title: "My Cards",
-    offerPrice: userA ? aOfferPrice : bOfferPrice,
-    tradeItems: userA ? aTradeItems : bTradeItems,
-    isUserACurrentUser: true, // It is always the current user's panel
-    onAddCardsClick: () => setViewMyCards(true), // Or setViewTraderCards(true) if B
-    onProposeClick: () => postTrade(),
+    trade: trade,
+    userA: userA, // Pass whether current user is a_user
+    onAddCardsClick: () => setViewMyCards(true),
+    onProposeClick: () => updateStatus(),
     updateAmount: updateAmount,
   };
 
   // Define props for the Trader's Panel
   const traderPanelProps = {
     title: "Trader Cards",
-    offerPrice: userA ? bOfferPrice : aOfferPrice,
-    tradeItems: userA ? bTradeItems : aTradeItems,
-    isUserACurrentUser: false, // It is never the current user's panel
-    onAddCardsClick: () => setViewTraderCards(true), // This button will be hidden by TradePanel logic
-    onProposeClick: () => setViewTraderCards(true), // Example action
+    trade: trade,
+    userA: !userA,
+    onAddCardsClick: () => setViewTraderCards(true),
     updateAmount: updateAmount,
   };
 
@@ -251,8 +314,8 @@ const TradePage: React.FC = () => {
       />
       {!viewMyCards && !viewTraderCards && (
         <div className="flex gap-6 w-full">
-            <TradePanel {...currentUserPanelProps} />
-            <TradePanel {...traderPanelProps} />
+          <TradePanel {...currentUserPanelProps} />
+          <TradePanel {...traderPanelProps} />
         </div>
       )}
       {/* Popupp window to add cards from my collection */}

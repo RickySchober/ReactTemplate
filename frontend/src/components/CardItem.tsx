@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 interface CardItemProps {
   card: card;
-  triggerUpdate?: () => void;
   modQuant?: (card: card, amount: number) => void;
   maxQuant?: number;
   children?: React.ReactNode;
@@ -13,13 +12,12 @@ interface CardItemProps {
 
 const CardItem: React.FC<CardItemProps> = ({
   card,
-  triggerUpdate,
   modQuant,
   maxQuant,
   children,
 }) => {
   const navigate = useNavigate();
-  function handleSelectCard() {
+  function handleSelectUser() {
     console.log("Selected card:", card);
     navigate(`/user/${card.owner_id}`);
   }
@@ -39,7 +37,7 @@ const CardItem: React.FC<CardItemProps> = ({
           <div className="flex items-center gap-3">
             <button
               className="px-2 py-1 text xs bg-green-600 hover:bg-green-700 rounded text-white"
-              onClick={() => modQuant(card, card.quantity+1)}
+              onClick={() => modQuant(card, maxQuant == card.quantity ? card.quantity : card.quantity+1)}
             >
               +
             </button>

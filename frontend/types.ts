@@ -13,11 +13,10 @@ export interface card {
 }
 
 export enum TradeStatus {
-  PROPOSED = "proposed",
-  COUNTERED = "countered",
-  ACCEPTED = "accepted",
-  SHIPPED = "shipped",
-  RECEIVED = "received",  
+  PENDING = "pending",
+  PROPOSE = "propose",
+  SHIP = "ship",
+  RECEIVE = "receive",
   COMPLETED = "completed",
   CANCELED = "canceled",
 }
@@ -54,6 +53,7 @@ export interface trade {
 
 // When creating new trades just link to elements with id
 export interface TradeItemPayload {
+  id?: number;
   card_id: number;
   quantity: number;
 }
@@ -66,3 +66,4 @@ export interface TradePayload {
   status: TradeStatus;       
   activeUser: ActiveUser;    
 }
+

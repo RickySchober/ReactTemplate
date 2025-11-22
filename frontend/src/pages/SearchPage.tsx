@@ -110,7 +110,7 @@ const SearchPage: React.FC = () => {
             <CardList 
               cards={sortedResults} 
               children={(card) => (
-                <button onClick={() => beginTrade(card)}>
+                <button className="bg-blue-400 mb-2" onClick={() => beginTrade(card)}>
                   Begin Trade
                 </button>
               )} />

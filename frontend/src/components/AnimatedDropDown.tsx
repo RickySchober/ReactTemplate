@@ -17,7 +17,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none"
+          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium bg-blue-400 text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none"
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-haspopup="true"

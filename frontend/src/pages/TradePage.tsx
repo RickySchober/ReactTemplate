@@ -85,7 +85,7 @@ const TradePage: React.FC = () => {
     );
     let trade: trade = {
       status: TradeStatus.PENDING,
-      activeUser: ActiveUser.A,
+      activeUser: ActiveUser.NONE,
       a_user: a_user.data,
       b_user: b_user.data,
       trade_items: trade_items,
@@ -132,7 +132,8 @@ const TradePage: React.FC = () => {
     let updateTrade: trade
     switch (trade.status) {
       case TradeStatus.PENDING:
-        updateTrade = {...trade, status: TradeStatus.PROPOSE}
+        users = userA ? ActiveUser.A : ActiveUser.B
+        updateTrade = {...trade, status: TradeStatus.PROPOSE, activeUser: users}
         await postTrade (updateTrade)
         setTrade(updateTrade)
         break
@@ -189,7 +190,7 @@ const TradePage: React.FC = () => {
     if (tradeID && (await api.get("/trades/" + tradeID))) {
       console.log("trade found patching");
       const res = await api.patch("/trades/" + tradeID, tradePayload)
-    } else if(trade.status==TradeStatus.CANCELED){ //Do post trade if its immediately canceled
+    } else if(trade.status!==TradeStatus.CANCELED){ //Do not post trade if its immediately canceled
       console.log("trade not found creating new one");
       const res = await api.post("/trades/", tradePayload);
     }
@@ -200,7 +201,7 @@ const TradePage: React.FC = () => {
     let newTradeItem: TradeItem = { quantity: 1, card: card };
     setTrade({ ...trade,
         status: TradeStatus.PENDING, 
-        activeUser: userA? ActiveUser.A : ActiveUser.B,
+        activeUser: ActiveUser.NONE,
         trade_items: [...trade.trade_items, newTradeItem] });
   }
   // This function updates the quantity of a card in either offer removing if 0
@@ -221,7 +222,7 @@ const TradePage: React.FC = () => {
     setTrade({
       ...trade,
       status: TradeStatus.PENDING, 
-      activeUser: userA? ActiveUser.A : ActiveUser.B,
+      activeUser: ActiveUser.NONE,
       trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
     });
   }
@@ -346,7 +347,7 @@ const TradePage: React.FC = () => {
               rightLabel=""
               id="auto-match-toggle"
             />
-            <button
+            <button className="bg-blue-400"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -359,7 +360,7 @@ const TradePage: React.FC = () => {
             <CardList
               cards={sortMyCards}
               children={(card) => (
-                <button onClick={() => addCardToTrade(card)}>
+                <button className="bg-blue-400" onClick={() => addCardToTrade(card)}>
                   Add to Offer
                 </button>
               )}
@@ -390,7 +391,8 @@ const TradePage: React.FC = () => {
               rightLabel=""
               id="auto-match-toggle"
             />
-            <button
+            <button 
+              className="bg-blue-400"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);

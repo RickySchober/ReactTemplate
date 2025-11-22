@@ -36,7 +36,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
   function getStatusMessage(status: TradeStatus): string {
     switch (status) {
       case TradeStatus.PENDING:
-        return active ? "Propose Trade" : "";
+        return close ? "Propose Trade" : "";
       case TradeStatus.PROPOSE:
         return active ? "Proposed Trade" : (close ? "Accept" : "Reviewing Trade");
       case TradeStatus.SHIP:
@@ -51,6 +51,10 @@ const TradePanel: React.FC<TradePanelProps> = ({
         return "Unknown status.";
     }
   }
+  function printStatus(){
+    console.log(active) 
+    onProposeClick()
+  }
   return (
     <div className="w-1/2 p-4 m-4 bg-neutral-900 rounded-2xl shadow-lg">
       <div className="flex justify-between">
@@ -63,12 +67,14 @@ const TradePanel: React.FC<TradePanelProps> = ({
           <button onClick={onAddCardsClick} className="mb-4 mx-2 rounded-lg">
             Add Cards
           </button>}
+          <h1>Status:</h1>
           { getStatusMessage(trade.status).length!==0 &&
             <button
-            onClick={onProposeClick}
+            disabled={active}
+            onClick={printStatus}
             className={`
               mb-4 mx-2 rounded-lg 
-              px-4 py-2 font-semibold 
+              font-semibold 
               transition-colors duration-150 ease-in-out
               ${
                 active
@@ -79,7 +85,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             {getStatusMessage(trade.status)}
           </button>}
           {(close && (trade.status == TradeStatus.PENDING || trade.status == TradeStatus.PROPOSE)) 
-          &&<button onClick={close}>
+          &&<button className="bg-red-600 px-4 py-0" onClick={close}>
             Close
           </button>
           }

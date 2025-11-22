@@ -78,7 +78,7 @@ const NavBar: React.FC<NavBarProps> = ({
         ) : (
           <button
             onClick={() => navigate("/login")}
-            className="whitespace-nowrap hover:text-gray-300 transition"
+            className="whitespace-nowrap hover:text-gray-300 transition bg-blue-400"
           >
             Sign In
           </button>

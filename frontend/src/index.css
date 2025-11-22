@@ -58,7 +58,7 @@ body {
 
 button {
   @apply rounded-sm font-semibold transition
-    border-0 text-white truncate;
+    border-0 truncate;
 }
 
 button:hover:not(:disabled) {

@@ -131,7 +131,7 @@ const ProfilePage: React.FC = () => {
 
           {add && (
             <button
-            className="bg-blue-400"
+            className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setShowListInput((s) => false);
                 setShowSearch((s) => true);
@@ -142,7 +142,7 @@ const ProfilePage: React.FC = () => {
           )}
           {add && (
             <button
-            className="bg-blue-400"
+            className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setShowListInput((s) => true);
                 setShowSearch((s) => false);
@@ -175,7 +175,7 @@ const ProfilePage: React.FC = () => {
             />
             <div className="flex gap-2 mt-2">
               <button
-              className="bg-blue-400"
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" 
                 onClick={async (e) => {
                   e.preventDefault();
                   await parseAndAddList();
@@ -184,7 +184,7 @@ const ProfilePage: React.FC = () => {
                 Parse & Add
               </button>
               <button
-              className="bg-blue-400"
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
                 onClick={() => {
                   setListText("");
                 }}

@@ -17,7 +17,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium bg-blue-400 text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none"
+          className="inline-flex justify-center w-full px-4 py-2 text-lg font-medium bg-blue-400 border border-gray-300 rounded-md shadow-sm hover:bg-blue-500 focus:outline-none"
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -27,7 +27,6 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
       </div>
 
       <div
-        // Use standard Tailwind transition classes for smooth animation
         className={`origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${
           isOpen
             ? 'opacity-100 scale-y-100 visible max-h-screen'
@@ -47,7 +46,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
                 option.onClick();
                 setIsOpen(false); // Close menu after selection
               }}
-              className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900"
               role="menuitem"
             >
               {option.name}

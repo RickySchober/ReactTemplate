@@ -64,7 +64,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
         </div>
         <div className="flex justify-between">
           { (trade.status==TradeStatus.PROPOSE || trade.status==TradeStatus.PENDING) &&
-          <button onClick={onAddCardsClick} className="mb-4 mx-2 rounded-lg">
+          <button onClick={onAddCardsClick} className="bg-blue-400 px-4 my-3.5 mx-2 text-lg">
             Add Cards
           </button>}
           <h1>Status:</h1>
@@ -73,7 +73,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             disabled={active}
             onClick={printStatus}
             className={`
-              mb-4 mx-2 rounded-lg 
+              px-4 my-3.5 mx-2 text-lg
               font-semibold 
               transition-colors duration-150 ease-in-out
               ${
@@ -85,7 +85,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             {getStatusMessage(trade.status)}
           </button>}
           {(close && (trade.status == TradeStatus.PENDING || trade.status == TradeStatus.PROPOSE)) 
-          &&<button className="bg-red-600 px-4 py-0" onClick={close}>
+          &&<button className="bg-red-600 hover:bg-red-700 px-4 my-3.5 mx-2 text-lg" onClick={close}>
             Close
           </button>
           }

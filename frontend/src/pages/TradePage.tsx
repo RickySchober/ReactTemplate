@@ -347,7 +347,7 @@ const TradePage: React.FC = () => {
               rightLabel=""
               id="auto-match-toggle"
             />
-            <button className="bg-blue-400"
+            <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -360,7 +360,7 @@ const TradePage: React.FC = () => {
             <CardList
               cards={sortMyCards}
               children={(card) => (
-                <button className="bg-blue-400" onClick={() => addCardToTrade(card)}>
+                <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" onClick={() => addCardToTrade(card)}>
                   Add to Offer
                 </button>
               )}
@@ -392,7 +392,7 @@ const TradePage: React.FC = () => {
               id="auto-match-toggle"
             />
             <button 
-              className="bg-blue-400"
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -405,7 +405,7 @@ const TradePage: React.FC = () => {
             <CardList
               cards={sortTraderCards}
               children={(card) => (
-                <button onClick={() => addCardToTrade(card)}>
+                <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" onClick={() => addCardToTrade(card)}>
                   Add to Offer
                 </button>
               )}

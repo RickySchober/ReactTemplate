@@ -6,7 +6,7 @@ import SortDropdown from "../components/SortDropdown";
 import NavBar from "../components/NavBar";
 import ToggleSwitch from "../components/ToggleSwitch";
 import Backsplash from "../components/Backsplash";
-import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
+import bgArt from "../assets/Gudul_Lurker.jpg";
 import * as React from "react";
 import { card } from "../../types";
 

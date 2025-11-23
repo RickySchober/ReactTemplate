@@ -9,6 +9,7 @@ class User(SQLModel, table=True):
     username: str = Field(index=True, unique=True)
     email: str = Field(index=True, unique=True)
     hashed_password: str
+   
     cards: List["Card"] = Relationship(back_populates="owner")
     sent_offers: List["TradeOffer"] = Relationship(
         back_populates="a_user",
@@ -19,6 +20,61 @@ class User(SQLModel, table=True):
         back_populates="b_user",
         sa_relationship_kwargs={"foreign_keys": "TradeOffer.b_user_id"},
     )
+
+    settings: Optional["UserSettings"] = Relationship(back_populates="user")
+    address: Optional["UserAddress"] = Relationship(back_populates="user")
+
+class UserSettings(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", unique=True)
+
+    disable_warning: bool = Field(default=False)
+    backsplash: str
+    dark_mode: bool = Field(default=True)
+    email_notifications: bool = Field(default=True)
+
+    user: User = Relationship(back_populates="settings")
+
+
+class UserAddress(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", unique=True)
+
+    full_name: str
+    street: str
+    city: str
+    state: str = Field(max_length=2)   
+    zip_code: str                     
+    country: str = Field(default="USA")
+
+    user: User = Relationship(back_populates="address")
+
+# Models for read/write to limit user access
+# Minimal user model publicly avaliable
+class UserRead(SQLModel):
+    id: int
+    username: str
+
+class UserSettingsRead(SQLModel):
+    disable_warning: bool
+    backsplash: str
+    dark_mode: bool
+    email_notifications: bool
+
+class UserAddressRead(SQLModel):
+    full_name: str
+    street: str
+    city: str
+    state: str
+    zip_code: str
+    country: str
+# Full user profile for logged in users and trade partners
+class UserProfileRead(SQLModel):
+    id: int
+    username: str
+    email: str
+    settings: Optional[UserSettingsRead]
+    address: Optional[UserAddressRead]
 
 class Card(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -85,7 +141,6 @@ class TradeOffer(SQLModel, table=True):
     activeUser: ActiveUser = Field(default=ActiveUser.NONE)
 
 
-#
 # Models for reading and writing to relational DB entries
 # limiting data to what is accessible to end user.
 
@@ -100,10 +155,6 @@ class TradeOfferWrite(SQLModel):
     status: TradeStatus = TradeStatus.PENDING
     activeUser: ActiveUser = ActiveUser.NONE
     trade_items: List[TradeItemWrite]
-
-class UserRead(SQLModel):
-    id: int
-    username: str
 
 class CardRead(SQLModel):
     id: int 

@@ -5,6 +5,7 @@ import SearchPage from "./pages/SearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TradePage from "./pages/TradePage";
 import TradeLog from "./pages/TradeLogPage";
+import SettingsPage from "./pages/SettingsPage";
 import * as React from "react";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/user/:id" element={<UserProfilePage />} />
       <Route path="/trade/:tradeID?" element={<TradePage />} />
       <Route path="/tradelog" element={<TradeLog />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 }

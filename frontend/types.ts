@@ -33,6 +33,30 @@ export interface User{
   username: string
 }
 
+export interface UserSettings {
+  disable_warning: boolean;
+  backsplash: string;
+  dark_mode: boolean;
+  email_notifications: boolean;
+}
+
+export interface UserAddress {
+  full_name: string;
+  street: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+}
+
+export interface UserProfile {
+  id: number;
+  username: string;
+  email: string;
+  settings?: UserSettings;
+  address?: UserAddress;
+}
+
 export interface TradeItem {
   id?: number
   card: card

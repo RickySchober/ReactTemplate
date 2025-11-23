@@ -5,7 +5,7 @@ import CardList from "../components/CardList";
 import NavBar from "../components/NavBar";
 import SortDropdown from "../components/SortDropdown";
 import Backsplash from "../components/Backsplash";
-import bgArt from "../assets/Treasure-Cruise-MtG-Art.jpg";
+import bgArt from "../assets/Treasure_Cruise.jpg";
 import * as React from "react";
 import { card } from "../../types";
 

@@ -15,7 +15,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   rightLabel = "Off",
   id,
 }) => {
-  const width = 200;
+  const width = 250;
   const height = 45;
   const padding = 0;
   const knobWidth = width / 2 - padding * 2;

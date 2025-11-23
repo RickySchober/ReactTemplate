@@ -70,7 +70,7 @@ const NavBar: React.FC<NavBarProps> = ({
           <>
             <AnimatedDropDown options={[
               {name: "Profile", onClick: ()=>navigate("/profile")},
-              {name: "Settings", onClick: ()=>navigate("/profile")},
+              {name: "Settings", onClick: ()=>navigate("/settings")},
               {name: "Trades", onClick: ()=>navigate("/tradelog")},
               {name: "Sign Out", onClick: handleSignOut},
             ]}/>

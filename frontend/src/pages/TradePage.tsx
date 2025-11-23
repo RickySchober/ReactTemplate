@@ -17,7 +17,7 @@ import CardList from "../components/CardList";
 import Backsplash from "../components/Backsplash";
 import StatusBar from "../components/StatusBar";
 import SortDropdown from "../components/SortDropdown";
-import bgArt from "../assets/Dragons-of-Tarkir-Gudul-Lurker-MtG.jpg";
+import bgArt from "../assets/Gudul_Lurker.jpg";
 import ToggleSwitch from "../components/ToggleSwitch";
 import TradePanel from "../components/TradePanel";
 

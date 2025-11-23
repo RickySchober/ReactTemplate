@@ -8,13 +8,14 @@ import ToggleSwitch from "../components/ToggleSwitch";
 import Backsplash from "../components/Backsplash";
 import bgArt from "../assets/Gudul_Lurker.jpg";
 import * as React from "react";
-import { card } from "../../types";
+import { card, UserProfile } from "../../types";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
   const [add, setAdd] = useState<boolean>(false); // toggle state between viewing and adding cards
   const [haves, setHaves] = useState<boolean>(false); // toggle state between wants and haves
   const [recentAdded, setRecentAdded] = useState<card[]>([]); // track recently added cards during add session
+  const [bgArt, setBgArt] = useState<string>("");
   //UI utilities
   const [searchRedirect, setSearchRedirect] = useState<string>("");
   const [search, setSearch] = useState<string>("");
@@ -29,8 +30,13 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   async function fetchMyCards() {
+    const me = await api.get("/auth/me");
+    const myData = me.data
+    let artUrl = "/backsplashes/"+ (myData.settings?.backsplash?? "Gudul_Lurker.jpg")
+    setBgArt(artUrl)
     const res = await api.get("/auth/my_cards");
     setCards(res.data);
+
   }
 
   async function addFromSearch(card) {

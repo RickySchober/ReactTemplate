@@ -6,12 +6,13 @@ import UserProfilePage from "./pages/UserProfilePage";
 import TradePage from "./pages/TradePage";
 import TradeLog from "./pages/TradeLogPage";
 import SettingsPage from "./pages/SettingsPage";
+import LandingPage from "./pages/LandingPage";
 import * as React from "react";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<SearchPage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<ProfilePage />} />

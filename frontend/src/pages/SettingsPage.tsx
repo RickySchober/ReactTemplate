@@ -6,6 +6,8 @@ import { UserProfile } from "../../types";
 
 const backsplashImages = [
   "Gudul_Lurker.jpg",
+  "Treasure_Cruise.jpg",
+  "Lightning_Bolt.jpg"
 ];
 
 export default function SettingsPage() {
@@ -82,8 +84,8 @@ export default function SettingsPage() {
                     }}
                     >
                     <img
-                        src={`../assets/${img}`}
-                        className="w-full h-24 object-cover"
+                        src={`/backsplashes/${img}`}
+                        className="w-full h-40 object-cover"
                     />
                     <p className="text-center py-1 text-xs">{img}</p>
                     </div>

@@ -69,7 +69,8 @@ def signup(username: str, email: str, password: str, session: Session = Depends(
     )
     session.refresh(user)
 
-    return {"message": "User created", "user_id": user.id}
+    token = create_access_token({"sub": str(user.id)})
+    return {"access_token": token, "message": "User created", "user_id": user.id}
 
 @router.post("/login")
 def login(email: str, password: str, session: Session = Depends(get_session)):

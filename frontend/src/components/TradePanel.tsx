@@ -62,18 +62,18 @@ const TradePanel: React.FC<TradePanelProps> = ({
           <h2 className="text-2xl font-semibold text-white mb-1">{userA ? trade.a_user.username : trade.b_user.username}</h2>
           <p className="text-gray-300 mb-4">Total Value: ${offerPrice}</p>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-baseline">
           { (trade.status==TradeStatus.PROPOSE || trade.status==TradeStatus.PENDING) &&
-          <button onClick={onAddCardsClick} className="bg-blue-400 px-4 my-3.5 mx-2 text-lg">
+          <button onClick={onAddCardsClick} className="bg-blue-400 px-4 py-2 mx-2 text-lg">
             Add Cards
           </button>}
-          <h1>Status:</h1>
+          <h1 className="text-2xl font-medium">Status:</h1>
           { getStatusMessage(trade.status).length!==0 &&
             <button
             disabled={active}
             onClick={printStatus}
             className={`
-              px-4 my-3.5 mx-2 text-lg
+              px-4 py-2 mx-2 text-lg
               font-semibold 
               transition-colors duration-150 ease-in-out
               ${
@@ -85,7 +85,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             {getStatusMessage(trade.status)}
           </button>}
           {(close && (trade.status == TradeStatus.PENDING || trade.status == TradeStatus.PROPOSE)) 
-          &&<button className="bg-red-600 hover:bg-red-700 px-4 my-3.5 mx-2 text-lg" onClick={close}>
+          &&<button className="bg-red-600 hover:bg-red-700 px-4 py-2 mx-2 text-lg" onClick={close}>
             Close
           </button>
           }

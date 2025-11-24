@@ -54,7 +54,7 @@ def signup(username: str, email: str, password: str, session: Session = Depends(
     session.commit()
     session.refresh(user)
 
-    settings = UserSettings(user_id=user.id, disable_warning=False,backsplash="Gudul_Lurker",dark_mode=True,email_notifications=False)
+    settings = UserSettings(user_id=user.id, disable_warning=False,backsplash="Gudul_Lurker.jpg",dark_mode=True,email_notifications=False)
     address = UserAddress(user_id=user.id, full_name="", street="",city="",state="",zip_code="",country="")
     session.add(settings)
     session.add(address)

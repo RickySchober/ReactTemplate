@@ -31,12 +31,12 @@ const ProfilePage: React.FC = () => {
 
   async function fetchMyCards() {
     const me = await api.get("/auth/me");
-    const myData = me.data
-    let artUrl = "/backsplashes/"+ (myData.settings?.backsplash?? "Gudul_Lurker.jpg")
-    setBgArt(artUrl)
+    const myData = me.data;
+    let artUrl =
+      "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
+    setBgArt(artUrl);
     const res = await api.get("/auth/my_cards");
     setCards(res.data);
-
   }
 
   async function addFromSearch(card) {
@@ -67,18 +67,22 @@ const ProfilePage: React.FC = () => {
     setSearch(card.name);
   }
   async function updateRecent() {
+    let updateRecent: card[] = [] 
     for (let i = 0; i < recentAdded.length; i++) {
-      if (recentAdded[i].quantity <= 0) {
-        recentAdded.splice(i, 1);
-        i--;
+      for(let j = 0; j < cards.length; j++) {
+        if(cards[j].id==recentAdded[i].id){
+          updateRecent.push(cards[j])
+        }
       }
     }
-    setRecentAdded([...recentAdded]);
+    setRecentAdded([...updateRecent]);
   }
   async function modifyQuantity(card: card, quantity: number) {
     try {
       await api.patch(`/cards/${card.id}`, { quantity });
       card.quantity = quantity;
+      // Call both functions to update card array
+      await fetchMyCards();
       await updateRecent();
     } catch (err) {
       console.error("Failed to modify quantity", err);
@@ -137,7 +141,7 @@ const ProfilePage: React.FC = () => {
 
           {add && (
             <button
-            className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setShowListInput((s) => false);
                 setShowSearch((s) => true);
@@ -148,7 +152,7 @@ const ProfilePage: React.FC = () => {
           )}
           {add && (
             <button
-            className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setShowListInput((s) => true);
                 setShowSearch((s) => false);
@@ -181,7 +185,7 @@ const ProfilePage: React.FC = () => {
             />
             <div className="flex gap-2 mt-2">
               <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" 
+                className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
                 onClick={async (e) => {
                   e.preventDefault();
                   await parseAndAddList();
@@ -190,7 +194,7 @@ const ProfilePage: React.FC = () => {
                 Parse & Add
               </button>
               <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
                 onClick={() => {
                   setListText("");
                 }}
@@ -202,22 +206,16 @@ const ProfilePage: React.FC = () => {
         )}
         {add && recentAdded.length > 0 && (
           <div className="mt-4">
-            <CardList
-              cards={recentAdded}
-              triggerUpdate={updateRecent}
-              modQuant={modifyQuantity}
-            />
+            <CardList cards={recentAdded} modQuant={modifyQuantity} />
           </div>
         )}
-        {!add && (
+        {!add && (sortedCards.length > 0 ? (
           <div className="mt-4">
-            <CardList
-              cards={sortedCards}
-              triggerUpdate={fetchMyCards}
-              modQuant={modifyQuantity}
-            />
+            <CardList cards={sortedCards} modQuant={modifyQuantity} />
           </div>
-        )}
+        ) : (
+          <div className="text-xl mt-3">No cards in collection select add.</div>
+        ))}
       </Backsplash>
     </div>
   );
@@ -266,12 +264,16 @@ const ProfilePage: React.FC = () => {
       try {
         // Try Scryfall named endpoint with exact name + set code first (best chance for exact edition match)
         const setCode = encodeURIComponent(setId.toLowerCase());
-        const exactUrl = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}&set=${setCode}`;
+        const exactUrl = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(
+          name
+        )}&set=${setCode}`;
         let res = await fetch(exactUrl);
         let card;
         if (!res.ok) {
           // fallback: fuzzy by name and set
-          const fuzzyUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(`${name} set:${setId}`)}`;
+          const fuzzyUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(
+            `${name} set:${setId}`
+          )}`;
           res = await fetch(fuzzyUrl);
           if (!res.ok)
             throw new Error(`Scryfall lookup failed for ${name} (${setId})`);

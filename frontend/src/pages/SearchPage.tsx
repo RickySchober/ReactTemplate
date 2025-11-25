@@ -1,3 +1,6 @@
+/* Search page to show all listing of a card from other users.
+   This page is redirected to when using the search bar in NavBar.
+*/
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/client";
@@ -20,24 +23,24 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     const fetchUserId = async () => {
-        try {
-            const response = await api.get('/auth/me');
-            setMyID(response.data.id);
-        } catch (error) {
-            console.error("Failed to fetch user ID", error);
-        }
+      try {
+        const response = await api.get("/auth/me");
+        setMyID(response.data.id);
+      } catch (error) {
+        console.error("Failed to fetch user ID", error);
+      }
     };
 
     fetchUserId();
     const q = searchParams.get("q") || "";
-      if (q && q.length > 0) {
-        setSearch(q);
-        // run search using current filters
-        handleSearch({ name: q });
-      }
+    if (q && q.length > 0) {
+      setSearch(q);
+      // run search using current filters
+      handleSearch({ name: q });
+    }
   }, [searchParams]);
 
-  async function handleSearch(card) {
+  async function handleSearch(card: card) {
     try {
       const name = typeof card === "string" ? card : card?.name;
       const res = await api.get(`/cards/search/`, {
@@ -51,7 +54,7 @@ const SearchPage: React.FC = () => {
   }
   // Begin a trade with the owner of the selected card
   async function beginTrade(card: card) {
-    const me = await api.get('auth/me')
+    const me = await api.get("auth/me");
     const myID = me.data.id;
     const traderID = card.owner_id;
     navigate("/trade", {
@@ -62,29 +65,24 @@ const SearchPage: React.FC = () => {
       },
     });
   }
-  // Navigate to user profile on card owner select
-  function handleSelectCard(card) {
-    console.log("Selected card:", card);
-    navigate(`/user/${card.owner_id}`);
-  }
 
   const sortedResults = [...results]
-  .filter((card) => card.owner_id !== myID)
-  .sort((a, b) => {
-    const dir = ascending ? 1 : -1;
-    switch (sortOption) {
-      case "price":
-        return (a.price - b.price) * dir;
-      case "dateSort":
-        return (a.id - b.id) * dir;
-      case "nameSort":
-        a.name.localeCompare(b.name) * dir;
-      case "setName":
-        return a.set_name.localeCompare(b.set_name) * dir;
-      default:
-        return a.name.localeCompare(b.name) * dir;
-    }
-  });
+    .filter((card) => card.owner_id !== myID)
+    .sort((a, b) => {
+      const dir = ascending ? 1 : -1;
+      switch (sortOption) {
+        case "price":
+          return (a.price - b.price) * dir;
+        case "dateSort":
+          return (a.id - b.id) * dir;
+        case "nameSort":
+          a.name.localeCompare(b.name) * dir;
+        case "setName":
+          return a.set_name.localeCompare(b.set_name) * dir;
+        default:
+          return a.name.localeCompare(b.name) * dir;
+      }
+    });
   return (
     <>
       <NavBar
@@ -107,13 +105,17 @@ const SearchPage: React.FC = () => {
         {/* ─── RESULTS ─────────────────────────────── */}
         <div>
           {results.length > 0 ? (
-            <CardList 
-              cards={sortedResults} 
-              children={(card) => (
-                <button className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2" onClick={() => beginTrade(card)}>
+            <CardList
+              cards={sortedResults}
+              children={(card: card) => (
+                <button
+                  className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
+                  onClick={() => beginTrade(card)}
+                >
                   Begin Trade
                 </button>
-              )} />
+              )}
+            />
           ) : (
             <p>No results yet. Try searching for a card name.</p>
           )}

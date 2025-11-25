@@ -1,3 +1,6 @@
+/* Settings page to modify user profile information such as settings
+   mailing address, and backsplash.
+*/
 import * as React from "react";
 import { useState, useEffect } from "react";
 import api from "../api/client";
@@ -7,7 +10,7 @@ import { UserProfile } from "../../types";
 const backsplashImages = [
   "Gudul_Lurker.jpg",
   "Treasure_Cruise.jpg",
-  "Lightning_Bolt.jpg"
+  "Lightning_Bolt.jpg",
 ];
 
 export default function SettingsPage() {
@@ -17,13 +20,17 @@ export default function SettingsPage() {
   const [showBksChooser, setShowBksChooser] = useState(false);
   // Fetch profile
   useEffect(() => {
-    api.get("/auth/me").then(res => setProfile(res.data));
+    api.get("/auth/me").then((res) => setProfile(res.data));
   }, []);
 
   if (!profile) return <div className="p-4 text-white">Loading...</div>;
 
-  const updateField = (section: "settings" | "address", field: string, value: any) => {
-    setProfile(prev => ({
+  const updateField = (
+    section: "settings" | "address",
+    field: string,
+    value: any
+  ) => {
+    setProfile((prev: UserProfile) => ({
       ...prev!,
       [section]: {
         ...prev![section],
@@ -33,11 +40,9 @@ export default function SettingsPage() {
   };
 
   const save = () => {
-    console.log(profile)
+    console.log(profile);
     setSaving(true);
-    api
-      .patch("/auth/me", profile)
-      .then(() => setSaving(false));
+    api.patch("/auth/me", profile).then(() => setSaving(false));
   };
 
   const s = profile.settings!;
@@ -45,59 +50,65 @@ export default function SettingsPage() {
 
   return (
     <div className=" text-white space-y-8 flex flex-col items-center justify-center">
-        <NavBar
-            search={searchRedirect}
-            setSearch={setSearchRedirect}
-            placeholder="Search for a card..."
-        />
+      <NavBar
+        search={searchRedirect}
+        setSearch={setSearchRedirect}
+        placeholder="Search for a card..."
+      />
       {/* SETTINGS */}
       <div className="w-4xl bg-slate-800 p-6 rounded-xl shadow ">
         <h2 className="text-xl font-semibold mb-4">User Settings</h2>
 
         <div className="w-full space-y-3">
           {/* BACKSPLASH */}
-        <div className="mt-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-medium">Backsplash</p>
-              <p className="text-sm text-slate-400">{profile.settings?.backsplash}</p>
+          <div className="mt-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-medium">Backsplash</p>
+                <p className="text-sm text-slate-400">
+                  {profile.settings?.backsplash}
+                </p>
+              </div>
+              <button
+                className="px-4 py-2 bg-blue-600 rounded"
+                onClick={() => setShowBksChooser(!showBksChooser)}
+              >
+                Change
+              </button>
             </div>
-            <button
-              className="px-4 py-2 bg-blue-600 rounded"
-              onClick={() => setShowBksChooser(!showBksChooser)}
-            >
-              Change
-            </button>
-          </div>
-                {/* IMAGE GRID */}
+            {/* IMAGE GRID */}
             {showBksChooser && (
-                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {backsplashImages.map((img) => (
-                    <div
+                  <div
                     key={img}
                     className={`cursor-pointer border rounded overflow-hidden hover:opacity-80 ${
-                        profile.settings?.backsplash === img ? "border-blue-500" : "border-slate-700"
+                      profile.settings?.backsplash === img
+                        ? "border-blue-500"
+                        : "border-slate-700"
                     }`}
                     onClick={() => {
-                        updateField("settings","backsplash", img);
-                        setShowBksChooser(false);
+                      updateField("settings", "backsplash", img);
+                      setShowBksChooser(false);
                     }}
-                    >
+                  >
                     <img
-                        src={`/backsplashes/${img}`}
-                        className="w-full h-40 object-cover"
+                      src={`/backsplashes/${img}`}
+                      className="w-full h-40 object-cover"
                     />
                     <p className="text-center py-1 text-xs">{img}</p>
-                    </div>
+                  </div>
                 ))}
-                </div>
+              </div>
             )}
-            </div>
+          </div>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={s.disable_warning}
-              onChange={e => updateField("settings", "disable_warning", e.target.checked)}
+              onChange={(e) =>
+                updateField("settings", "disable_warning", e.target.checked)
+              }
             />
             Disable Warning Popups
           </label>
@@ -106,7 +117,9 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={s.dark_mode}
-              onChange={e => updateField("settings", "dark_mode", e.target.checked)}
+              onChange={(e) =>
+                updateField("settings", "dark_mode", e.target.checked)
+              }
             />
             Dark Mode
           </label>
@@ -115,7 +128,7 @@ export default function SettingsPage() {
             <input
               type="checkbox"
               checked={s.email_notifications}
-              onChange={e =>
+              onChange={(e) =>
                 updateField("settings", "email_notifications", e.target.checked)
               }
             />
@@ -129,16 +142,20 @@ export default function SettingsPage() {
         <h2 className="text-xl font-semibold mb-4">Mailing Address</h2>
 
         <div className="space-y-3">
-          {["full_name", "street", "city", "state", "zip_code", "country"].map((field) => (
-            <label key={field} className="block capitalize">
-              <span>{field.replace("_", " ")}</span>
-              <input
-                className="w-full bg-slate-700 p-2 rounded mt-1"
-                value={(a as any)[field] ?? ""}
-                onChange={e => updateField("address", field, e.target.value)}
-              />
-            </label>
-          ))}
+          {["full_name", "street", "city", "state", "zip_code", "country"].map(
+            (field) => (
+              <label key={field} className="block capitalize">
+                <span>{field.replace("_", " ")}</span>
+                <input
+                  className="w-full bg-slate-700 p-2 rounded mt-1"
+                  value={(a as any)[field] ?? ""}
+                  onChange={(e) =>
+                    updateField("address", field, e.target.value)
+                  }
+                />
+              </label>
+            )
+          )}
         </div>
       </div>
 

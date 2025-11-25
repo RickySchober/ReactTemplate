@@ -1,12 +1,13 @@
+#Trades routes manages trades between users tracking status and all items in trade
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
-from .auth import get_current_user
 from ..database import get_session
-from ..models import User, Card, TradeOffer, TradeItem, TradeOfferWrite, TradeOfferRead
+from ..models import TradeOffer, TradeItem, TradeOfferWrite, TradeOfferRead
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 
+#Create new trade and link related trade items and users
 @router.post("/", response_model=TradeOffer)
 def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_session)):
     trade = TradeOffer(
@@ -74,6 +75,7 @@ def get_user_trades(user_id: int, session: Session = Depends(get_session)):
         ))
     return session.exec(statement).all() 
 
+#Modify a specfic trade based on its ID
 @router.patch("/{trade_id}", response_model=TradeOfferRead)
 def patch_trade_offer(trade_id: int, data: TradeOfferWrite, session: Session = Depends(get_session),):
     stmt = (
@@ -99,7 +101,7 @@ def patch_trade_offer(trade_id: int, data: TradeOfferWrite, session: Session = D
         incoming_items = {item.id: item for item in data.trade_items if item.id}
         existing_items = {item.id: item for item in trade.trade_items}
 
-        # --- Update existing items or remove if missing ---
+        #Update existing items or remove if missing
         for existing_id, existing_item in list(existing_items.items()):
             if existing_id not in incoming_items:
                 session.delete(existing_item)
@@ -108,7 +110,7 @@ def patch_trade_offer(trade_id: int, data: TradeOfferWrite, session: Session = D
                 existing_item.quantity = inc.quantity
                 existing_item.card_id = inc.card_id
 
-        # --- Add new items (items without IDs) ---
+        #Add new items (items without IDs)
         for inc in data.trade_items:
             if inc.id is None:
                 new_item = TradeItem(

@@ -1,3 +1,6 @@
+/* Backsplash places children components above it with proper spacing
+   with an image fading into the background to act as a nice page background.
+*/
 import * as React from "react";
 
 interface BacksplashProps {

@@ -1,3 +1,6 @@
+/* Navigation bar on the top of most pages to easily navigate between them.
+   If user is logged in will display profile dropdown otherwise show sign in.
+*/
 import { useNavigate, useLocation } from "react-router-dom";
 import SearchCard from "./SearchCard";
 import icon from "/favicon.png";
@@ -68,12 +71,14 @@ const NavBar: React.FC<NavBarProps> = ({
       <div className="flex items-center gap-4">
         {token ? (
           <>
-            <AnimatedDropDown options={[
-              {name: "Profile", onClick: ()=>navigate("/profile")},
-              {name: "Settings", onClick: ()=>navigate("/settings")},
-              {name: "Trades", onClick: ()=>navigate("/tradelog")},
-              {name: "Sign Out", onClick: handleSignOut},
-            ]}/>
+            <AnimatedDropDown
+              options={[
+                { name: "Profile", onClick: () => navigate("/profile") },
+                { name: "Settings", onClick: () => navigate("/settings") },
+                { name: "Trades", onClick: () => navigate("/tradelog") },
+                { name: "Sign Out", onClick: handleSignOut },
+              ]}
+            />
           </>
         ) : (
           <button

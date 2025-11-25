@@ -1,3 +1,6 @@
+/* Search card component is the search bar which calls Scryfall (MTGDatabase)
+ api to provide card autocomplete information.
+*/ 
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import * as React from "react";
@@ -35,21 +38,21 @@ interface ScryfallCard {
   nonfoil?: boolean;
 }
 
-export default function SearchCard({
+const SearchCard: React.FC<SearchCardProps> = ({
   value,
   onChange,
   onSelect, // callback triggered when a card is selected
   placeholder = "Search for a card...",
   minChars = 3,
   maxResults = 8,
-  debounceMs = 250,
-}) {
+  debounceMs = 1000,
+}) => {
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState<number>(-1);
-  const abortRef = useRef(null);
-  const debounceRef = useRef(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Show loading symbol when calling scryfall api
+  const [activeIndex, setActiveIndex] = useState<number>(-1); //Index of cards being hovered -1 when none
+  const abortRef = useRef(null); //Signal to abort scyrfall api call
+  const debounceRef = useRef(null); //Timer to abort slow api response
+  const containerRef = useRef<HTMLDivElement | null>(null); //used for closing box when clicking out
 
   useEffect(() => {
     return () => {
@@ -97,11 +100,11 @@ export default function SearchCard({
     setActiveIndex(-1);
   }
 
-  function handleSelect(card) {
+  function handleSelect(card: card) {
     onChange?.(card.name);
+    onSelect?.(card);
     setSuggestions([]);
     setActiveIndex(-1);
-    onSelect?.(card);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -190,7 +193,7 @@ export default function SearchCard({
             overflowY: "auto",
           }}
         >
-          {suggestions.map((s, idx) => {
+          {suggestions.map((s: ScryfallCard, idx: number) => {
             const cardName = s.name || s.card_faces?.[0]?.name || "Unknown";
             const setName = s.set_name || s.set || "";
             const img =
@@ -269,4 +272,5 @@ export default function SearchCard({
       )}
     </div>
   );
-}
+};
+export default SearchCard;

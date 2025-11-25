@@ -1,6 +1,9 @@
+/* Trade page displays all relevant information regarding a trade,
+   including current offer, user info, user collections, status, and user actions.
+*/
 import { useState, useEffect } from "react";
 import api from "../api/client";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import * as React from "react";
 import NavBar from "../components/NavBar";
 import {
@@ -121,76 +124,103 @@ const TradePage: React.FC = () => {
     }
   }
   async function closeTrade() {
-    let users = userA ? ActiveUser.A : ActiveUser.B
-    let updateTrade = {...trade, status: TradeStatus.CANCELED, activeUser: users}
-    await postTrade (updateTrade)
-    setTrade(updateTrade)
+    let users = userA ? ActiveUser.A : ActiveUser.B;
+    let updateTrade = {
+      ...trade,
+      status: TradeStatus.CANCELED,
+      activeUser: users,
+    };
+    await postTrade(updateTrade);
+    setTrade(updateTrade);
   }
   async function updateStatus() {
-    let users: ActiveUser
-    let status: TradeStatus
-    let updateTrade: trade
+    let users: ActiveUser;
+    let status: TradeStatus;
+    let updateTrade: trade;
     switch (trade.status) {
       case TradeStatus.PENDING:
-        users = userA ? ActiveUser.A : ActiveUser.B
-        updateTrade = {...trade, status: TradeStatus.PROPOSE, activeUser: users}
-        await postTrade (updateTrade)
-        setTrade(updateTrade)
-        break
+        users = userA ? ActiveUser.A : ActiveUser.B;
+        updateTrade = {
+          ...trade,
+          status: TradeStatus.PROPOSE,
+          activeUser: users,
+        };
+        await postTrade(updateTrade);
+        setTrade(updateTrade);
+        break;
       case TradeStatus.PROPOSE:
-        updateTrade = {...trade, status: TradeStatus.SHIP, activeUser: ActiveUser.NONE}
-        await postTrade (updateTrade)
-        setTrade(updateTrade)
-        break
+        updateTrade = {
+          ...trade,
+          status: TradeStatus.SHIP,
+          activeUser: ActiveUser.NONE,
+        };
+        await postTrade(updateTrade);
+        setTrade(updateTrade);
+        break;
       case TradeStatus.SHIP:
-        users = trade.activeUser == ActiveUser.NONE ? (userA ? ActiveUser.A : ActiveUser.B): ActiveUser.NONE
-        status = users == ActiveUser.NONE ? TradeStatus.RECEIVE : TradeStatus.SHIP
-        updateTrade = {...trade, status: status, activeUser: users}
-        await postTrade (updateTrade)
-        setTrade(updateTrade)
-        break
+        users =
+          trade.activeUser == ActiveUser.NONE
+            ? userA
+              ? ActiveUser.A
+              : ActiveUser.B
+            : ActiveUser.NONE;
+        status =
+          users == ActiveUser.NONE ? TradeStatus.RECEIVE : TradeStatus.SHIP;
+        updateTrade = { ...trade, status: status, activeUser: users };
+        await postTrade(updateTrade);
+        setTrade(updateTrade);
+        break;
       case TradeStatus.RECEIVE:
-        users = trade.activeUser == ActiveUser.NONE ? (userA ? ActiveUser.A : ActiveUser.B) : ActiveUser.NONE
-        status = users == ActiveUser.NONE ? TradeStatus.COMPLETED : TradeStatus.RECEIVE
-        updateTrade = {...trade, status: status, activeUser: users}
-        await postTrade (updateTrade)
-        console.log(updateTrade)
-        console.log(userA)
-        setTrade(updateTrade)
-        break
+        users =
+          trade.activeUser == ActiveUser.NONE
+            ? userA
+              ? ActiveUser.A
+              : ActiveUser.B
+            : ActiveUser.NONE;
+        status =
+          users == ActiveUser.NONE
+            ? TradeStatus.COMPLETED
+            : TradeStatus.RECEIVE;
+        updateTrade = { ...trade, status: status, activeUser: users };
+        await postTrade(updateTrade);
+        console.log(updateTrade);
+        console.log(userA);
+        setTrade(updateTrade);
+        break;
       case TradeStatus.COMPLETED:
-          console.log("Completed");
-          break
+        console.log("Completed");
+        break;
       case TradeStatus.CANCELED:
         console.log("Cancelled");
-        break
+        break;
       default:
         console.log("Unknown status");
-        break
+        break;
     }
   }
   /* Posts a new trade to database
    */
   async function postTrade(trade: trade) {
-    console.log(trade)
-      let tradeItemsPayload: TradeItemPayload[] = [];
-      trade?.trade_items.forEach((item) =>
-        tradeItemsPayload.push({
-          card_id: item.card.id ?? 0,
-          quantity: item.quantity,
-        })
-      );
-      let tradePayload: TradePayload = {
-        a_user_id: trade.a_user.id,
-        b_user_id: trade.b_user.id,
-        status: trade.status,
-        activeUser: trade.activeUser,
-        trade_items: tradeItemsPayload,
-      };
+    console.log(trade);
+    let tradeItemsPayload: TradeItemPayload[] = [];
+    trade?.trade_items.forEach((item) =>
+      tradeItemsPayload.push({
+        card_id: item.card.id ?? 0,
+        quantity: item.quantity,
+      })
+    );
+    let tradePayload: TradePayload = {
+      a_user_id: trade.a_user.id,
+      b_user_id: trade.b_user.id,
+      status: trade.status,
+      activeUser: trade.activeUser,
+      trade_items: tradeItemsPayload,
+    };
     if (tradeID && (await api.get("/trades/" + tradeID))) {
       console.log("trade found patching");
-      const res = await api.patch("/trades/" + tradeID, tradePayload)
-    } else if(trade.status!==TradeStatus.CANCELED){ //Do not post trade if its immediately canceled
+      const res = await api.patch("/trades/" + tradeID, tradePayload);
+    } else if (trade.status !== TradeStatus.CANCELED) {
+      //Do not post trade if its immediately canceled
       console.log("trade not found creating new one");
       const res = await api.post("/trades/", tradePayload);
     }
@@ -199,10 +229,12 @@ const TradePage: React.FC = () => {
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
     let newTradeItem: TradeItem = { quantity: 1, card: card };
-    setTrade({ ...trade,
-        status: TradeStatus.PENDING, 
-        activeUser: ActiveUser.NONE,
-        trade_items: [...trade.trade_items, newTradeItem] });
+    setTrade({
+      ...trade,
+      status: TradeStatus.PENDING,
+      activeUser: ActiveUser.NONE,
+      trade_items: [...trade.trade_items, newTradeItem],
+    });
   }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
@@ -221,7 +253,7 @@ const TradePage: React.FC = () => {
     });
     setTrade({
       ...trade,
-      status: TradeStatus.PENDING, 
+      status: TradeStatus.PENDING,
       activeUser: ActiveUser.NONE,
       trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
     });
@@ -289,7 +321,7 @@ const TradePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  
+
   const currentUserPanelProps = {
     trade: trade,
     userA: userA, // Pass whether current user is a_user
@@ -316,12 +348,12 @@ const TradePage: React.FC = () => {
         placeholder="Search for a card..."
       />
       {!viewMyCards && !viewTraderCards && (
-        <div className = "mt-5">
-        <StatusBar status={trade.status} />
-        <div className="flex gap-6 w-full">
-          <TradePanel {...currentUserPanelProps} />
-          <TradePanel {...traderPanelProps} />
-        </div>
+        <div className="mt-5">
+          <StatusBar status={trade.status} />
+          <div className="flex gap-6 w-full">
+            <TradePanel {...currentUserPanelProps} />
+            <TradePanel {...traderPanelProps} />
+          </div>
         </div>
       )}
       {/* Popupp window to add cards from my collection */}
@@ -347,7 +379,8 @@ const TradePage: React.FC = () => {
               rightLabel=""
               id="auto-match-toggle"
             />
-            <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+            <button
+              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -360,7 +393,10 @@ const TradePage: React.FC = () => {
             <CardList
               cards={sortMyCards}
               children={(card) => (
-                <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" onClick={() => addCardToTrade(card)}>
+                <button
+                  className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                  onClick={() => addCardToTrade(card)}
+                >
                   Add to Offer
                 </button>
               )}
@@ -371,7 +407,9 @@ const TradePage: React.FC = () => {
       {/* Popupp window to add cards from other trader's collection */}
       <div
         className={`
-                ${viewTraderCards ? "absolute" : "fixed"} inset-0 z-30 flex flex-col
+                ${
+                  viewTraderCards ? "absolute" : "fixed"
+                } inset-0 z-30 flex flex-col
                 transition-transform duration-350 ease-out
                 ${viewTraderCards ? "translate-y-0" : "translate-y-full"}
             `}
@@ -391,7 +429,7 @@ const TradePage: React.FC = () => {
               rightLabel=""
               id="auto-match-toggle"
             />
-            <button 
+            <button
               className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
               onClick={() => {
                 setViewTraderCards(false);
@@ -405,7 +443,10 @@ const TradePage: React.FC = () => {
             <CardList
               cards={sortTraderCards}
               children={(card) => (
-                <button className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4" onClick={() => addCardToTrade(card)}>
+                <button
+                  className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                  onClick={() => addCardToTrade(card)}
+                >
                   Add to Offer
                 </button>
               )}

@@ -1,3 +1,8 @@
+/* Profile to view modify and add cards from collection. Collection
+  is sortable and cards can be added using search bar or pasting a
+  decklist into a textbox. In either case scryfall api is called to 
+  validate cards.
+*/
 import { useState, useEffect } from "react";
 import api from "../api/client";
 import CardList from "../components/CardList";
@@ -6,9 +11,8 @@ import SortDropdown from "../components/SortDropdown";
 import NavBar from "../components/NavBar";
 import ToggleSwitch from "../components/ToggleSwitch";
 import Backsplash from "../components/Backsplash";
-import bgArt from "../assets/Gudul_Lurker.jpg";
 import * as React from "react";
-import { card, UserProfile } from "../../types";
+import { card } from "../../types";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
@@ -67,11 +71,11 @@ const ProfilePage: React.FC = () => {
     setSearch(card.name);
   }
   async function updateRecent() {
-    let updateRecent: card[] = [] 
+    let updateRecent: card[] = [];
     for (let i = 0; i < recentAdded.length; i++) {
-      for(let j = 0; j < cards.length; j++) {
-        if(cards[j].id==recentAdded[i].id){
-          updateRecent.push(cards[j])
+      for (let j = 0; j < cards.length; j++) {
+        if (cards[j].id == recentAdded[i].id) {
+          updateRecent.push(cards[j]);
         }
       }
     }
@@ -209,13 +213,16 @@ const ProfilePage: React.FC = () => {
             <CardList cards={recentAdded} modQuant={modifyQuantity} />
           </div>
         )}
-        {!add && (sortedCards.length > 0 ? (
-          <div className="mt-4">
-            <CardList cards={sortedCards} modQuant={modifyQuantity} />
-          </div>
-        ) : (
-          <div className="text-xl mt-3">No cards in collection select add.</div>
-        ))}
+        {!add &&
+          (sortedCards.length > 0 ? (
+            <div className="mt-4">
+              <CardList cards={sortedCards} modQuant={modifyQuantity} />
+            </div>
+          ) : (
+            <div className="text-xl mt-3">
+              No cards in collection select add.
+            </div>
+          ))}
       </Backsplash>
     </div>
   );
@@ -235,9 +242,10 @@ const ProfilePage: React.FC = () => {
       return;
     }
 
-    // helper to parse lines of the exact required format:
-    // Quantity, name, set identifier in parentheses. Lines without quantity or without a set are ignored.
-    // Examples accepted: "1x Umara Wizard (ZNR)", "2 Lightning Bolt (M21)"; trailing text after the ) is ignored.
+    /* helper to parse lines of the exact required format:
+     Quantity, name, set identifier in parentheses. Lines without quantity or without a set are ignored.
+    Examples accepted: "1x Umara Wizard (ZNR)", "2 Lightning Bolt (M21)"; trailing text after the ) is ignored.
+    */
     function parseLine(
       line: string
     ): { qty: number; name: string; setId: string } | null {

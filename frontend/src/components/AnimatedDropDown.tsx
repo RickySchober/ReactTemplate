@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
+/* Dropdown menu for selecting from list such as profile button
+ */
+import * as React from "react";
+import { useState, useRef, useEffect } from "react";
 
-interface AnimatedDropDownProps{
-  options: [{name: string, onClick: () => void}];
+interface AnimatedDropDownProps {
+  options: [{ name: string; onClick: () => void }];
 }
 
-const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
-  options,
-}) => {
+const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useOnClickOutside(() => setIsOpen(false)); // Use the custom hook
 
@@ -29,8 +29,8 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps>= ({
       <div
         className={`origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${
           isOpen
-            ? 'opacity-100 scale-y-100 visible max-h-screen'
-            : 'opacity-0 scale-y-95 invisible max-h-0' // Animate max-height and opacity
+            ? "opacity-100 scale-y-100 visible max-h-screen"
+            : "opacity-0 scale-y-95 invisible max-h-0" // Animate max-height and opacity
         } overflow-hidden`}
         role="menu"
         aria-orientation="vertical"
@@ -72,12 +72,12 @@ export function useOnClickOutside(handler: () => void) {
       handler();
     };
 
-    document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
 
     return () => {
-      document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler]); // Reload only if ref or handler changes
 

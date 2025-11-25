@@ -1,11 +1,14 @@
+/* Tradelog page displays the entire trade history of the user 
+   with a short summary of each trade allowing easy navigate to trades.
+*/
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import NavBar from "../components/NavBar";
-import { TradeStatus, TradeOffer, TradeItem } from "../../types";
+import { TradeStatus, trade, TradeItem } from "../../types";
 
 const TradeLogPage: React.FC = () => {
-  const [trades, setTrades] = useState<TradeOffer[]>([]);
+  const [trades, setTrades] = useState<trade[]>([]);
   const [myID, setMyID] = useState<number | null>(null);
   const [searchRedirect, setSearchRedirect] = useState<string>("");
   const navigate = useNavigate();
@@ -34,7 +37,7 @@ const TradeLogPage: React.FC = () => {
     );
   }
 
-  function getOtherUser(trade: TradeOffer) {
+  function getOtherUser(trade: trade) {
     return trade.a_user?.id === myID ? trade.b_user : trade.a_user;
   }
 
@@ -72,7 +75,7 @@ const TradeLogPage: React.FC = () => {
         </button>
 
         <div className="space-y-4">
-          {trades.map((trade) => {
+          {trades.map((trade: trade) => {
             const myItems = trade.trade_items.filter(
               (ti) => ti.card?.owner_id === myID
             );

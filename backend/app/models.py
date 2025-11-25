@@ -49,7 +49,7 @@ class UserAddress(SQLModel, table=True):
 
     user: User = Relationship(back_populates="address")
 
-# Models for read/write to limit user access
+# Models for read/write to limit access to user data
 # Minimal user model publicly avaliable
 class UserRead(SQLModel):
     id: int

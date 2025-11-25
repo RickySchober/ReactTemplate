@@ -1,3 +1,6 @@
+/* User profile page is not complete and currently inacessible 
+   but in the future will display other users collections.
+*/
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/client";

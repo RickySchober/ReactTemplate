@@ -1,16 +1,18 @@
+/* Stylized toggle switch to toggle between 2 options.
+ */
 import * as React from "react";
 
 interface ToggleSwitchProps {
-  value?: boolean;
-  onChange?: (value: boolean) => void;
+  value: boolean;
+  onChange: (value: boolean) => void;
   leftLabel?: string;
   rightLabel?: string;
   id?: string;
 }
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
-  value = false,
-  onChange = () => {},
+  value,
+  onChange,
   leftLabel = "On",
   rightLabel = "Off",
   id,

@@ -11,7 +11,7 @@ interface ToggleSwitchProps {
 }
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
-  value,
+  value = false,
   onChange,
   leftLabel = "On",
   rightLabel = "Off",
@@ -22,7 +22,6 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   const padding = 0;
   const knobWidth = width / 2 - padding * 2;
   const knobHeight = height - padding * 2;
-
   return (
     <div className="inline-flex items-center gap-2">
       <button

@@ -52,7 +52,7 @@ const TradePage: React.FC = () => {
   //UI utilities
   const [sortOption, setSortOption] = useState<string>("dateSort");
   const [ascending, setAscending] = useState<boolean>(true);
-  const [autoMatch, setAutoMatch] = useState<boolean>(false);
+  const [autoMatch, setAutoMatch] = useState<boolean>(true);
   const [searchRedirect, setSearchRedirect] = useState<string>("");
   const [userA, setUserA] = useState<boolean>(false);
   const [viewMyCards, setViewMyCards] = useState<boolean>(false);
@@ -239,7 +239,7 @@ const TradePage: React.FC = () => {
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
     let index: number = trade.trade_items.findIndex(
-      (item) => item.card.id == card.id
+      (item: TradeItem) => item.card.id == card.id
     );
     if (index === -1) {
       console.warn("Trade item not found for update.");
@@ -264,11 +264,14 @@ const TradePage: React.FC = () => {
     .filter((card) =>
       autoMatch
         ? true
-        : traderCards.filter((card) => card.intent === "want").includes(card)
+        : traderCards.some(
+            (traderCard: card) =>
+              traderCard.intent === "want" && traderCard.name === card.name
+          )
     )
     .filter((card) =>
       trade
-        ? !trade.trade_items.some((item) => item.card.id === card.id)
+        ? !trade.trade_items.some((item: TradeItem) => item.card.id === card.id)
         : false
     ) //Exclude cards in offer already
     .sort((a, b) => {
@@ -292,18 +295,14 @@ const TradePage: React.FC = () => {
     .filter((card) =>
       autoMatch
         ? true
-        : myCards
-            .filter(
-              (
-                //Only matches on automatch
-                card
-              ) => card.intent === "want"
-            )
-            .includes(card)
+        : myCards.some(
+            (myCard: card) =>
+              myCard.intent === "want" && myCard.name === card.name
+          )
     )
     .filter((card) =>
       trade
-        ? !trade.trade_items.some((item) => item.card.id === card.id)
+        ? !trade.trade_items.some((item: TradeItem) => item.card.id === card.id)
         : false
     ) //Exclude cards in offer already
     .sort((a, b) => {
@@ -407,9 +406,7 @@ const TradePage: React.FC = () => {
       {/* Popupp window to add cards from other trader's collection */}
       <div
         className={`
-                ${
-                  viewTraderCards ? "absolute" : "fixed"
-                } inset-0 z-30 flex flex-col
+                ${viewTraderCards ? "absolute" : "fixed"} inset-0 flex flex-col
                 transition-transform duration-350 ease-out
                 ${viewTraderCards ? "translate-y-0" : "translate-y-full"}
             `}
@@ -442,7 +439,7 @@ const TradePage: React.FC = () => {
           <div className="mt-4">
             <CardList
               cards={sortTraderCards}
-              children={(card) => (
+              children={(card: card) => (
                 <button
                   className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
                   onClick={() => addCardToTrade(card)}

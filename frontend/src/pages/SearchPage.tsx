@@ -68,6 +68,7 @@ const SearchPage: React.FC = () => {
 
   const sortedResults = [...results]
     .filter((card) => card.owner_id !== myID)
+    .filter(card => card.intent == "have")
     .sort((a, b) => {
       const dir = ascending ? 1 : -1;
       switch (sortOption) {

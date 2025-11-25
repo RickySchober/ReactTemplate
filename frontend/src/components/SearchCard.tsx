@@ -1,7 +1,7 @@
 /* Search card component is the search bar which calls Scryfall (MTGDatabase)
  api to provide card autocomplete information.
-*/ 
-import { useState, useEffect, useRef } from "react";
+*/
+import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import * as React from "react";
 import { card } from "../../types";
@@ -45,7 +45,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
   placeholder = "Search for a card...",
   minChars = 3,
   maxResults = 8,
-  debounceMs = 1000,
+  debounceMs = 250,
 }) => {
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([]);
   const [loading, setLoading] = useState<boolean>(false); // Show loading symbol when calling scryfall api
@@ -53,6 +53,9 @@ const SearchCard: React.FC<SearchCardProps> = ({
   const abortRef = useRef(null); //Signal to abort scyrfall api call
   const debounceRef = useRef(null); //Timer to abort slow api response
   const containerRef = useRef<HTMLDivElement | null>(null); //used for closing box when clicking out
+  const [suppressOpen, setSuppressOpen] = useState(false);
+  const [suppressMouse, setSuppressMouse] = useState(false);
+  const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     return () => {
@@ -60,9 +63,21 @@ const SearchCard: React.FC<SearchCardProps> = ({
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
+  useEffect(() => {
+    if (activeIndex >= 0 && suggestionRefs.current[activeIndex]) {
+      suggestionRefs.current[activeIndex]?.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }, [activeIndex]);
 
   useEffect(() => {
-    if (!value || value.length < minChars) {
+    triggerSearch();
+  }, [value]);
+
+  const triggerSearch = useCallback(() => {
+    if (suppressOpen || !value || value.length < minChars) {
       setSuggestions([]);
       setLoading(false);
       return;
@@ -70,7 +85,6 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      // cancel previous request
       if (abortRef.current) abortRef.current.abort();
       abortRef.current = new AbortController();
       setLoading(true);
@@ -84,16 +98,14 @@ const SearchCard: React.FC<SearchCardProps> = ({
           setSuggestions((res.data?.data || []).slice(0, maxResults));
         })
         .catch((err) => {
-          if (!axios.isCancel(err)) {
-            console.error("Scryfall error", err);
-          }
+          if (!axios.isCancel(err)) console.error("Scryfall error", err);
         })
         .finally(() => {
           setLoading(false);
           abortRef.current = null;
         });
     }, debounceMs);
-  }, [value, minChars, maxResults, debounceMs]);
+  }, [value, suppressOpen, minChars, maxResults, debounceMs]);
 
   function handleInput(e) {
     onChange?.(e.target.value);
@@ -101,10 +113,14 @@ const SearchCard: React.FC<SearchCardProps> = ({
   }
 
   function handleSelect(card: card) {
+    setSuppressOpen(true);
     onChange?.(card.name);
     onSelect?.(card);
+
     setSuggestions([]);
     setActiveIndex(-1);
+
+    setTimeout(() => setSuppressOpen(false), 250);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -112,9 +128,11 @@ const SearchCard: React.FC<SearchCardProps> = ({
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
+      setSuppressMouse(true);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActiveIndex((i) => Math.max(i - 1, 0));
+      setSuppressMouse(true);
     } else if (e.key === "Enter") {
       if (activeIndex >= 0 && activeIndex < suggestions.length) {
         e.preventDefault();
@@ -146,6 +164,15 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
     return parts.join(" · ");
   }
+  function checkMouseEnter(index: number) {
+    if (suppressMouse) {
+      setSuppressMouse(false);
+    } else if (index < suggestions.length && index >= 0) {
+      setActiveIndex(index);
+    } else {
+      setActiveIndex(-1);
+    }
+  }
   // click outside to close suggestions
   useEffect(() => {
     function onDocClick(e) {
@@ -158,7 +185,6 @@ const SearchCard: React.FC<SearchCardProps> = ({
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, []);
-
   return (
     <div
       ref={containerRef}
@@ -167,6 +193,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
       <input
         value={value}
         onChange={handleInput}
+        onClick={triggerSearch}
         onKeyDown={onKeyDown}
         placeholder={placeholder}
         aria-autocomplete="list"
@@ -203,15 +230,15 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
             return (
               <div
+                ref={(el) => (suggestionRefs.current[idx] = el)}
                 key={s.id}
                 role="option"
                 aria-selected={isActive}
-                onMouseDown={(ev) => {
-                  // prevent input blur before click handler runs
+                onMouseDown={(ev: MouseEvent) => {
                   ev.preventDefault();
                 }}
                 onClick={() => handleSelect(s)}
-                onMouseEnter={() => setActiveIndex(idx)}
+                onMouseEnter={() => checkMouseEnter(idx)}
                 style={{
                   display: "flex",
                   gap: 8,

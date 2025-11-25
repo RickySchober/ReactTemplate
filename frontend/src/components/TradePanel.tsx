@@ -77,10 +77,12 @@ const TradePanel: React.FC<TradePanelProps> = ({
               Add Cards
             </button>
           )}
-          <h1 className="text-2xl font-medium">Status:</h1>
+          {getStatusMessage(trade.status).length > 0 && (
+            <h1 className="text-2xl font-medium">Status:</h1>
+          )}
           {getStatusMessage(trade.status).length !== 0 && (
             <button
-              disabled={active}
+              disabled={active || !close}
               onClick={printStatus}
               className={`
               px-4 py-2 mx-2 text-lg
@@ -88,8 +90,9 @@ const TradePanel: React.FC<TradePanelProps> = ({
               transition-colors duration-150 ease-in-out
               ${
                 active
-                  ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
-                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  ?  "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  : (close ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer" 
+                    :"bg-gray-400 text-gray-700 cursor-not-allowed")
               }
           `}
             >

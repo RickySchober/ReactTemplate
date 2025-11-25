@@ -110,6 +110,8 @@ const ProfilePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
+  const sortedRecent = [...recentAdded]
+  .filter((card)=> card.intent === (haves ? "have" : "want"))
   return (
     <div className="position-relative">
       <div>
@@ -208,9 +210,9 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         )}
-        {add && recentAdded.length > 0 && (
+        {add && sortedRecent.length > 0 && (
           <div className="mt-4">
-            <CardList cards={recentAdded} modQuant={modifyQuantity} />
+            <CardList cards={sortedRecent} modQuant={modifyQuantity} />
           </div>
         )}
         {!add &&

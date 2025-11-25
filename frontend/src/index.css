@@ -1,3 +1,4 @@
+@import "tailwindcss";
 :root {
   /* Typography */
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,8 +16,8 @@
   --success: #22c55e;
 
   /* Layout niceties */
-  --radius: 4px;
-  --control-padding: 0.5rem 0.75rem;
+  --radius: 0px;
+  --control-padding: 0.5rem 0.5rem;
 
   font-family: var(--font-sans);
   line-height: var(--base-line-height);
@@ -55,45 +56,22 @@ body {
   padding: 1rem;
 }
 
-h1, h2, h3, h4, h5 {
-  color: var(--text);
-  margin: 0 0 0.35rem 0;
-  line-height: 1.15;
-}
-
-h1 { font-size: 2.25rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.125rem; }
-
-/* Buttons: clean flat with blue accent */
 button {
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  padding: var(--control-padding);
-  font-size: 1.4rem;
-  font-weight: 550;
-  font-family: inherit;
-  background-color: var(--accent);
-  color: var(--text);
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.12s;
+  @apply rounded-sm font-semibold transition
+    border-0 truncate;
 }
 
-button.primary {
-  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
-  color: white;
-  border: 1px solid rgba(255,255,255,0.06);
+button:hover:not(:disabled) {
+  @apply -translate-y-0.5;
 }
 
-button:not(.no-bob):hover { 
-  transform: translateY(-1px);
+button:active:not(:disabled) {
+  @apply translate-y-0;
 }
 
-button:not(.no-bob):active {
-  transform: translateY(0);
+button:disabled {
+  @apply opacity-50 cursor-not-allowed grayscale;
 }
-button:focus { box-shadow: 0 0 0 4px rgba(79,124,255,0.12); outline: none; }
-
 /* Form controls */
 input, select, textarea {
   background: var(--surface);
@@ -115,17 +93,4 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
   background: linear-gradient(180deg, var(--surface), var(--muted-surface));
   border-radius: var(--radius);
   padding: 12px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

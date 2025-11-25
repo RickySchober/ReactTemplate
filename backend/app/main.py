@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from .database import init_db
-from .routes import cards, auth
+from .routes import cards, auth, trades
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 from .database import get_session
@@ -31,6 +31,7 @@ def on_startup():
 
 app.include_router(cards.router)
 app.include_router(auth.router)
+app.include_router(trades.router)
 
 @app.get("/users/{user_id}")
 def get_user(user_id: int, session: Session = Depends(get_session)):

@@ -10,6 +10,7 @@ export interface card {
   owner_id?: number;
   quantity: number;
   intent: "have" | "want";
+  date_added?: string | number | Date
 }
 
 export enum TradeStatus {

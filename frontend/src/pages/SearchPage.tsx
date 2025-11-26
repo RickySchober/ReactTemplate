@@ -20,6 +20,7 @@ const SearchPage: React.FC = () => {
   const [ascending, setAscending] = useState<boolean>(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -105,20 +106,20 @@ const SearchPage: React.FC = () => {
 
         {/* ─── RESULTS ─────────────────────────────── */}
         <div>
-          {results.length > 0 ? (
+          {sortedResults.length > 0 ? (
             <CardList
               cards={sortedResults}
               children={(card: card) => (
                 <button
                   className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
-                  onClick={() => beginTrade(card)}
+                  onClick={() => {token ? beginTrade(card) : navigate("/login")}}
                 >
                   Begin Trade
                 </button>
               )}
             />
           ) : (
-            <p>No results yet. Try searching for a card name.</p>
+            <p className="text-xl ml-6">No one has posted this card. Try searching for a different card name.</p>
           )}
         </div>
       </Backsplash>

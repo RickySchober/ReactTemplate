@@ -57,15 +57,28 @@ const TradePage: React.FC = () => {
   const [userA, setUserA] = useState<boolean>(false);
   const [viewMyCards, setViewMyCards] = useState<boolean>(false);
   const [viewTraderCards, setViewTraderCards] = useState<boolean>(false);
+  const [showTutor, setShowTutor] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(isExistingTrade);
+    const disabled = localStorage.getItem("disableTradeTutorial");
+      console.log(disabled)
+      if (!disabled) {
+        setShowTutor(true);
+      }
     if (isExistingTrade) {
       fetchTrade();
     } else {
       initializeTrade();
     }
   }, []);
+  const closePopup = () => {
+    setShowTutor(false);
+  };
+  const disablePopup = () => {
+    localStorage.setItem("disableTradeTutorial", "true");
+    setShowTutor(false);
+  };
   // On assigning trade users fetch their collections
   useEffect(() => {
     if (trade?.a_user && trade.b_user) {

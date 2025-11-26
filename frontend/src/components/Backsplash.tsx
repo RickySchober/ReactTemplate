@@ -28,7 +28,7 @@ const Backsplash: React.FC<BacksplashProps> = ({
         }}
       />
 
-      <div className="relative z-20 mt-60  mx-12">{children}</div>
+      <div className="relative z-20 mt-20  mx-12">{children}</div>
     </>
   );
 };

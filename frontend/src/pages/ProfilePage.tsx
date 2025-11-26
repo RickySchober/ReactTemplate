@@ -4,6 +4,7 @@
   validate cards.
 */
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import CardList from "../components/CardList";
 import SearchCard from "../components/SearchCard";
@@ -11,6 +12,7 @@ import SortDropdown from "../components/SortDropdown";
 import NavBar from "../components/NavBar";
 import ToggleSwitch from "../components/ToggleSwitch";
 import Backsplash from "../components/Backsplash";
+import MultiTutorialPopup from "../components/TutorialPopup";
 import * as React from "react";
 import { card } from "../../types";
 
@@ -18,7 +20,6 @@ const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
   const [add, setAdd] = useState<boolean>(false); // toggle state between viewing and adding cards
   const [haves, setHaves] = useState<boolean>(false); // toggle state between wants and haves
-  const [recentAdded, setRecentAdded] = useState<card[]>([]); // track recently added cards during add session
   const [bgArt, setBgArt] = useState<string>("");
   //UI utilities
   const [searchRedirect, setSearchRedirect] = useState<string>("");
@@ -28,11 +29,25 @@ const ProfilePage: React.FC = () => {
   const [ascending, setAscending] = useState<boolean>(true);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [listText, setListText] = useState<string>("");
+  const [showTutor, setShowTutor] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const disabled = localStorage.getItem("disableProfileTutorial");
+    console.log(disabled);
+    if (!disabled) {
+      setShowTutor(true);
+    }
     fetchMyCards();
   }, []);
 
+  const closePopup = () => {
+    setShowTutor(false);
+  };
+  const disablePopup = () => {
+    localStorage.setItem("disableProfileTutorial", "true");
+    setShowTutor(false);
+  };
   async function fetchMyCards() {
     const me = await api.get("/auth/me");
     const myData = me.data;
@@ -42,6 +57,34 @@ const ProfilePage: React.FC = () => {
     const res = await api.get("/auth/my_cards");
     setCards(res.data);
   }
+  const tutorialSteps = [
+    {
+      image: "/tutorials/wants_haves_tutorial.jpg",
+      title: "Wants & Haves",
+      body: `Welcome to your profile page. This is where you list cards in your collection
+      that you own as HAVES and list cards you want to aquire as WANTS. Click the toggle to switch
+      between these two.`,
+    },
+    {
+      image: "/tutorials/view_sort_tutorial.jpg",
+      title: "View Your Collection",
+      body: `You can view the cards you've added to your WANTS and HAVES in view mode and sort
+      them based on different parameters using the sort dropdown.`,
+    },
+    {
+      image: "/tutorials/add_tutorial.jpg",
+      title: "Adding to Your Profile",
+      body: `To add to your profile click the toggle to select add mode. You can either add
+      cards by searching there name or paste in a decklist from a Magic the Gathering deckbuilding website.
+      Cards that you have recently added will appear below.`,
+    },
+    {
+      image: "/tutorials/begin_trade_tutorial.jpg",
+      title: "Begin a Trade",
+      body: `Once you have added a few cards to your profile you can begin a trade. Either search
+      for a card name in the search bar above or click the Trade for Card button on cards in your WANT list.`,
+    },
+  ];
 
   async function addFromSearch(card) {
     let payload: card = {
@@ -60,37 +103,24 @@ const ProfilePage: React.FC = () => {
     try {
       const res = await api.post("/cards/", payload);
       await fetchMyCards();
-      if (res) {
-        setRecentAdded((s) => [res.data, ...s]);
-      }
-      setSearch("");
     } catch (err) {
       alert("Failed to add card");
       return null;
     }
     setSearch(card.name);
   }
-  async function updateRecent() {
-    let updateRecent: card[] = [];
-    for (let i = 0; i < recentAdded.length; i++) {
-      for (let j = 0; j < cards.length; j++) {
-        if (cards[j].id == recentAdded[i].id) {
-          updateRecent.push(cards[j]);
-        }
-      }
-    }
-    setRecentAdded([...updateRecent]);
-  }
+  //Modifies quantity of a card removing it if 0
   async function modifyQuantity(card: card, quantity: number) {
     try {
       await api.patch(`/cards/${card.id}`, { quantity });
-      card.quantity = quantity;
-      // Call both functions to update card array
       await fetchMyCards();
-      await updateRecent();
     } catch (err) {
       console.error("Failed to modify quantity", err);
     }
+  }
+  function handleSearchSelection(card: card) {
+    const q = encodeURIComponent(card?.name || "");
+    navigate(`/search?q=${q}`);
   }
   const heroHeight = 1000; // px - the background image area height
   const sortedCards = [...cards]
@@ -101,17 +131,29 @@ const ProfilePage: React.FC = () => {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return a.id - b.id * dir;
+            return (new Date(a.date_added).getTime() - new Date(b.date_added).getTime()) * dir;
         case "nameSort":
-          a.name.localeCompare(b.name) * dir;
+          return a.name.localeCompare(b.name) * dir;
         case "setName":
           return a.set_name.localeCompare(b.set_name) * dir;
         default:
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  const sortedRecent = [...recentAdded]
-  .filter((card)=> card.intent === (haves ? "have" : "want"))
+  const FIVE_MIN =  1000; // ms
+
+  const sortedRecent = cards
+    .filter((card: card) => {
+      console.log(card.date_added)
+      const cardDate = new Date(card.date_added ?? Date.now()).getTime();
+      console.log(cardDate)
+      const now = Date.now();
+      console.log(now)
+      console.log(now - cardDate <= FIVE_MIN)
+      return now - cardDate <= FIVE_MIN;
+    })
+    .filter((card: card) => card.intent === (haves ? "have" : "want"));
+
   return (
     <div className="position-relative">
       <div>
@@ -121,7 +163,16 @@ const ProfilePage: React.FC = () => {
           placeholder="Search for a card..."
         />
       </div>
-
+      {showTutor && (
+        <MultiTutorialPopup
+          pages={tutorialSteps}
+          onClose={() => setShowTutor(false)}
+          onDisable={() => {
+            localStorage.setItem("disableProfileTutorial", "true");
+            setShowTutor(false);
+          }}
+        />
+      )}
       <Backsplash heroHeight={heroHeight} bgArt={bgArt}>
         <div className="flex justify-start items-center gap-3">
           <ToggleSwitch
@@ -211,6 +262,9 @@ const ProfilePage: React.FC = () => {
           </div>
         )}
         {add && sortedRecent.length > 0 && (
+          <div className="text-3xl ml-4 font-bold">Recently Added Cards:</div>
+        )}
+        {add && sortedRecent.length > 0 && (
           <div className="mt-4">
             <CardList cards={sortedRecent} modQuant={modifyQuantity} />
           </div>
@@ -218,7 +272,22 @@ const ProfilePage: React.FC = () => {
         {!add &&
           (sortedCards.length > 0 ? (
             <div className="mt-4">
-              <CardList cards={sortedCards} modQuant={modifyQuantity} />
+              <CardList
+                cards={sortedCards}
+                modQuant={modifyQuantity}
+                children={(card: card) =>
+                  haves ? (
+                    <></>
+                  ) : (
+                    <button
+                      className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4 mb-2"
+                      onClick={() => handleSearchSelection(card)}
+                    >
+                      Trade for Card
+                    </button>
+                  )
+                }
+              />
             </div>
           ) : (
             <div className="text-xl mt-3">
@@ -263,7 +332,6 @@ const ProfilePage: React.FC = () => {
     let failed: number = 0;
     let ignored: number = 0;
 
-    const newlyAdded: card[] = [];
     for (const raw of lines) {
       const parsed = parseLine(raw);
       if (!parsed) {
@@ -310,7 +378,6 @@ const ProfilePage: React.FC = () => {
 
         try {
           const res: card = await api.post("/cards/", payload);
-          if (res) newlyAdded.push(res);
           added += 1;
         } catch (err) {
           console.error("Failed to add line:", raw, err);
@@ -320,9 +387,6 @@ const ProfilePage: React.FC = () => {
         console.error("Failed to add line:", raw, err);
         failed += 1;
       }
-    }
-    if (newlyAdded.length) {
-      setRecentAdded((s) => [...newlyAdded, ...s]);
     }
 
     await fetchMyCards();

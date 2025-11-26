@@ -67,14 +67,14 @@ const TradePanel: React.FC<TradePanelProps> = ({
           </h2>
           <p className="text-gray-300 mb-4">Total Value: ${offerPrice}</p>
         </div>
-        <div className="flex justify-between items-baseline">
+        <div className="w-1/2 flex justify-between items-baseline">
           {(trade.status == TradeStatus.PROPOSE || //Can only modify trade in these phases
             trade.status == TradeStatus.PENDING) && (
             <button
               onClick={onAddCardsClick}
-              className="bg-blue-400 px-4 py-2 mx-2 text-lg"
+              className="bg-blue-400 hover:bg-blue-500 px-4 py-2 mx-2 text-lg "
             >
-              Add Cards
+              View Collection
             </button>
           )}
           {getStatusMessage(trade.status).length > 0 && (
@@ -91,7 +91,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
               ${
                 active
                   ?  "bg-gray-400 text-gray-700 cursor-not-allowed"
-                  : (close ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer" 
+                  : (close ? "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer" 
                     :"bg-gray-400 text-gray-700 cursor-not-allowed")
               }
           `}

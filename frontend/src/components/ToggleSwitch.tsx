@@ -25,7 +25,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   return (
     <div className="inline-flex items-center gap-2">
       <button
-        className="no-bob relative cursor-pointer inline-block overflow-hidden p-0"
+        className="no-bob relative cursor-pointer inline-block overflow-hidden p-0 bg-gray-500"
         id={id}
         role="switch"
         aria-checked={!!value}
@@ -38,11 +38,10 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           width,
           height,
           borderRadius: height / 10,
-          background: "rgba(255,255,255,0.02)",
           border: "1px solid rgba(255, 255, 255, 0.48)",
         }}
       >
-        <div className="relative z-20 w-full h-full flex items-center justify-between text-sm font-semibold">
+        <div className="relative z-20 w-full h-full flex items-center justify-between text-sm font-bold">
           <span
             style={{
               fontWeight: 550,

@@ -53,13 +53,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Video Placeholder */}
+      {/* Video Placeholder 
       <section className="py-16 px-6 bg-[#0b0d10] flex flex-col items-center gap-4">
         <h2 className="text-3xl font-bold text-blue-400">Watch How It Works</h2>
         <div className="w-full max-w-3xl aspect-video bg-black/40 border border-white/10 rounded-lg flex items-center justify-center text-white/40 text-xl">
           Video Placeholder
         </div>
-      </section>
+      </section>*/}
 
       {/* Footer */}
       <footer className="py-8 text-center text-white/60 text-sm">

@@ -55,6 +55,14 @@ export default function SettingsPage() {
         setSearch={setSearchRedirect}
         placeholder="Search for a card..."
       />
+      {/* SAVE BUTTON */}
+      <button
+        onClick={save}
+        disabled={saving}
+        className="w-4xl py-3 bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+      >
+        {saving ? "Saving..." : "Save Settings"}
+      </button>
       {/* SETTINGS */}
       <div className="w-4xl bg-slate-800 p-6 rounded-xl shadow ">
         <h2 className="text-xl font-semibold mb-4">User Settings</h2>
@@ -105,15 +113,19 @@ export default function SettingsPage() {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={s.disable_warning}
-              onChange={(e) =>
-                updateField("settings", "disable_warning", e.target.checked)
-              }
+              checked={!s.disable_warning}
+              onChange={(e) => {
+                const enabled = e.target.checked;
+                updateField("settings", "disable_warning", !enabled);
+                if (enabled) {
+                  localStorage.removeItem("disableProfileTutorial");
+                }
+              }}
             />
-            Disable Warning Popups
+            Enable Tutorial Popups
           </label>
 
-          <label className="flex items-center gap-2">
+          {/* <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={s.dark_mode}
@@ -122,7 +134,7 @@ export default function SettingsPage() {
               }
             />
             Dark Mode
-          </label>
+          </label>*/}
 
           <label className="flex items-center gap-2">
             <input
@@ -159,14 +171,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* SAVE BUTTON */}
-      <button
-        onClick={save}
-        disabled={saving}
-        className="w-4xl py-3 bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
-      >
-        {saving ? "Saving..." : "Save Settings"}
-      </button>
+      
     </div>
   );
 }

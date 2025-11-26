@@ -1,6 +1,9 @@
 from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy.sql import func
 from typing import Optional, List
 from enum import Enum
+from datetime import datetime, timezone
+from sqlalchemy import Column, DateTime
 from pydantic import Field as PydanticField
 
 
@@ -88,6 +91,11 @@ class Card(SQLModel, table=True):
     quantity: int = Field(default=1, nullable=False)
     intent: str = Field(default="have", nullable=False)
     trade_items: List["TradeItem"] = Relationship(back_populates="card")
+    date_added: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),  # client-side default
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+
 
 #Model for updating modifiable fields of Card
 class CardUpdate(SQLModel, table=False):

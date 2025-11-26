@@ -41,7 +41,7 @@ const NavBar: React.FC<NavBarProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center w-full px-4 py-1 bg-neutral-900 text-white shadow-md">
+    <div className="flex justify-between items-center z-30 w-full px-4 py-1 bg-neutral-900 text-white shadow-md">
       {/* App Icon / Title */}
       <div
         onClick={() => navigate("/")}

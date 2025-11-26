@@ -60,14 +60,14 @@ const TradePanel: React.FC<TradePanelProps> = ({
   }
   return (
     <div className="w-1/2 p-4 m-4 bg-neutral-900 rounded-2xl shadow-lg">
-      <div className="flex justify-between">
+      <div className="flex flex-wrap justify-between">
         <div>
           <h2 className="text-2xl font-semibold text-white mb-1">
             {userA ? trade.a_user.username : trade.b_user.username}
           </h2>
           <p className="text-gray-300 mb-4">Total Value: ${offerPrice}</p>
         </div>
-        <div className="w-1/2 flex justify-between items-baseline">
+        <div className="flex flex-wrap justify-between items-baseline">
           {(trade.status == TradeStatus.PROPOSE || //Can only modify trade in these phases
             trade.status == TradeStatus.PENDING) && (
             <button

@@ -119,7 +119,7 @@ const SearchPage: React.FC = () => {
               )}
             />
           ) : (
-            <p className="text-xl ml-6">No one has posted this card. Try searching for a different card name.</p>
+            <p className="text-xl ml-6">No trades posted. Try searching for a different card name.</p>
           )}
         </div>
       </Backsplash>

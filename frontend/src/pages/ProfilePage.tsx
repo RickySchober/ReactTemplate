@@ -140,7 +140,7 @@ const ProfilePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  const FIVE_MIN =  1000; // ms
+  const FIVE_MIN =  60 * 5 * 1000; // ms
 
   const sortedRecent = cards
     .filter((card: card) => {

@@ -53,11 +53,12 @@ const SearchCard: React.FC<SearchCardProps> = ({
   const abortRef = useRef(null); //Signal to abort scyrfall api call
   const debounceRef = useRef(null); //Timer to abort slow api response
   const containerRef = useRef<HTMLDivElement | null>(null); //used for closing box when clicking out
-  const [suppressOpen, setSuppressOpen] = useState(false);
-  const [suppressMouse, setSuppressMouse] = useState(false);
+  const [suppressOpen, setSuppressOpen] = useState(true); //Suppress search to avoid extra searching
+  const [suppressMouse, setSuppressMouse] = useState(false); //Suppress mouse scrolling when using keyboard
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    setTimeout(() => setSuppressOpen(false), 250); //Remove initial suppression
     return () => {
       if (abortRef.current) abortRef.current.abort();
       if (debounceRef.current) clearTimeout(debounceRef.current);

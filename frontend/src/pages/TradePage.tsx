@@ -63,10 +63,10 @@ const TradePage: React.FC = () => {
   useEffect(() => {
     console.log(isExistingTrade);
     const disabled = localStorage.getItem("disableTradeTutorial");
-      console.log(disabled)
-      if (!disabled) {
-        setShowTutor(true);
-      }
+    console.log(disabled);
+    if (!disabled) {
+      setShowTutor(true);
+    }
     if (isExistingTrade) {
       fetchTrade();
     } else {
@@ -105,7 +105,7 @@ const TradePage: React.FC = () => {
       title: "Receiving the Trade",
       body: `On confirming you have received all the cards as listed you should mark the trade as received. Once both players receive their cards the trade is complete!`,
     },
-  ]
+  ];
   // On assigning trade users fetch their collections
   useEffect(() => {
     if (trade?.a_user && trade.b_user) {
@@ -219,7 +219,9 @@ const TradePage: React.FC = () => {
               : ActiveUser.B
             : ActiveUser.NONE;
         status =
-          users == ActiveUser.NONE ? TradeStatus.COMPLETED : TradeStatus.RECEIVE;
+          users == ActiveUser.NONE
+            ? TradeStatus.COMPLETED
+            : TradeStatus.RECEIVE;
         updateTrade = { ...trade, status: status, activeUser: users };
         await postTrade(updateTrade);
         console.log(updateTrade);
@@ -319,7 +321,11 @@ const TradePage: React.FC = () => {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return a.id ?? 0 - (b.id ?? 0) * dir;
+          return (
+            (new Date(a.date_added ?? Date.now()).getTime() -
+              new Date(b.date_added ?? Date.now()).getTime()) *
+            dir
+          );
         case "nameSort":
           a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -350,7 +356,11 @@ const TradePage: React.FC = () => {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return (a.id ?? 0 - (b.id ?? 0)) * dir;
+          return (
+            (new Date(a.date_added ?? Date.now()).getTime() -
+              new Date(b.date_added ?? Date.now()).getTime()) *
+            dir
+          );
         case "nameSort":
           a.name.localeCompare(b.name) * dir;
         case "setName":

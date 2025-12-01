@@ -69,14 +69,18 @@ const SearchPage: React.FC = () => {
 
   const sortedResults = [...results]
     .filter((card) => card.owner_id !== myID)
-    .filter(card => card.intent == "have")
+    .filter((card) => card.intent == "have")
     .sort((a, b) => {
       const dir = ascending ? 1 : -1;
       switch (sortOption) {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-          return (a.id - b.id) * dir;
+          return (
+            (new Date(a.date_added ?? Date.now()).getTime() -
+              new Date(b.date_added ?? Date.now()).getTime()) *
+            dir
+          );
         case "nameSort":
           a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -112,14 +116,18 @@ const SearchPage: React.FC = () => {
               children={(card: card) => (
                 <button
                   className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
-                  onClick={() => {token ? beginTrade(card) : navigate("/login")}}
+                  onClick={() => {
+                    token ? beginTrade(card) : navigate("/login");
+                  }}
                 >
                   Begin Trade
                 </button>
               )}
             />
           ) : (
-            <p className="text-xl ml-6">No trades posted. Try searching for a different card name.</p>
+            <p className="text-xl ml-6">
+              No trades posted. Try searching for a different card name.
+            </p>
           )}
         </div>
       </Backsplash>

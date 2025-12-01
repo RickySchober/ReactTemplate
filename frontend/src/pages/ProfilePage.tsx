@@ -41,13 +41,6 @@ const ProfilePage: React.FC = () => {
     fetchMyCards();
   }, []);
 
-  const closePopup = () => {
-    setShowTutor(false);
-  };
-  const disablePopup = () => {
-    localStorage.setItem("disableProfileTutorial", "true");
-    setShowTutor(false);
-  };
   async function fetchMyCards() {
     const me = await api.get("/auth/me");
     const myData = me.data;
@@ -131,7 +124,11 @@ const ProfilePage: React.FC = () => {
         case "price":
           return (a.price - b.price) * dir;
         case "dateSort":
-            return (new Date(a.date_added).getTime() - new Date(b.date_added).getTime()) * dir;
+          return (
+            (new Date(a.date_added ?? Date.now()).getTime() -
+              new Date(b.date_added ?? Date.now()).getTime()) *
+            dir
+          );
         case "nameSort":
           return a.name.localeCompare(b.name) * dir;
         case "setName":
@@ -140,16 +137,16 @@ const ProfilePage: React.FC = () => {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  const FIVE_MIN =  60 * 5 * 1000; // ms
-
+  const FIVE_MIN = 60 * 5 * 1000; // ms
+  //List of cards added in last 5 minutes
   const sortedRecent = cards
     .filter((card: card) => {
-      console.log(card.date_added)
+      console.log(card.date_added);
       const cardDate = new Date(card.date_added ?? Date.now()).getTime();
-      console.log(cardDate)
+      console.log(cardDate);
       const now = Date.now();
-      console.log(now)
-      console.log(now - cardDate <= FIVE_MIN)
+      console.log(now);
+      console.log(now - cardDate <= FIVE_MIN);
       return now - cardDate <= FIVE_MIN;
     })
     .filter((card: card) => card.intent === (haves ? "have" : "want"));

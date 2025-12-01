@@ -13,10 +13,10 @@ const backsplashImages = [
   "Lightning_Bolt.jpg",
   "Nissa.jpg",
   "Soul_Herder.jpg",
-  "Evolving_Wilds.jpg"
+  "Evolving_Wilds.jpg",
 ];
 
-export default function SettingsPage() {
+const SettingsPage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [saving, setSaving] = useState(false);
   const [searchRedirect, setSearchRedirect] = useState<string>("");
@@ -174,8 +174,7 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
-
-      
     </div>
   );
-}
+};
+export default SettingsPage;

@@ -90,9 +90,10 @@ const TradePanel: React.FC<TradePanelProps> = ({
               transition-colors duration-150 ease-in-out
               ${
                 active
-                  ?  "bg-gray-400 text-gray-700 cursor-not-allowed"
-                  : (close ? "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer" 
-                    :"bg-gray-400 text-gray-700 cursor-not-allowed")
+                  ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  : close
+                  ? "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
               }
           `}
             >

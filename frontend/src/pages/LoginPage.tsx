@@ -3,22 +3,6 @@ import api from "../api/client";
 import { useNavigate } from "react-router-dom";
 import * as React from "react";
 
-function parseJwt(token: string) {
-  try {
-    const payload = token.split(".")[1];
-    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-    const json = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(json);
-  } catch (e) {
-    return null;
-  }
-}
-
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -42,7 +26,7 @@ const LoginPage: React.FC = () => {
     localStorage.removeItem("token");
   }, [navigate]);
 
-  async function tryRegister(e: Event) {
+  async function tryRegister(e) {
     e.preventDefault();
     try {
       const res = await api.post("/auth/signup", null, {
@@ -55,7 +39,7 @@ const LoginPage: React.FC = () => {
     }
   }
 
-  async function handleLogin(e: Event) {
+  async function handleLogin(e) {
     e.preventDefault();
     try {
       const res = await api.post("/auth/login", null, {
@@ -152,3 +136,20 @@ const LoginPage: React.FC = () => {
   );
 };
 export default LoginPage;
+
+//Helper function for parsing token
+function parseJwt(token: string) {
+  try {
+    const payload = token.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}

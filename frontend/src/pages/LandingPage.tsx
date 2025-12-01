@@ -5,7 +5,7 @@ import NavBar from "../components/NavBar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function LandingPage() {
+const LandingPage: React.FC = () => {
   const [searchRedirect, setSearchRedirect] = useState<string>("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -53,18 +53,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Video Placeholder 
-      <section className="py-16 px-6 bg-[#0b0d10] flex flex-col items-center gap-4">
-        <h2 className="text-3xl font-bold text-blue-400">Watch How It Works</h2>
-        <div className="w-full max-w-3xl aspect-video bg-black/40 border border-white/10 rounded-lg flex items-center justify-center text-white/40 text-xl">
-          Video Placeholder
-        </div>
-      </section>*/}
-
       {/* Footer */}
       <footer className="py-8 text-center text-white/60 text-sm">
         {new Date().getFullYear()} MTGTrader. All Rights Reserved.
       </footer>
     </div>
   );
-}
+};
+export default LandingPage;

@@ -11,6 +11,9 @@ const backsplashImages = [
   "Gudul_Lurker.jpg",
   "Treasure_Cruise.jpg",
   "Lightning_Bolt.jpg",
+  "Nissa.jpg",
+  "Soul_Herder.jpg",
+  "Evolving_Wilds.jpg"
 ];
 
 export default function SettingsPage() {
@@ -119,6 +122,7 @@ export default function SettingsPage() {
                 updateField("settings", "disable_warning", !enabled);
                 if (enabled) {
                   localStorage.removeItem("disableProfileTutorial");
+                  localStorage.removeItem("disableTradeTutorial");
                 }
               }}
             />

@@ -19,7 +19,6 @@ const Backsplash: React.FC<BacksplashProps> = ({
       <div
         className="absolute inset-0 mt-20 bg-no-repeat bg-cover bg-center z-0 pointer-events-none"
         style={{
-          height: heroHeight,
           backgroundImage: `url(${bgArt})`,
           maskImage:
             "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",

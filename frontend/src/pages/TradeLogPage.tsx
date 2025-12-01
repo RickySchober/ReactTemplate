@@ -67,13 +67,6 @@ const TradeLogPage: React.FC = () => {
       <div className="max-w-5xl mx-auto p-6 text-white">
         <h1 className="text-3xl font-bold mb-6">Trade Log:</h1>
 
-        <button
-          onClick={fetchLogs}
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 mb-6 rounded text-white"
-        >
-          Reload
-        </button>
-
         <div className="space-y-4">
           {trades.map((trade: trade) => {
             const myItems = trade.trade_items.filter(

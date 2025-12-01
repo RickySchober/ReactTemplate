@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
     localStorage.removeItem("token");
   }, [navigate]);
 
-  async function tryRegister(e) {
+  async function tryRegister(e: Event) {
     e.preventDefault();
     try {
       const res = await api.post("/auth/signup", null, {
@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
     }
   }
 
-  async function handleLogin(e) {
+  async function handleLogin(e: Event) {
     e.preventDefault();
     try {
       const res = await api.post("/auth/login", null, {

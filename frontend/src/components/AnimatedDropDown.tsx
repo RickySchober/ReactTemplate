@@ -13,7 +13,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
-    <div className="relative z-30 inline-block text-left" ref={dropdownRef}>
+    <div className="relative z-99 inline-block text-left" ref={dropdownRef}>
       <div>
         <button
           type="button"

@@ -56,7 +56,10 @@ def get_single_trade_offer(trade_id: int, session: Session = Depends(get_session
             selectinload(TradeOffer.trade_items)
                 .selectinload(TradeItem.card)
             ))
-    return session.exec(trade).one_or_none()
+    trade = session.exec(trade).one_or_none()
+    if not trade:
+        raise HTTPException(status_code=404, detail="Trade not found")
+    return trade
 
 # Get all trades for a specific user ID
 @router.get("/user/{user_id}", response_model=list[TradeOfferRead]) 

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import SearchPage from "./pages/SearchPage";
@@ -6,15 +6,24 @@ import TradePage from "./pages/TradePage";
 import TradeLog from "./pages/TradeLogPage";
 import SettingsPage from "./pages/SettingsPage";
 import LandingPage from "./pages/LandingPage";
+import NotFoundPage from "./pages/404Page";
 import * as React from "react";
-import { useState } from "react";
-import { registerSlowPopupSetter } from "./api/client";
+import { useState, useEffect } from "react";
+import { registerSlowPopupSetter, register404 } from "./api/client";
+
 
 export default function App() {
   const [showSlowPopup, setShowSlowPopup] = useState(false);
-
+  const [show404, setShow404] = useState(false);  
   // Allow Axios to control the popup
   registerSlowPopupSetter(setShowSlowPopup);
+  register404(setShow404);
+  const location = useLocation();
+
+  useEffect(() => {
+    setShow404(false);
+  }, [location.pathname]);
+  
   return (
     <>
     {showSlowPopup && (
@@ -26,6 +35,13 @@ export default function App() {
           </div>
         </div>
       )}
+      {show404 && (
+        <div className="fixed mt-20 w-full h-full bg-slate-900
+                        flex flex-col gap-8 items-center justify-center z-90">
+            <p className="font-medium text-6xl">404 Page Not Found</p>
+            <p className="font-medium text-2xl">Invalid url, trade, or card ID</p>
+        </div>
+      )}
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/search" element={<SearchPage />} />
@@ -34,6 +50,7 @@ export default function App() {
       <Route path="/trade/:tradeID?" element={<TradePage />} />
       <Route path="/tradelog" element={<TradeLog />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
     </>
   );

@@ -48,6 +48,7 @@ const ProfilePage: React.FC = () => {
       "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
     setBgArt(artUrl);
     const res = await api.get("/auth/my_cards");
+
     setCards(res.data);
   }
   const tutorialSteps = [

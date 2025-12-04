@@ -216,7 +216,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
             right: 0,
             background: "#fff",
             border: "1px solid #ddd",
-            zIndex: 50,
+            zIndex: 99,
             maxHeight: 800,
             overflowY: "auto",
           }}

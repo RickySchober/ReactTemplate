@@ -1,10 +1,13 @@
 import axios from "axios";
 
-// For your React app to read/update this:
+// Setter functions to be registered from App component
 export let setGlobalSlowPopup = () => {};
-
+export let setGlobal404 = () => {};
 export const registerSlowPopupSetter = (setterFn) => {
   setGlobalSlowPopup = setterFn;
+};
+export const register404 = (setterFn) => {
+  setGlobal404 = setterFn;
 };
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000";
@@ -16,6 +19,7 @@ const api = axios.create({
 
 // Track timer per-request
 const pendingTimers = new Map();
+
 
 // Add auth header
 api.interceptors.request.use((config) => {
@@ -48,6 +52,14 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // On 401, clear token and redirect to login
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    else if (error.response && error.response.status === 404) {
+      setGlobal404(true);
+    }
     const cfg = error.config ?? {};
     const timer = pendingTimers.get(cfg.requestId);
     if (timer) clearTimeout(timer);
@@ -57,6 +69,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 export default api;
 export { api };

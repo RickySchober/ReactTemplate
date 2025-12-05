@@ -22,9 +22,9 @@ const StatusBar: React.FC<Props> = ({ status }) => {
   const isCanceled = status === TradeStatus.CANCELED;
 
   return (
-    <div className={`w-full flex flex-col items-center gap-2`}>
+    <div className={`flex w-full flex-col items-center gap-2`}>
       {/* Circles & Lines */}
-      <div className="flex items-center justify-between w-full max-w-xl">
+      <div className="flex w-full max-w-xl items-center justify-between">
         {TRADE_STEPS.map((step, idx) => {
           const isCompleted = idx < currentIndex;
           const isCurrent = idx === currentIndex;
@@ -32,16 +32,16 @@ const StatusBar: React.FC<Props> = ({ status }) => {
           const circleColor = isCanceled
             ? "bg-red-500 border-red-700"
             : isCompleted
-            ? "bg-green-500 border-green-700"
-            : isCurrent
-            ? "bg-blue-500 border-blue-700"
-            : "bg-gray-200 border-gray-400";
+              ? "bg-green-500 border-green-700"
+              : isCurrent
+                ? "bg-blue-500 border-blue-700"
+                : "bg-gray-200 border-gray-400";
 
           return (
             <React.Fragment key={step}>
               {/* Circle */}
               <div
-                className={`w-8 h-8 rounded-full border flex items-center justify-center text-white font-bold ${circleColor}`}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border font-bold text-white ${circleColor}`}
               >
                 {idx + 1}
               </div>
@@ -49,12 +49,12 @@ const StatusBar: React.FC<Props> = ({ status }) => {
               {/* Line between circles */}
               {idx < TRADE_STEPS.length - 1 && (
                 <div
-                  className={`flex-1 h-1 ${
+                  className={`h-1 flex-1 ${
                     isCanceled
                       ? "bg-red-300"
                       : idx < currentIndex
-                      ? "bg-green-400"
-                      : "bg-gray-300"
+                        ? "bg-green-400"
+                        : "bg-gray-300"
                   }`}
                 />
               )}
@@ -64,16 +64,16 @@ const StatusBar: React.FC<Props> = ({ status }) => {
       </div>
 
       {/* Labels */}
-      <div className="flex justify-between w-5/4 max-w-2xl text-xs font-medium">
+      <div className="w-5/4 flex max-w-2xl justify-between text-xs font-medium">
         {TRADE_STEPS.map((step) => (
           <div
             key={step}
-            className={`text-center flex-1 ${
+            className={`flex-1 text-center ${
               isCanceled
                 ? "text-red-600"
                 : step === status
-                ? "text-blue-600"
-                : "text-gray-600"
+                  ? "text-blue-600"
+                  : "text-gray-600"
             }`}
           >
             {step.toUpperCase()}
@@ -82,7 +82,7 @@ const StatusBar: React.FC<Props> = ({ status }) => {
       </div>
 
       {isCanceled && (
-        <div className="text-red-600 font-bold mt-1 text-sm">
+        <div className="mt-1 text-sm font-bold text-red-600">
           TRADE CANCELED
         </div>
       )}

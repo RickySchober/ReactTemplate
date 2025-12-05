@@ -41,24 +41,24 @@ const NavBar: React.FC<NavBarProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center z-30 w-full px-4 py-1 bg-neutral-900 text-white shadow-md">
+    <div className="z-30 flex w-full items-center justify-between bg-neutral-900 px-4 py-1 text-white shadow-md">
       {/* App Icon / Title */}
       <div
         onClick={() => navigate("/")}
-        className="flex items-center gap-2 cursor-pointer"
+        className="flex cursor-pointer items-center gap-2"
       >
         <h1 className="flex items-center gap-2 text-4xl font-bold text-gray-200">
           <img
             src={icon}
             alt="M"
-            className="w-12 h-12 object-contain inline-block"
+            className="inline-block h-12 w-12 object-contain"
           />
           <span className="-ml-1 leading-none">TGTrader</span>
         </h1>
       </div>
 
       {/* Search Bar */}
-      <div className="flex-1 w-auto mx-6">
+      <div className="mx-6 w-auto flex-1">
         <SearchCard
           value={search}
           onChange={setSearch}
@@ -83,7 +83,7 @@ const NavBar: React.FC<NavBarProps> = ({
         ) : (
           <button
             onClick={() => navigate("/login")}
-            className="whitespace-nowrap bg-blue-400 hover:bg-blue-500 px-4 py-2 text-lg"
+            className="whitespace-nowrap bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
           >
             Sign In
           </button>

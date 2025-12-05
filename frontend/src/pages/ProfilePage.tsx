@@ -172,7 +172,7 @@ const ProfilePage: React.FC = () => {
         />
       )}
       <Backsplash heroHeight={heroHeight} bgArt={bgArt}>
-        <div className="flex justify-start items-center gap-3">
+        <div className="flex items-center justify-start gap-3">
           <ToggleSwitch
             value={haves}
             onChange={setHaves}
@@ -196,7 +196,7 @@ const ProfilePage: React.FC = () => {
 
           {add && (
             <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
                 setShowListInput((s) => false);
                 setShowSearch((s) => true);
@@ -207,7 +207,7 @@ const ProfilePage: React.FC = () => {
           )}
           {add && (
             <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
                 setShowListInput((s) => true);
                 setShowSearch((s) => false);
@@ -236,11 +236,11 @@ const ProfilePage: React.FC = () => {
               onChange={(e) => setListText(e.target.value)}
               placeholder={`Example:\n1 Lightning Bolt (STA) \n1x Artist's Talent (BLB)`}
               rows={8}
-              className="w-3/5 p-2.5 text-base rounded-md border border-gray-700 bg-transparent text-white"
+              className="w-3/5 rounded-md border border-gray-700 bg-transparent p-2.5 text-base text-white"
             />
-            <div className="flex gap-2 mt-2">
+            <div className="mt-2 flex gap-2">
               <button
-                className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                 onClick={async (e) => {
                   e.preventDefault();
                   await parseAndAddList();
@@ -249,7 +249,7 @@ const ProfilePage: React.FC = () => {
                 Parse & Add
               </button>
               <button
-                className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                 onClick={() => {
                   setListText("");
                 }}
@@ -260,7 +260,7 @@ const ProfilePage: React.FC = () => {
           </div>
         )}
         {add && sortedRecent.length > 0 && (
-          <div className="text-3xl ml-4 font-bold">Recently Added Cards:</div>
+          <div className="ml-4 text-3xl font-bold">Recently Added Cards:</div>
         )}
         {add && sortedRecent.length > 0 && (
           <div className="mt-4">
@@ -278,7 +278,7 @@ const ProfilePage: React.FC = () => {
                     <></>
                   ) : (
                     <button
-                      className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4 mb-2"
+                      className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                       onClick={() => handleSearchSelection(card)}
                     >
                       Trade for Card
@@ -288,7 +288,7 @@ const ProfilePage: React.FC = () => {
               />
             </div>
           ) : (
-            <div className="text-xl mt-3">
+            <div className="mt-3 text-xl">
               No cards in collection select add.
             </div>
           ))}

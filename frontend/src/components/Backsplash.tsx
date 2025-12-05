@@ -17,7 +17,7 @@ const Backsplash: React.FC<BacksplashProps> = ({
   return (
     <>
       <div
-        className="absolute inset-0 mt-20 bg-no-repeat bg-cover bg-center z-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0 z-0 mt-20 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${bgArt})`,
           maskImage:
@@ -27,7 +27,7 @@ const Backsplash: React.FC<BacksplashProps> = ({
         }}
       />
 
-      <div className="relative z-20 mt-60 mx-12">{children}</div>
+      <div className="relative z-20 mx-12 mt-60">{children}</div>
     </>
   );
 };

@@ -11,10 +11,9 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { registerSlowPopupSetter, register404 } from "./api/client";
 
-
 export default function App() {
   const [showSlowPopup, setShowSlowPopup] = useState(false);
-  const [show404, setShow404] = useState(false);  
+  const [show404, setShow404] = useState(false);
   // Allow Axios to control the popup
   registerSlowPopupSetter(setShowSlowPopup);
   register404(setShow404);
@@ -23,35 +22,37 @@ export default function App() {
   useEffect(() => {
     setShow404(false);
   }, [location.pathname]);
-  
+
   return (
     <>
-    {showSlowPopup && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black/40 backdrop-blur-sm
-                        flex items-center justify-center z-9999">
-          <div className="bg-slate-900 p-16 rounded-xl shadow-xl text-center">
-            <p className="font-medium text-2xl">Request is taking longer than expected.</p>
-            <p className="font-medium text-2xl">Server may be booting up please be patient.</p>
+      {showSlowPopup && (
+        <div className="z-9999 fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="rounded-xl bg-slate-900 p-16 text-center shadow-xl">
+            <p className="text-2xl font-medium">
+              Request is taking longer than expected.
+            </p>
+            <p className="text-2xl font-medium">
+              Server may be booting up please be patient.
+            </p>
           </div>
         </div>
       )}
       {show404 && (
-        <div className="fixed mt-20 w-full h-full bg-slate-900
-                        flex flex-col gap-8 items-center justify-center z-90">
-            <p className="font-medium text-6xl">404 Page Not Found</p>
-            <p className="font-medium text-2xl">Invalid url, trade, or card ID</p>
+        <div className="z-90 fixed mt-20 flex h-full w-full flex-col items-center justify-center gap-8 bg-slate-900">
+          <p className="text-6xl font-medium">404 Page Not Found</p>
+          <p className="text-2xl font-medium">Invalid url, trade, or card ID</p>
         </div>
       )}
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/search" element={<SearchPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/trade/:tradeID?" element={<TradePage />} />
-      <Route path="/tradelog" element={<TradeLog />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/trade/:tradeID?" element={<TradePage />} />
+        <Route path="/tradelog" element={<TradeLog />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </>
   );
 }

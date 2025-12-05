@@ -52,7 +52,7 @@ const SettingsPage: React.FC = () => {
   const a = profile.address!;
 
   return (
-    <div className=" text-white space-y-8 flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center space-y-8 text-white">
       <NavBar
         search={searchRedirect}
         setSearch={setSearchRedirect}
@@ -62,18 +62,18 @@ const SettingsPage: React.FC = () => {
       <button
         onClick={save}
         disabled={saving}
-        className="w-4xl py-3 bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+        className="w-4xl rounded bg-blue-600 py-3 hover:bg-blue-700 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Settings"}
       </button>
       {/* SETTINGS */}
-      <div className="w-4xl bg-slate-800 p-6 rounded-xl shadow ">
-        <h2 className="text-xl font-semibold mb-4">User Settings</h2>
+      <div className="w-4xl rounded-xl bg-slate-800 p-6 shadow">
+        <h2 className="mb-4 text-xl font-semibold">User Settings</h2>
 
         <div className="w-full space-y-3">
           {/* BACKSPLASH */}
           <div className="mt-4">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Backsplash</p>
                 <p className="text-sm text-slate-400">
@@ -81,7 +81,7 @@ const SettingsPage: React.FC = () => {
                 </p>
               </div>
               <button
-                className="px-4 py-2 bg-blue-600 rounded"
+                className="rounded bg-blue-600 px-4 py-2"
                 onClick={() => setShowBksChooser(!showBksChooser)}
               >
                 Change
@@ -89,11 +89,11 @@ const SettingsPage: React.FC = () => {
             </div>
             {/* IMAGE GRID */}
             {showBksChooser && (
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {backsplashImages.map((img) => (
                   <div
                     key={img}
-                    className={`cursor-pointer border rounded overflow-hidden hover:opacity-80 ${
+                    className={`cursor-pointer overflow-hidden rounded border hover:opacity-80 ${
                       profile.settings?.backsplash === img
                         ? "border-blue-500"
                         : "border-slate-700"
@@ -105,9 +105,9 @@ const SettingsPage: React.FC = () => {
                   >
                     <img
                       src={`/backsplashes/${img}`}
-                      className="w-full h-40 object-cover"
+                      className="h-40 w-full object-cover"
                     />
-                    <p className="text-center py-1 text-xs">{img}</p>
+                    <p className="py-1 text-center text-xs">{img}</p>
                   </div>
                 ))}
               </div>
@@ -154,8 +154,8 @@ const SettingsPage: React.FC = () => {
       </div>
 
       {/* ADDRESS */}
-      <div className="w-4xl bg-slate-800 p-6 rounded-xl shadow">
-        <h2 className="text-xl font-semibold mb-4">Mailing Address</h2>
+      <div className="w-4xl rounded-xl bg-slate-800 p-6 shadow">
+        <h2 className="mb-4 text-xl font-semibold">Mailing Address</h2>
 
         <div className="space-y-3">
           {["full_name", "street", "city", "state", "zip_code", "country"].map(
@@ -163,7 +163,7 @@ const SettingsPage: React.FC = () => {
               <label key={field} className="block capitalize">
                 <span>{field.replace("_", " ")}</span>
                 <input
-                  className="w-full bg-slate-700 p-2 rounded mt-1"
+                  className="mt-1 w-full rounded bg-slate-700 p-2"
                   value={(a as any)[field] ?? ""}
                   onChange={(e) =>
                     updateField("address", field, e.target.value)

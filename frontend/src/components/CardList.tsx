@@ -33,7 +33,7 @@ const CardList: React.FC<CardListProps> = ({
   }
   return (
     <div className="@container">
-      <div className="grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 gap-2 onSelect:cursor-pointer">
+      <div className="onSelect:cursor-pointer grid grid-cols-1 gap-2 @xl:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4">
         {cards.map((item: card | TradeItem) => {
           if (isTradeItem(item)) {
             //If elements are trade items set card quantity to maxQuant

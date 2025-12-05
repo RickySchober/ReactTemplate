@@ -17,7 +17,7 @@ const SortDropown: React.FC<SortDropdownProps> = ({
   setAscending,
 }) => {
   return (
-    <div className="flex item-center gap-2.5 m-2.5">
+    <div className="item-center m-2.5 flex gap-2.5">
       {/* Dropdown */}
       <select
         value={sortField}
@@ -33,7 +33,7 @@ const SortDropown: React.FC<SortDropdownProps> = ({
       {/* Asc/Desc Toggle Button */}
       <button
         onClick={() => setAscending(!ascending)}
-        className="flex items-center justify-center cursor-pointer bg-blue-400 hover:bg-blue-500 px-4"
+        className="flex cursor-pointer items-center justify-center bg-blue-400 px-4 hover:bg-blue-500"
       >
         <span className="text-3xl" style={{ opacity: ascending ? 1 : 0.25 }}>
           ↑

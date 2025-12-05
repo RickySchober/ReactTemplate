@@ -64,8 +64,8 @@ const TradeLogPage: React.FC = () => {
         setSearch={setSearchRedirect}
         placeholder="Search for a card..."
       />
-      <div className="max-w-5xl mx-auto p-6 text-white">
-        <h1 className="text-3xl font-bold mb-6">Trade Log:</h1>
+      <div className="mx-auto max-w-5xl p-6 text-white">
+        <h1 className="mb-6 text-3xl font-bold">Trade Log:</h1>
 
         <div className="space-y-4">
           {trades.map((trade: trade) => {
@@ -84,14 +84,14 @@ const TradeLogPage: React.FC = () => {
               <div
                 key={trade.id}
                 onClick={() => navigate(`/trade/${trade.id}`)}
-                className="bg-[#111318] hover:bg-[#1a1d22] rounded p-4 cursor-pointer border border-gray-700 transition"
+                className="cursor-pointer rounded border border-gray-700 bg-[#111318] p-4 transition hover:bg-[#1a1d22]"
               >
                 {/* Header Row */}
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex justify-between items-baseline gap-7 ">
+                <div className="mb-1 flex items-center justify-between">
+                  <div className="flex items-baseline justify-between gap-7">
                     <h2 className="text-xl font-semibold">Trade #{trade.id}</h2>
                     {/* User Info */}
-                    <p className="text-gray-300 mb-2 text-xl">
+                    <p className="mb-2 text-xl text-gray-300">
                       Trading with:{" "}
                       <span className="font-semibold text-white">
                         {otherUser?.username}
@@ -104,7 +104,7 @@ const TradeLogPage: React.FC = () => {
                 </div>
 
                 {/* Totals */}
-                <div className="flex justify-between mb-1">
+                <div className="mb-1 flex justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Your Value</p>
                     <p className="text-lg font-bold text-blue-400">
@@ -120,7 +120,7 @@ const TradeLogPage: React.FC = () => {
                 </div>
 
                 {/* Card preview thumbnails */}
-                <div className="flex justify-between gap-3 mt-4">
+                <div className="mt-4 flex justify-between gap-3">
                   {/* Your cards */}
                   <div className="flex gap-2">
                     {myItems.slice(0, 4).map((ti) => (
@@ -128,7 +128,7 @@ const TradeLogPage: React.FC = () => {
                         key={ti.id}
                         src={ti.card?.image_url}
                         alt={ti.card?.name}
-                        className="h-12 w-8 rounded-sm object-cover border border-gray-700"
+                        className="h-12 w-8 rounded-sm border border-gray-700 object-cover"
                       />
                     ))}
                   </div>
@@ -140,7 +140,7 @@ const TradeLogPage: React.FC = () => {
                         key={ti.id}
                         src={ti.card?.image_url}
                         alt={ti.card?.name}
-                        className="h-12 w-8 rounded-sm object-cover border border-gray-700"
+                        className="h-12 w-8 rounded-sm border border-gray-700 object-cover"
                       />
                     ))}
                   </div>
@@ -150,7 +150,7 @@ const TradeLogPage: React.FC = () => {
           })}
 
           {trades.length === 0 && (
-            <p className="text-gray-400 text-center mt-6">No trades found.</p>
+            <p className="mt-6 text-center text-gray-400">No trades found.</p>
           )}
         </div>
       </div>

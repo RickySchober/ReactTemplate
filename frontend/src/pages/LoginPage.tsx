@@ -53,9 +53,9 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[72vh] flex items-center justify-center">
-      <div className="w-full max-w-lg card">
-        <h2 className="text-6xl font-bold mb-5 text-center">
+    <div className="flex min-h-[72vh] items-center justify-center">
+      <div className="card w-full max-w-lg">
+        <h2 className="mb-5 text-center text-6xl font-bold">
           {isRegister ? "Create an account" : "Login"}
         </h2>
 
@@ -66,25 +66,25 @@ const LoginPage: React.FC = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="p-3 text-base rounded-md"
+              className="rounded-md p-3 text-base"
             />
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-3 text-base rounded-md"
+              className="rounded-md p-3 text-base"
             />
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-3 text-base rounded-md"
+              className="rounded-md p-3 text-base"
             />
             <button
               type="submit"
-              className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
+              className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
             >
               Register
             </button>
@@ -92,7 +92,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsRegister(false)}
-                className="text-blue-400 text-lg underline bg-transparent border-none cursor-pointer"
+                className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
               >
                 Already have an account? Login
               </button>
@@ -105,18 +105,18 @@ const LoginPage: React.FC = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-3 text-base rounded-md"
+              className="rounded-md p-3 text-base"
             />
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-3 text-base rounded-md"
+              className="rounded-md p-3 text-base"
             />
             <button
               type="submit"
-              className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
+              className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
             >
               Login
             </button>
@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsRegister(true)}
-                className="text-blue-400 text-lg underline bg-transparent border-none cursor-pointer"
+                className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
               >
                 Create an account
               </button>

@@ -99,7 +99,7 @@ const SearchPage: React.FC = () => {
       />
       <Backsplash bgArt={bgArt} heroHeight={1000}>
         {/* ─── FILTER BAR ──────────────────────────── */}
-        <section className="flex justify-start items-center gap-3 m-2.5">
+        <section className="m-2.5 flex items-center justify-start gap-3">
           <SortDropdown
             sortField={sortOption}
             setSortField={setSortOption}
@@ -115,7 +115,7 @@ const SearchPage: React.FC = () => {
               cards={sortedResults}
               children={(card: card) => (
                 <button
-                  className="bg-blue-400 hover:bg-blue-500 mb-2 text-lg px-4 py-2"
+                  className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                   onClick={() => {
                     token ? beginTrade(card) : navigate("/login");
                   }}
@@ -125,7 +125,7 @@ const SearchPage: React.FC = () => {
               )}
             />
           ) : (
-            <p className="text-xl ml-6">
+            <p className="ml-6 text-xl">
               No trades posted. Try searching for a different card name.
             </p>
           )}

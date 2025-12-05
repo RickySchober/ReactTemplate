@@ -20,7 +20,6 @@ const api = axios.create({
 // Track timer per-request
 const pendingTimers = new Map();
 
-
 // Add auth header
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -56,8 +55,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/login";
-    }
-    else if (error.response && error.response.status === 404) {
+    } else if (error.response && error.response.status === 404) {
       setGlobal404(true);
     }
     const cfg = error.config ?? {};

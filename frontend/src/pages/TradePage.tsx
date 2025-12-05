@@ -408,7 +408,7 @@ const TradePage: React.FC = () => {
       {!viewMyCards && !viewTraderCards && (
         <div className="mt-5">
           <StatusBar status={trade.status} />
-          <div className="flex gap-6 w-full">
+          <div className="flex w-full gap-6">
             <TradePanel {...currentUserPanelProps} />
             <TradePanel {...traderPanelProps} />
           </div>
@@ -416,14 +416,10 @@ const TradePage: React.FC = () => {
       )}
       {/* Popupp window to add cards from my collection */}
       <div
-        className={`
-                ${viewMyCards ? "absolute" : "fixed"} inset-0 z-30 flex flex-col
-                transition-transform duration-350 ease-out
-                ${viewMyCards ? "translate-y-0" : "translate-y-full"}
-            `}
+        className={` ${viewMyCards ? "absolute" : "fixed"} duration-350 inset-0 z-30 flex flex-col transition-transform ease-out ${viewMyCards ? "translate-y-0" : "translate-y-full"} `}
       >
         <Backsplash heroHeight={1000} bgArt={bgArt}>
-          <div className="flex justify-start items-center gap-3">
+          <div className="flex items-center justify-start gap-3">
             <SortDropdown
               sortField={sortOption}
               setSortField={setSortOption}
@@ -438,7 +434,7 @@ const TradePage: React.FC = () => {
               id="auto-match-toggle"
             />
             <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -452,7 +448,7 @@ const TradePage: React.FC = () => {
               cards={sortMyCards}
               children={(card) => (
                 <button
-                  className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                  className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                   onClick={() => addCardToTrade(card)}
                 >
                   Add to Offer
@@ -464,14 +460,10 @@ const TradePage: React.FC = () => {
       </div>
       {/* Popupp window to add cards from other trader's collection */}
       <div
-        className={`
-                ${viewTraderCards ? "absolute" : "fixed"} inset-0 flex flex-col
-                transition-transform duration-350 ease-out
-                ${viewTraderCards ? "translate-y-0" : "translate-y-full"}
-            `}
+        className={` ${viewTraderCards ? "absolute" : "fixed"} duration-350 inset-0 flex flex-col transition-transform ease-out ${viewTraderCards ? "translate-y-0" : "translate-y-full"} `}
       >
         <Backsplash heroHeight={1000} bgArt={bgArt}>
-          <div className="flex justify-start items-center gap-3">
+          <div className="flex items-center justify-start gap-3">
             <SortDropdown
               sortField={sortOption}
               setSortField={setSortOption}
@@ -486,7 +478,7 @@ const TradePage: React.FC = () => {
               id="auto-match-toggle"
             />
             <button
-              className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
                 setViewTraderCards(false);
                 setViewMyCards(false);
@@ -500,7 +492,7 @@ const TradePage: React.FC = () => {
               cards={sortTraderCards}
               children={(card: card) => (
                 <button
-                  className="bg-blue-400 hover:bg-blue-500 text-lg py-2 px-4"
+                  className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
                   onClick={() => addCardToTrade(card)}
                 >
                   Add to Offer

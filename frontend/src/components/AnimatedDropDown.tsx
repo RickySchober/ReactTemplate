@@ -13,11 +13,11 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
-    <div className="relative z-99 inline-block text-left" ref={dropdownRef}>
+    <div className="z-99 relative inline-block text-left" ref={dropdownRef}>
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full px-4 py-2 text-lg font-medium bg-blue-400 border border-gray-300 rounded-md shadow-sm hover:bg-blue-500 focus:outline-none"
+          className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-400 px-4 py-2 text-lg font-medium shadow-sm hover:bg-blue-500 focus:outline-none"
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -27,10 +27,10 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
       </div>
 
       <div
-        className={`origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${
+        className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${
           isOpen
-            ? "opacity-100 scale-y-100 visible max-h-screen"
-            : "opacity-0 scale-y-95 invisible max-h-0" // Animate max-height and opacity
+            ? "visible max-h-screen scale-y-100 opacity-100"
+            : "invisible max-h-0 scale-y-95 opacity-0" // Animate max-height and opacity
         } overflow-hidden`}
         role="menu"
         aria-orientation="vertical"

@@ -10,7 +10,7 @@ export interface card {
   owner_id?: number;
   quantity: number;
   intent: "have" | "want";
-  date_added?: string | number | Date
+  date_added?: string | number | Date;
 }
 
 export enum TradeStatus {
@@ -29,9 +29,9 @@ export enum ActiveUser {
   BOTH = "both",
 }
 
-export interface User{
-  id: number
-  username: string
+export interface User {
+  id: number;
+  username: string;
 }
 
 export interface UserSettings {
@@ -59,21 +59,21 @@ export interface UserProfile {
 }
 
 export interface TradeItem {
-  id?: number
-  card: card
-  quantity: number
+  id?: number;
+  card: card;
+  quantity: number;
 }
 
 export interface trade {
-  id?: number
+  id?: number;
 
-  status: TradeStatus
-  activeUser: ActiveUser
+  status: TradeStatus;
+  activeUser: ActiveUser;
 
-  a_user: User
-  b_user: User
+  a_user: User;
+  b_user: User;
 
-  trade_items: TradeItem[]
+  trade_items: TradeItem[];
 }
 
 // When creating new trades just link to elements with id
@@ -83,12 +83,11 @@ export interface TradeItemPayload {
   quantity: number;
 }
 export interface TradePayload {
-  a_user_id: number;         
-  b_user_id: number;          
-  
-  trade_items: TradeItemPayload[]
+  a_user_id: number;
+  b_user_id: number;
 
-  status: TradeStatus;       
-  activeUser: ActiveUser;    
+  trade_items: TradeItemPayload[];
+
+  status: TradeStatus;
+  activeUser: ActiveUser;
 }
-

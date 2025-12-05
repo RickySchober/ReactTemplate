@@ -10,18 +10,18 @@ const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   return (
-    <div className="min-h-screen w-full bg-[#0f1720] text-white flex flex-col">
+    <div className="flex min-h-screen w-full flex-col bg-[#0f1720] text-white">
       <NavBar
         search={searchRedirect}
         setSearch={setSearchRedirect}
         placeholder="Search for a card..."
       />
       {/* Title Section */}
-      <section className="flex flex-col items-center justify-center text-center py-24 px-6 gap-6">
+      <section className="flex flex-col items-center justify-center gap-6 px-6 py-24 text-center">
         <h1 className="text-5xl font-bold text-white drop-shadow-lg">
           Trade Magic The Gathering Cards Worldwide
         </h1>
-        <p className="text-lg max-w-2xl text-white/80">
+        <p className="max-w-2xl text-lg text-white/80">
           MTGTrader makes it easy to safely trade Magic The Gathering cards with
           players across the globe. Post your collection, browse offers, and
           trade with confidence.
@@ -30,17 +30,17 @@ const LandingPage: React.FC = () => {
           onClick={
             token ? () => navigate("/profile") : () => navigate("/login")
           }
-          className="mt-4 px-6 py-3 rounded bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-all"
+          className="mt-4 rounded bg-blue-500 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-600"
         >
           Get Started
         </button>
       </section>
 
       {/* Concept Explanation */}
-      <section className="bg-[#111318] py-16 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col gap-6">
+      <section className="bg-[#111318] px-6 py-16">
+        <div className="mx-auto flex max-w-4xl flex-col gap-6">
           <h2 className="text-3xl font-bold text-blue-400">How It Works</h2>
-          <p className="text-white/80 text-lg">
+          <p className="text-lg text-white/80">
             MTGTrader connects collectors and players from around the world.
             Create an account, list the cards in your collections as haves, and
             cards your looking to aquire as wants. Search the site for cards you
@@ -54,7 +54,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-white/60 text-sm">
+      <footer className="py-8 text-center text-sm text-white/60">
         {new Date().getFullYear()} MTGTrader. All Rights Reserved.
       </footer>
     </div>

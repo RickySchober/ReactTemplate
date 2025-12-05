@@ -1,0 +1,8 @@
+*.py
+venv/
+__pycache__/
+backend/
+dist/
+public/
+node_modules/
+

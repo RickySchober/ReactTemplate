@@ -1,7 +1,5 @@
 module.exports = {
-  plugins: [
-    require('@tailwindcss/container-queries'),
-  ],
+  plugins: [require("@tailwindcss/container-queries")],
 };
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -19,17 +17,11 @@ export default {
         success: "#22c55e",
       },
       fontFamily: {
-        sans: [
-          "system-ui",
-          "Avenir",
-          "Helvetica",
-          "Arial",
-          "sans-serif",
-        ],
+        sans: ["system-ui", "Avenir", "Helvetica", "Arial", "sans-serif"],
       },
       borderRadius: {
         zero: "0px",
-      }
+      },
     },
   },
   plugins: [],

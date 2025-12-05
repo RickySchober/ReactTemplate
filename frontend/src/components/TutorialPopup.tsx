@@ -25,28 +25,28 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
   const page = pages[index];
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-slate-900 text-white p-6 rounded-xl shadow-2xl w-[65%] border border-slate-700 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="relative w-[65%] rounded-xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl">
         {/* TITLE */}
-        <h2 className="text-4xl font-bold mb-2 text-blue-300">{page.title}</h2>
+        <h2 className="mb-2 text-4xl font-bold text-blue-300">{page.title}</h2>
         {/* IMAGE */}
         {page.image && (
           <img
             src={page.image}
-            className="w-full object-cover rounded-md mb-4 border border-slate-700"
+            className="mb-4 w-full rounded-md border border-slate-700 object-cover"
             alt={page.title}
           />
         )}
         {/* BODY */}
-        <p className="mb-2 text-xl font-semibold text-slate-200 leading-relaxed">
+        <p className="mb-2 text-xl font-semibold leading-relaxed text-slate-200">
           {page.body}
         </p>
 
         {/* BUTTONS */}
-        <div className="flex justify-between mt-2">
+        <div className="mt-2 flex justify-between">
           {/* Back */}
           {isFirst ? (
-            <button className="px-4 py-2 font-semibold text-transparent bg-transparent">
+            <button className="bg-transparent px-4 py-2 font-semibold text-transparent">
               Back
             </button>
           ) : (
@@ -54,14 +54,14 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
               disabled={isFirst}
               onClick={() => setIndex((i) => Math.max(i - 1, 0))}
               className={
-                "px-4 py-2 rounded-md font-semibold text-lg bg-gray-500 cursor-default"
+                "cursor-default rounded-md bg-gray-500 px-4 py-2 text-lg font-semibold"
               }
             >
               Back
             </button>
           )}
           {/* PAGE DOTS */}
-          <div className="flex justify-center gap-2 my-3">
+          <div className="my-3 flex justify-center gap-2">
             {pages.map((_, i) => (
               <div
                 key={i}
@@ -77,7 +77,7 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
               if (isLast) onClose();
               else setIndex((i) => i + 1);
             }}
-            className="px-4 py-2 text-lg bg-blue-400 text-white font-semibold rounded-md hover:bg-blue-500"
+            className="rounded-md bg-blue-400 px-4 py-2 text-lg font-semibold text-white hover:bg-blue-500"
           >
             {isLast ? "Finish" : "Next"}
           </button>
@@ -86,7 +86,7 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
         {/* DISABLE */}
         <button
           onClick={onDisable}
-          className="mt-2 text-lg text-gray-400 hover:text-gray-200 underline w-full text-center"
+          className="mt-2 w-full text-center text-lg text-gray-400 underline hover:text-gray-200"
         >
           Don’t show this tutorial again
         </button>

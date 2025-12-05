@@ -24,20 +24,17 @@ const CardItem: React.FC<CardItemProps> = ({
     navigate(`/user/${card.owner_id}`);
   }
   return (
-    <div className="@container flex flex-col items-center border border-gray-300 rounded-md shadow-sm overflow-hidden bg-neutral-900">
+    <div className="flex flex-col items-center overflow-hidden rounded-md border border-gray-300 bg-neutral-900 shadow-sm @container">
       {/* Card image */}
       <img src={card.image_url} alt={card.name} className="w-full" />
 
       {/* Card info row */}
-      <div className="flex justify-between items-center px-3 py-2 gap-2 @md:gap-3 @lg:gap-4 text-white">
+      <div className="flex items-center justify-between gap-2 px-3 py-2 text-white @md:gap-3 @lg:gap-4">
         {/* Quantity controls */}
         {modQuant && (
           <div className="flex items-center gap-2">
             <button
-              className="px-2 @md:px-2.5 @lg:px-3
-                       py-0.5 @md:py-1 @lg:py-1.5 
-                       text-md @sm:text-lg @md:text-xl @lg:text-2xl
-                       bg-green-600 hover:bg-green-700 rounded text-white"
+              className="text-md rounded bg-green-600 px-2 py-0.5 text-white hover:bg-green-700 @sm:text-lg @md:px-2.5 @md:py-1 @md:text-xl @lg:px-3 @lg:py-1.5 @lg:text-2xl"
               onClick={() =>
                 modQuant(
                   card,
@@ -54,10 +51,7 @@ const CardItem: React.FC<CardItemProps> = ({
             </p>
 
             <button
-              className="px-2 @md:px-2.5 @lg:px-3
-                       py-0.5 @md:py-1 @lg:py-1.5
-                       text-md @sm:text-lg @md:text-xl @lg:text-2xl
-                          bg-red-600 hover:bg-red-700 rounded text-white"
+              className="text-md rounded bg-red-600 px-2 py-0.5 text-white hover:bg-red-700 @sm:text-lg @md:px-2.5 @md:py-1 @md:text-xl @lg:px-3 @lg:py-1.5 @lg:text-2xl"
               onClick={() => modQuant(card, card.quantity - 1)}
             >
               -
@@ -66,23 +60,23 @@ const CardItem: React.FC<CardItemProps> = ({
         )}
 
         {/* Card text info */}
-        <div className="flex flex-col text-center ">
-          <h4 className="text-md @sm:text-lg @md:text-xl @lg:text-2xl font-bold">
+        <div className="flex flex-col text-center">
+          <h4 className="text-md font-bold @sm:text-lg @md:text-xl @lg:text-2xl">
             {card.name}
           </h4>
-          <p className="text-xs @sm:text-sm @md:text-md @lg:text-lg text-gray-400">
+          <p className="@md:text-md text-xs text-gray-400 @sm:text-sm @lg:text-lg">
             {card.set_name}
           </p>
 
           {card.print_description && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="mt-1 text-xs text-gray-500">
               {card.print_description}
             </p>
           )}
-          <p className="text-sm mt-1">
+          <p className="mt-1 text-sm">
             {card.owner ? card.owner.username : ""}
           </p>
-          <p className="text-xs @sm:text-sm @md:text-md @lg:text-lg mt-1">
+          <p className="@md:text-md mt-1 text-xs @sm:text-sm @lg:text-lg">
             ${Number(card.price || 0).toFixed(2)}
           </p>
         </div>
@@ -90,10 +84,7 @@ const CardItem: React.FC<CardItemProps> = ({
         {/* Remove button */}
         {modQuant && (
           <button
-            className="px-2 @md:px-2.5 @lg:px-3
-                       py-1 @md:py-1.5 @lg:py-2 
-                       text-md @sm:text-lg @md:text-xl @lg:text-2xl
-                       bg-red-700 hover:bg-red-800 rounded whitespace-nowrap"
+            className="text-md whitespace-nowrap rounded bg-red-700 px-2 py-1 hover:bg-red-800 @sm:text-lg @md:px-2.5 @md:py-1.5 @md:text-xl @lg:px-3 @lg:py-2 @lg:text-2xl"
             onClick={() => modQuant(card, 0)}
           >
             remove

@@ -59,20 +59,20 @@ const TradePanel: React.FC<TradePanelProps> = ({
     onProposeClick();
   }
   return (
-    <div className="w-1/2 p-4 m-4 bg-neutral-900 rounded-2xl shadow-lg">
+    <div className="m-4 w-1/2 rounded-2xl bg-neutral-900 p-4 shadow-lg">
       <div className="flex flex-wrap justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-white mb-1">
+          <h2 className="mb-1 text-2xl font-semibold text-white">
             {userA ? trade.a_user.username : trade.b_user.username}
           </h2>
-          <p className="text-gray-300 mb-4">Total Value: ${offerPrice}</p>
+          <p className="mb-4 text-gray-300">Total Value: ${offerPrice}</p>
         </div>
-        <div className="flex flex-wrap justify-between items-baseline">
+        <div className="flex flex-wrap items-baseline justify-between">
           {(trade.status == TradeStatus.PROPOSE || //Can only modify trade in these phases
             trade.status == TradeStatus.PENDING) && (
             <button
               onClick={onAddCardsClick}
-              className="bg-blue-400 hover:bg-blue-500 px-4 py-2 mx-2 text-lg "
+              className="mx-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
             >
               View Collection
             </button>
@@ -84,18 +84,13 @@ const TradePanel: React.FC<TradePanelProps> = ({
             <button
               disabled={active || !close}
               onClick={printStatus}
-              className={`
-              px-4 py-2 mx-2 text-lg
-              font-semibold 
-              transition-colors duration-150 ease-in-out
-              ${
+              className={`mx-2 px-4 py-2 text-lg font-semibold transition-colors duration-150 ease-in-out ${
                 active
-                  ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  ? "cursor-not-allowed bg-gray-400 text-gray-700"
                   : close
-                  ? "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
-                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
-              }
-          `}
+                    ? "cursor-pointer bg-blue-400 text-white hover:bg-blue-500"
+                    : "cursor-not-allowed bg-gray-400 text-gray-700"
+              } `}
             >
               {getStatusMessage(trade.status)}
             </button>
@@ -104,7 +99,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             (trade.status == TradeStatus.PENDING || //Can only modify trade in these phases
               trade.status == TradeStatus.PROPOSE) && (
               <button
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 mx-2 text-lg"
+                className="mx-2 bg-red-600 px-4 py-2 text-lg hover:bg-red-700"
                 onClick={close}
               >
                 Close
@@ -113,9 +108,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
         </div>
       </div>
       <div
-        className={`${myOffer.length === 0 ? "" : "bg-neutral-800"} 
-          rounded-xl p-4
-        `}
+        className={`${myOffer.length === 0 ? "" : "bg-neutral-800"} rounded-xl p-4`}
       >
         {(trade.status == TradeStatus.PENDING || //Can only modify trade in these phases
           trade.status == TradeStatus.PROPOSE) && (

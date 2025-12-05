@@ -1,15 +1,15 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import SearchPage from "./pages/SearchPage";
-import TradePage from "./pages/TradePage";
-import TradeLog from "./pages/TradeLogPage";
-import SettingsPage from "./pages/SettingsPage";
-import LandingPage from "./pages/LandingPage";
-import NotFoundPage from "./pages/404Page";
+import LoginPage from "./pages/LoginPage.js";
+import ProfilePage from "./pages/ProfilePage.js";
+import SearchPage from "./pages/SearchPage.js";
+import TradePage from "./pages/TradePage.js";
+import TradeLog from "./pages/TradeLogPage.js";
+import SettingsPage from "./pages/SettingsPage.js";
+import LandingPage from "./pages/LandingPage.js";
+import NotFoundPage from "./pages/404Page.js";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { registerSlowPopupSetter, register404 } from "./api/client";
+import { registerSlowPopupSetter, register404 } from "./api/client.js";
 
 export default function App() {
   const [showSlowPopup, setShowSlowPopup] = useState(false);

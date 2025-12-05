@@ -1,7 +1,7 @@
 /* Basic landing page with explanation of site.
  */
 import * as React from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

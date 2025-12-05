@@ -2,10 +2,10 @@
    including current offer, user info, user collections, status, and user actions.
 */
 import { useState, useEffect } from "react";
-import api from "../api/client";
+import api from "../api/client.js";
 import { useParams, useLocation } from "react-router-dom";
 import * as React from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar.js";
 import {
   ActiveUser,
   card,
@@ -15,15 +15,15 @@ import {
   User,
   TradePayload,
   TradeItemPayload,
-} from "../../types";
-import CardList from "../components/CardList";
-import Backsplash from "../components/Backsplash";
-import StatusBar from "../components/StatusBar";
-import SortDropdown from "../components/SortDropdown";
+} from "../../types.js";
+import CardList from "../components/CardList.js";
+import Backsplash from "../components/Backsplash.js";
+import StatusBar from "../components/StatusBar.js";
+import SortDropdown from "../components/SortDropdown.js";
 import bgArt from "../assets/Gudul_Lurker.jpg";
-import MultiTutorialPopup from "../components/TutorialPopup";
-import ToggleSwitch from "../components/ToggleSwitch";
-import TradePanel from "../components/TradePanel";
+import MultiTutorialPopup from "../components/TutorialPopup.js";
+import ToggleSwitch from "../components/ToggleSwitch.js";
+import TradePanel from "../components/TradePanel.js";
 
 const EmptyUser: User = {
   id: 0,

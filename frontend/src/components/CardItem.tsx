@@ -2,7 +2,7 @@
    different card interfaces allowing you to pass in child components.
 */
 import * as React from "react";
-import { card } from "../../types";
+import { card } from "../../types.js";
 import { useNavigate } from "react-router-dom";
 
 interface CardItemProps {
@@ -73,9 +73,10 @@ const CardItem: React.FC<CardItemProps> = ({
               {card.print_description}
             </p>
           )}
+          {/* Owner info not passed yet
           <p className="mt-1 text-sm">
             {card.owner ? card.owner.username : ""}
-          </p>
+          </p>*/}
           <p className="@md:text-md mt-1 text-xs @sm:text-sm @lg:text-lg">
             ${Number(card.price || 0).toFixed(2)}
           </p>

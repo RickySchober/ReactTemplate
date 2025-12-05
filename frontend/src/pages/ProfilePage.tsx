@@ -5,16 +5,16 @@
 */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/client";
-import CardList from "../components/CardList";
-import SearchCard from "../components/SearchCard";
-import SortDropdown from "../components/SortDropdown";
-import NavBar from "../components/NavBar";
-import ToggleSwitch from "../components/ToggleSwitch";
-import Backsplash from "../components/Backsplash";
-import MultiTutorialPopup from "../components/TutorialPopup";
+import api from "../api/client.js";
+import CardList from "../components/CardList.js";
+import SearchCard from "../components/SearchCard.js";
+import SortDropdown from "../components/SortDropdown.js";
+import NavBar from "../components/NavBar.js";
+import ToggleSwitch from "../components/ToggleSwitch.js";
+import Backsplash from "../components/Backsplash.js";
+import MultiTutorialPopup from "../components/TutorialPopup.js";
 import * as React from "react";
-import { card } from "../../types";
+import { card } from "../../types.js";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);

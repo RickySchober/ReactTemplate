@@ -235,7 +235,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
                 key={s.id}
                 role="option"
                 aria-selected={isActive}
-                onMouseDown={(ev: MouseEvent) => {
+                onMouseDown={(ev) => {
                   ev.preventDefault();
                 }}
                 onClick={() => handleSelect(s)}

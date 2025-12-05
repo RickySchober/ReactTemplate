@@ -1,4 +1,4 @@
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar.js";
 import * as React from "react";
 import { useState } from "react";
 

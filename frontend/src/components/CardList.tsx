@@ -2,9 +2,9 @@
 rows to best fit cards. Accepts either cards or TradeItems adjusting 
 quantity values as necessary. 
 */
-import CardItem from "./CardItem";
+import CardItem from "./CardItem.js";
 import * as React from "react";
-import { card, TradeItem } from "../../types";
+import { card, TradeItem } from "../../types.js";
 
 function isTradeItem(item: card | TradeItem): item is TradeItem {
   // Helper to check type

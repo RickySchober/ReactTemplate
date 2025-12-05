@@ -3,14 +3,14 @@
 */
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import api from "../api/client";
+import api from "../api/client.js";
 import CardList from "../components/CardList";
-import NavBar from "../components/NavBar";
-import SortDropdown from "../components/SortDropdown";
-import Backsplash from "../components/Backsplash";
+import NavBar from "../components/NavBar.js";
+import SortDropdown from "../components/SortDropdown.js";
+import Backsplash from "../components/Backsplash.js";
 import bgArt from "../assets/Treasure_Cruise.jpg";
 import * as React from "react";
-import { card } from "../../types";
+import { card } from "../../types.js";
 
 const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");

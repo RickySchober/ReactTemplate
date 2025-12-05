@@ -2,8 +2,14 @@
    in trade as well as buttons for status and adding cards.
 */
 import * as React from "react";
-import CardList from "../components/CardList";
-import { card, TradeItem, trade, TradeStatus, ActiveUser } from "../../types";
+import CardList from "../components/CardList.js";
+import {
+  card,
+  TradeItem,
+  trade,
+  TradeStatus,
+  ActiveUser,
+} from "../../types.js";
 
 interface TradePanelProps {
   trade: trade;
@@ -56,7 +62,9 @@ const TradePanel: React.FC<TradePanelProps> = ({
   }
   function printStatus() {
     console.log(active);
-    onProposeClick();
+    if (onProposeClick) {
+      onProposeClick();
+    }
   }
   return (
     <div className="m-4 w-1/2 rounded-2xl bg-neutral-900 p-4 shadow-lg">

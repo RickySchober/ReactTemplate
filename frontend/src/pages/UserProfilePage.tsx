@@ -3,13 +3,13 @@
 */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../api/client";
-import CardList from "../components/CardList";
+import api from "../api/client.js";
+import CardList from "../components/CardList.js";
 import * as React from "react";
-import { card } from "../../types";
+import { card } from "../../types.js";
 
 const UserProfilePage: React.FC = () => {
-  const { id } = useParams<number>();
+  const { id } = useParams<string>();
   const [cards, setCards] = useState<card[]>([]);
   const [username, setUsername] = useState<string>("");
 

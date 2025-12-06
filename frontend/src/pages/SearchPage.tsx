@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/client.js";
-import CardList from "../components/CardList";
+import CardList from "../components/CardList.js";
 import NavBar from "../components/NavBar.js";
 import SortDropdown from "../components/SortDropdown.js";
 import Backsplash from "../components/Backsplash.js";
@@ -41,7 +41,7 @@ const SearchPage: React.FC = () => {
     }
   }, [searchParams]);
 
-  async function handleSearch(card: card) {
+  async function handleSearch(card: card | { name: string }) {
     try {
       const name = typeof card === "string" ? card : card?.name;
       const res = await api.get(`/cards/search/`, {

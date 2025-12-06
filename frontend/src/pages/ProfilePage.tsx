@@ -150,7 +150,26 @@ const ProfilePage: React.FC = () => {
       console.log(now - cardDate <= FIVE_MIN);
       return now - cardDate <= FIVE_MIN;
     })
-    .filter((card: card) => card.intent === (haves ? "have" : "want"));
+    .filter((card: card) => card.intent === (haves ? "have" : "want"))
+    .sort((a, b) => {
+      const dir = ascending ? 1 : -1;
+      switch (sortOption) {
+        case "price":
+          return (a.price - b.price) * dir;
+        case "dateSort":
+          return (
+            (new Date(a.date_added ?? Date.now()).getTime() -
+              new Date(b.date_added ?? Date.now()).getTime()) *
+            dir
+          );
+        case "nameSort":
+          return a.name.localeCompare(b.name) * dir;
+        case "setName":
+          return a.set_name.localeCompare(b.set_name) * dir;
+        default:
+          return a.name.localeCompare(b.name) * dir;
+      }
+    });
 
   return (
     <div className="position-relative">

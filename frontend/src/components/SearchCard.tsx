@@ -2,9 +2,10 @@
  api to provide card autocomplete information.
 */
 import { useState, useEffect, useRef, useCallback } from "react";
+import Timeout = NodeJS.Timeout;
 import axios from "axios";
 import * as React from "react";
-import { card } from "../../types";
+import { card } from "../../types.js";
 
 interface SearchCardProps {
   value: string;
@@ -16,11 +17,21 @@ interface SearchCardProps {
   debounceMs?: number;
 }
 
+interface ScryfallPrice {
+  usd?: number;
+  usd_foil?: number;
+  usd_etched?: number;
+  eur?: number;
+  tix?: number;
+}
+
 interface ScryfallCard {
   id: string;
   name: string;
-  set_name?: string;
+  set_name: string;
   set?: string;
+  rarity: string;
+  prices: ScryfallPrice;
   image_uris?: {
     small?: string;
   };
@@ -50,11 +61,11 @@ const SearchCard: React.FC<SearchCardProps> = ({
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([]);
   const [loading, setLoading] = useState<boolean>(false); // Show loading symbol when calling scryfall api
   const [activeIndex, setActiveIndex] = useState<number>(-1); //Index of cards being hovered -1 when none
-  const abortRef = useRef(null); //Signal to abort scyrfall api call
-  const debounceRef = useRef(null); //Timer to abort slow api response
+  const abortRef = useRef<AbortController>(null); //Signal to abort scyrfall api call
+  const debounceRef = useRef<Timeout>(null); //Timer to abort slow api response
   const containerRef = useRef<HTMLDivElement | null>(null); //used for closing box when clicking out
-  const [suppressOpen, setSuppressOpen] = useState(true); //Suppress search to avoid extra searching
-  const [suppressMouse, setSuppressMouse] = useState(false); //Suppress mouse scrolling when using keyboard
+  const [suppressOpen, setSuppressOpen] = useState<boolean>(true); //Suppress search to avoid extra searching
+  const [suppressMouse, setSuppressMouse] = useState<boolean>(false); //Suppress mouse scrolling when using keyboard
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -112,11 +123,19 @@ const SearchCard: React.FC<SearchCardProps> = ({
     onChange?.(e.target.value);
     setActiveIndex(-1);
   }
-
-  function handleSelect(card: card) {
+  // When a card is selected from the suggestions convert it to local card type and call onSelect
+  function handleSelect(card: ScryfallCard) {
+    const { id, ...rest } = card;
+    let convertedCard: card = {
+      ...rest,
+      price: card.prices?.usd || 0,
+      image_url: card.image_uris?.small || "",
+      intent: "have",
+      quantity: 1,
+    };
     setSuppressOpen(true);
-    onChange?.(card.name);
-    onSelect?.(card);
+    onChange?.(convertedCard.name);
+    onSelect?.(convertedCard);
 
     setSuggestions([]);
     setActiveIndex(-1);
@@ -231,7 +250,9 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
             return (
               <div
-                ref={(el) => (suggestionRefs.current[idx] = el)}
+                ref={(el) => {
+                  suggestionRefs.current[idx] = el;
+                }}
                 key={s.id}
                 role="option"
                 aria-selected={isActive}

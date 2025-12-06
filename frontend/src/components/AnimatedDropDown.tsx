@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState, useRef, useEffect } from "react";
 
 interface AnimatedDropDownProps {
-  options: [{ name: string; onClick: () => void }];
+  options: { name: string; onClick: () => void }[];
 }
 
 const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {

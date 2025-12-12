@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import api from "../api/client.js";
 import CardList from "../components/CardList.js";
 import * as React from "react";
-import { card } from "../../types.js";
+import { card } from "../lib/types.js";
 
 const UserProfilePage: React.FC = () => {
   const { id } = useParams<string>();

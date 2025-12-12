@@ -9,7 +9,7 @@ import {
   trade,
   TradeStatus,
   ActiveUser,
-} from "../../types.js";
+} from "../lib/types.js";
 
 interface TradePanelProps {
   trade: trade;

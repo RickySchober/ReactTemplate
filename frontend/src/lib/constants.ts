@@ -1,0 +1,1 @@
+export const BACKSPLASH_HEIGHT = 1000;

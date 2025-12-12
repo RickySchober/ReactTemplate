@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import SearchCard from "./SearchCard.js";
 import icon from "/favicon.png";
 import * as React from "react";
-import { card } from "../../types.js";
+import { card } from "../lib/types.js";
 import AnimatedDropDown from "./AnimatedDropDown.js";
 
 interface NavBarProps {

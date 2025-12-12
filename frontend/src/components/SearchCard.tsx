@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Timeout = NodeJS.Timeout;
 import axios from "axios";
 import * as React from "react";
-import { card } from "../../types.js";
+import { card, ScryfallCard } from "../lib/types.js";
 
 interface SearchCardProps {
   value: string;
@@ -15,38 +15,6 @@ interface SearchCardProps {
   minChars?: number;
   maxResults?: number;
   debounceMs?: number;
-}
-
-interface ScryfallPrice {
-  usd?: number;
-  usd_foil?: number;
-  usd_etched?: number;
-  eur?: number;
-  tix?: number;
-}
-
-interface ScryfallCard {
-  id: string;
-  name: string;
-  set_name: string;
-  set?: string;
-  rarity: string;
-  prices: ScryfallPrice;
-  image_uris?: {
-    small?: string;
-  };
-  card_faces?: Array<{
-    name?: string;
-    image_uris?: {
-      small?: string;
-    };
-  }>;
-  border_color?: string;
-  promo?: boolean;
-  variation?: boolean;
-  frame_effects?: string[];
-  foil?: boolean;
-  nonfoil?: boolean;
 }
 
 const SearchCard: React.FC<SearchCardProps> = ({

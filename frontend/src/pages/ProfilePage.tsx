@@ -3,7 +3,7 @@
   decklist into a textbox. In either case scryfall api is called to 
   validate cards.
 */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client.js";
 import CardList from "../components/CardList.js";
@@ -14,7 +14,9 @@ import ToggleSwitch from "../components/ToggleSwitch.js";
 import Backsplash from "../components/Backsplash.js";
 import MultiTutorialPopup from "../components/TutorialPopup.js";
 import * as React from "react";
-import { card } from "../../types.js";
+import { card, SortOption } from "../lib/types.js";
+import { BACKSPLASH_HEIGHT } from "../lib/constants.js";
+import { sortCards } from "../lib/utils.js";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
@@ -25,7 +27,9 @@ const ProfilePage: React.FC = () => {
   const [searchRedirect, setSearchRedirect] = useState<string>("");
   const [search, setSearch] = useState<string>("");
   const [showListInput, setShowListInput] = useState<boolean>(false);
-  const [sortOption, setSortOption] = useState<string>("newest");
+  const [sortOption, setSortOption] = useState<SortOption>(
+    SortOption.DATE_ADDED
+  );
   const [ascending, setAscending] = useState<boolean>(true);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [listText, setListText] = useState<string>("");
@@ -80,22 +84,10 @@ const ProfilePage: React.FC = () => {
     },
   ];
 
-  async function addFromSearch(card) {
-    let payload: card = {
-      name: card.name,
-      set_name: card.set_name || card.set || "",
-      rarity: card.rarity || "",
-      price: card.prices?.usd ? parseFloat(card.prices.usd) : 0,
-      image_url:
-        card.image_uris?.normal ||
-        card.card_faces?.[0]?.image_uris?.normal ||
-        "",
-      quantity: 1,
-      intent: haves ? "have" : "want",
-    };
-    console.log(payload);
+  async function addFromSearch(card: card) {
+    console.log(card);
     try {
-      const res = await api.post("/cards/", payload);
+      const res = await api.post("/cards/", card);
       await fetchMyCards();
     } catch (err) {
       alert("Failed to add card");
@@ -116,60 +108,26 @@ const ProfilePage: React.FC = () => {
     const q = encodeURIComponent(card?.name || "");
     navigate(`/search?q=${q}`);
   }
-  const heroHeight = 1000; // px - the background image area height
-  const sortedCards = [...cards]
-    .filter((card) => card.intent === (haves ? "have" : "want"))
-    .sort((a, b) => {
-      const dir = ascending ? 1 : -1;
-      switch (sortOption) {
-        case "price":
-          return (a.price - b.price) * dir;
-        case "dateSort":
-          return (
-            (new Date(a.date_added ?? Date.now()).getTime() -
-              new Date(b.date_added ?? Date.now()).getTime()) *
-            dir
-          );
-        case "nameSort":
-          return a.name.localeCompare(b.name) * dir;
-        case "setName":
-          return a.set_name.localeCompare(b.set_name) * dir;
-        default:
-          return a.name.localeCompare(b.name) * dir;
-      }
-    });
+  const sortedCards = sortCards(
+    cards,
+    sortOption,
+    ascending,
+    haves ? "have" : "want"
+  );
   const FIVE_MIN = 60 * 5 * 1000; // ms
+  function isRecent(card: card): boolean {
+    const cardDate = new Date(card.date_added ?? Date.now()).getTime();
+    const now = Date.now();
+    return now - cardDate <= FIVE_MIN;
+  }
   //List of cards added in last 5 minutes
-  const sortedRecent = cards
-    .filter((card: card) => {
-      console.log(card.date_added);
-      const cardDate = new Date(card.date_added ?? Date.now()).getTime();
-      console.log(cardDate);
-      const now = Date.now();
-      console.log(now);
-      console.log(now - cardDate <= FIVE_MIN);
-      return now - cardDate <= FIVE_MIN;
-    })
-    .filter((card: card) => card.intent === (haves ? "have" : "want"))
-    .sort((a, b) => {
-      const dir = ascending ? 1 : -1;
-      switch (sortOption) {
-        case "price":
-          return (a.price - b.price) * dir;
-        case "dateSort":
-          return (
-            (new Date(a.date_added ?? Date.now()).getTime() -
-              new Date(b.date_added ?? Date.now()).getTime()) *
-            dir
-          );
-        case "nameSort":
-          return a.name.localeCompare(b.name) * dir;
-        case "setName":
-          return a.set_name.localeCompare(b.set_name) * dir;
-        default:
-          return a.name.localeCompare(b.name) * dir;
-      }
-    });
+  const sortedRecent = sortCards(
+    cards,
+    sortOption,
+    ascending,
+    haves ? "have" : "want",
+    [isRecent]
+  );
 
   return (
     <div className="position-relative">
@@ -190,7 +148,7 @@ const ProfilePage: React.FC = () => {
           }}
         />
       )}
-      <Backsplash heroHeight={heroHeight} bgArt={bgArt}>
+      <Backsplash bgArt={bgArt}>
         <div className="flex items-center justify-start gap-3">
           <ToggleSwitch
             value={haves}
@@ -217,8 +175,8 @@ const ProfilePage: React.FC = () => {
             <button
               className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
-                setShowListInput((s) => false);
-                setShowSearch((s) => true);
+                setShowListInput(false);
+                setShowSearch(true);
               }}
             >
               Add by Search
@@ -228,8 +186,8 @@ const ProfilePage: React.FC = () => {
             <button
               className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
               onClick={() => {
-                setShowListInput((s) => true);
-                setShowSearch((s) => false);
+                setShowListInput(true);
+                setShowSearch(false);
               }}
             >
               Add by List

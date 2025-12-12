@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../api/client.js";
 import { useNavigate } from "react-router-dom";
 import * as React from "react";
+import { redirectWhenLoggedIn } from "../lib/hooks.js";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -10,21 +11,7 @@ const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    const payload = parseJwt(token);
-    if (payload && payload.exp) {
-      const now = Date.now() / 1000;
-      if (payload.exp > now) {
-        navigate("/");
-        return;
-      }
-    }
-    // token missing / invalid / expired -> remove it
-    localStorage.removeItem("token");
-  }, [navigate]);
+  redirectWhenLoggedIn();
 
   async function tryRegister(e) {
     e.preventDefault();
@@ -58,78 +45,26 @@ const LoginPage: React.FC = () => {
         <h2 className="mb-5 text-center text-6xl font-bold">
           {isRegister ? "Create an account" : "Login"}
         </h2>
-
         {isRegister ? (
-          <form onSubmit={tryRegister} className="flex flex-col gap-3">
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="rounded-md p-3 text-base"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-md p-3 text-base"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-md p-3 text-base"
-            />
-            <button
-              type="submit"
-              className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-            >
-              Register
-            </button>
-            <div className="text-center text-sm">
-              <button
-                type="button"
-                onClick={() => setIsRegister(false)}
-                className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
-              >
-                Already have an account? Login
-              </button>
-            </div>
-          </form>
+          <RegisterForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            setIsRegister={setIsRegister}
+            username={username}
+            setUsername={setUsername}
+            tryRegister={tryRegister}
+          />
         ) : (
-          <form onSubmit={handleLogin} className="flex flex-col gap-3">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded-md p-3 text-base"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded-md p-3 text-base"
-            />
-            <button
-              type="submit"
-              className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-            >
-              Login
-            </button>
-            <div className="text-center text-sm">
-              <button
-                type="button"
-                onClick={() => setIsRegister(true)}
-                className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
-              >
-                Create an account
-              </button>
-            </div>
-          </form>
+          <LoginForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            setIsRegister={setIsRegister}
+            handleLogin={handleLogin}
+          />
         )}
       </div>
     </div>
@@ -137,19 +72,112 @@ const LoginPage: React.FC = () => {
 };
 export default LoginPage;
 
-//Helper function for parsing token
-function parseJwt(token: string) {
-  try {
-    const payload = token.split(".")[1];
-    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-    const json = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(json);
-  } catch (e) {
-    return null;
-  }
+interface LoginFormProps {
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  setIsRegister: (isRegister: boolean) => void;
+  handleLogin: (e: React.FormEvent) => void;
 }
+const LoginForm: React.FC<LoginFormProps> = ({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  setIsRegister,
+  handleLogin,
+}) => {
+  return (
+    <form onSubmit={handleLogin} className="flex flex-col gap-3">
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button
+        type="submit"
+        className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
+      >
+        Login
+      </button>
+      <div className="text-center text-sm">
+        <button
+          type="button"
+          onClick={() => setIsRegister(true)}
+          className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
+        >
+          Create an account
+        </button>
+      </div>
+    </form>
+  );
+};
+interface RegisterFormProps {
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  username: string;
+  setUsername: (username: string) => void;
+  setIsRegister: (isRegister: boolean) => void;
+  tryRegister: (e: React.FormEvent) => void;
+}
+const RegisterForm: React.FC<RegisterFormProps> = ({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  username,
+  setUsername,
+  setIsRegister,
+  tryRegister,
+}) => {
+  return (
+    <form onSubmit={tryRegister} className="flex flex-col gap-3">
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        className="rounded-md p-3 text-base"
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="rounded-md p-3 text-base"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="rounded-md p-3 text-base"
+      />
+      <button
+        type="submit"
+        className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
+      >
+        Register
+      </button>
+      <div className="text-center text-sm">
+        <button
+          type="button"
+          onClick={() => setIsRegister(false)}
+          className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
+        >
+          Already have an account? Login
+        </button>
+      </div>
+    </form>
+  );
+};

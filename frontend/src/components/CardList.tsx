@@ -4,7 +4,7 @@ quantity values as necessary.
 */
 import CardItem from "./CardItem.js";
 import * as React from "react";
-import { card, TradeItem } from "../../types.js";
+import { card, TradeItem } from "../lib/types.js";
 
 function isTradeItem(item: card | TradeItem): item is TradeItem {
   // Helper to check type

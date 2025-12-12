@@ -5,15 +5,10 @@ import * as React from "react";
 
 interface BacksplashProps {
   children: React.ReactNode;
-  heroHeight?: number;
   bgArt: string;
 }
 
-const Backsplash: React.FC<BacksplashProps> = ({
-  children,
-  heroHeight = 400,
-  bgArt,
-}) => {
+const Backsplash: React.FC<BacksplashProps> = ({ children, bgArt }) => {
   return (
     <>
       <div

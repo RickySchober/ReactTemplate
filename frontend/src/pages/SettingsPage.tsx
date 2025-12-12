@@ -5,7 +5,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import api from "../api/client.js";
 import NavBar from "../components/NavBar.js";
-import { UserProfile } from "../../types.js";
+import { UserProfile } from "../lib/types.js";
 
 const backsplashImages = [
   "Gudul_Lurker.jpg",

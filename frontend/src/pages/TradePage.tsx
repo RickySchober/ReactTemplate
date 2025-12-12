@@ -15,7 +15,9 @@ import {
   User,
   TradePayload,
   TradeItemPayload,
-} from "../../types.js";
+  SortOption,
+} from "../lib/types.js";
+import { sortCards } from "../lib/utils.js";
 import CardList from "../components/CardList.js";
 import Backsplash from "../components/Backsplash.js";
 import StatusBar from "../components/StatusBar.js";
@@ -51,7 +53,9 @@ const TradePage: React.FC = () => {
   const [myCards, setMyCards] = useState<card[]>([]);
   const [traderCards, setTraderCards] = useState<card[]>([]);
   //UI utilities
-  const [sortOption, setSortOption] = useState<string>("dateSort");
+  const [sortOption, setSortOption] = useState<SortOption>(
+    SortOption.DATE_ADDED
+  );
   const [ascending, setAscending] = useState<boolean>(true);
   const [autoMatch, setAutoMatch] = useState<boolean>(true);
   const [searchRedirect, setSearchRedirect] = useState<string>("");
@@ -270,12 +274,12 @@ const TradePage: React.FC = () => {
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
     let newTradeItem: TradeItem = { quantity: 1, card: card };
-    setTrade({
-      ...trade,
+    setTrade((prev) => ({
+      ...prev,
       status: TradeStatus.PENDING,
       activeUser: ActiveUser.NONE,
-      trade_items: [...trade.trade_items, newTradeItem],
-    });
+      trade_items: [...prev.trade_items, newTradeItem],
+    }));
   }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
@@ -292,83 +296,36 @@ const TradePage: React.FC = () => {
       }
       return item;
     });
-    setTrade({
-      ...trade,
+    setTrade((prev) => ({
+      ...prev,
       status: TradeStatus.PENDING,
       activeUser: ActiveUser.NONE,
       trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
-    });
+    }));
   }
-  // Sorted list of user's cards
-  const sortMyCards = [...myCards]
-    .filter((card) => card.intent === "have") //Only show haves
-    .filter((card) =>
-      autoMatch
-        ? true
-        : traderCards.some(
-            (traderCard: card) =>
-              traderCard.intent === "want" && traderCard.name === card.name
-          )
-    )
-    .filter((card) =>
-      trade
-        ? !trade.trade_items.some((item: TradeItem) => item.card.id === card.id)
-        : false
-    ) //Exclude cards in offer already
-    .sort((a, b) => {
-      const dir = ascending ? 1 : -1;
-      switch (sortOption) {
-        case "price":
-          return (a.price - b.price) * dir;
-        case "dateSort":
-          return (
-            (new Date(a.date_added ?? Date.now()).getTime() -
-              new Date(b.date_added ?? Date.now()).getTime()) *
-            dir
-          );
-        case "nameSort":
-          a.name.localeCompare(b.name) * dir;
-        case "setName":
-          return a.set_name.localeCompare(b.set_name) * dir;
-        default:
-          return a.name.localeCompare(b.name) * dir;
-      }
-    });
-  // Sorted list of trade partners cards
-  const sortTraderCards = [...traderCards]
-    .filter((card) => card.intent === "have") //Only show haves
-    .filter((card) =>
-      autoMatch
-        ? true
-        : myCards.some(
+  // Only show cards that the other user wants if autoMatch is on
+  function filterAutoMatch(collection: card[]): (card: card) => boolean {
+    return autoMatch
+      ? (card: card) =>
+          myCards.some(
             (myCard: card) =>
               myCard.intent === "want" && myCard.name === card.name
           )
-    )
-    .filter((card) =>
-      trade
-        ? !trade.trade_items.some((item: TradeItem) => item.card.id === card.id)
-        : false
-    ) //Exclude cards in offer already
-    .sort((a, b) => {
-      const dir = ascending ? 1 : -1;
-      switch (sortOption) {
-        case "price":
-          return (a.price - b.price) * dir;
-        case "dateSort":
-          return (
-            (new Date(a.date_added ?? Date.now()).getTime() -
-              new Date(b.date_added ?? Date.now()).getTime()) *
-            dir
-          );
-        case "nameSort":
-          a.name.localeCompare(b.name) * dir;
-        case "setName":
-          return a.set_name.localeCompare(b.set_name) * dir;
-        default:
-          return a.name.localeCompare(b.name) * dir;
-      }
-    });
+      : (card: card) => true;
+  }
+  //Only show cards that are not already in the trade
+  const tradeFilter = (card: card) =>
+    trade ? !trade.trade_items.some((item) => item.card.id === card.id) : true;
+
+  const sortMyCards = sortCards(myCards, sortOption, ascending, "have", [
+    tradeFilter,
+    filterAutoMatch(traderCards),
+  ]);
+
+  const sortTraderCards = sortCards(myCards, sortOption, ascending, "have", [
+    tradeFilter,
+    filterAutoMatch(myCards),
+  ]);
 
   const currentUserPanelProps = {
     trade: trade,
@@ -418,7 +375,7 @@ const TradePage: React.FC = () => {
       <div
         className={` ${viewMyCards ? "absolute" : "fixed"} duration-350 inset-0 z-30 flex flex-col transition-transform ease-out ${viewMyCards ? "translate-y-0" : "translate-y-full"} `}
       >
-        <Backsplash heroHeight={1000} bgArt={bgArt}>
+        <Backsplash bgArt={bgArt}>
           <div className="flex items-center justify-start gap-3">
             <SortDropdown
               sortField={sortOption}
@@ -462,7 +419,7 @@ const TradePage: React.FC = () => {
       <div
         className={` ${viewTraderCards ? "absolute" : "fixed"} duration-350 inset-0 flex flex-col transition-transform ease-out ${viewTraderCards ? "translate-y-0" : "translate-y-full"} `}
       >
-        <Backsplash heroHeight={1000} bgArt={bgArt}>
+        <Backsplash bgArt={bgArt}>
           <div className="flex items-center justify-start gap-3">
             <SortDropdown
               sortField={sortOption}

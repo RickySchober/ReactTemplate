@@ -2,7 +2,7 @@
    different card interfaces allowing you to pass in child components.
 */
 import * as React from "react";
-import { card } from "../../types.js";
+import { card } from "../lib/types.js";
 import { useNavigate } from "react-router-dom";
 
 interface CardItemProps {

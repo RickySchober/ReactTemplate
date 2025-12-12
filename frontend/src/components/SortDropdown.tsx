@@ -2,10 +2,11 @@
    Still requires the parent components to filter card arrays.
 */
 import * as React from "react";
+import { SortOption } from "../lib/types.js";
 
 interface SortDropdownProps {
-  sortField: string;
-  setSortField: (field: string) => void;
+  sortField: SortOption;
+  setSortField: (field: SortOption) => void;
   ascending: boolean;
   setAscending: (asc: boolean) => void;
 }
@@ -21,13 +22,13 @@ const SortDropown: React.FC<SortDropdownProps> = ({
       {/* Dropdown */}
       <select
         value={sortField}
-        onChange={(e) => setSortField(e.target.value)}
+        onChange={(e) => setSortField(e.target.value as SortOption)}
         className="px-6 py-2 text-lg font-semibold"
       >
-        <option value="nameSort">Name</option>
-        <option value="price">Price</option>
-        <option value="dateSort">Date Added</option>
-        <option value="setName"> Set Name</option>
+        <option value={SortOption.NAME}>Name</option>
+        <option value={SortOption.PRICE}>Price</option>
+        <option value={SortOption.DATE_ADDED}>Date Added</option>
+        <option value={SortOption.SET_NAME}> Set Name</option>
       </select>
 
       {/* Asc/Desc Toggle Button */}

@@ -10,13 +10,16 @@ import SortDropdown from "../components/SortDropdown.js";
 import Backsplash from "../components/Backsplash.js";
 import bgArt from "../assets/Treasure_Cruise.jpg";
 import * as React from "react";
-import { card } from "../../types.js";
+import { card, SortOption } from "../lib/types.js";
+import { sortCards } from "../lib/utils.js";
 
 const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");
   const [myID, setMyID] = useState<number>(0);
   const [results, setResults] = useState<card[]>([]);
-  const [sortOption, setSortOption] = useState<string>("dateSort");
+  const [sortOption, setSortOption] = useState<SortOption>(
+    SortOption.DATE_ADDED
+  );
   const [ascending, setAscending] = useState<boolean>(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -66,29 +69,10 @@ const SearchPage: React.FC = () => {
       },
     });
   }
-
-  const sortedResults = [...results]
-    .filter((card) => card.owner_id !== myID)
-    .filter((card) => card.intent == "have")
-    .sort((a, b) => {
-      const dir = ascending ? 1 : -1;
-      switch (sortOption) {
-        case "price":
-          return (a.price - b.price) * dir;
-        case "dateSort":
-          return (
-            (new Date(a.date_added ?? Date.now()).getTime() -
-              new Date(b.date_added ?? Date.now()).getTime()) *
-            dir
-          );
-        case "nameSort":
-          a.name.localeCompare(b.name) * dir;
-        case "setName":
-          return a.set_name.localeCompare(b.set_name) * dir;
-        default:
-          return a.name.localeCompare(b.name) * dir;
-      }
-    });
+  const notMyCards = (card: card) => card.owner_id !== myID;
+  const sortedResults = sortCards(results, sortOption, ascending, "have", [
+    notMyCards,
+  ]);
   return (
     <>
       <NavBar
@@ -97,7 +81,7 @@ const SearchPage: React.FC = () => {
         onSelect={handleSearch}
         placeholder="Search for a card..."
       />
-      <Backsplash bgArt={bgArt} heroHeight={1000}>
+      <Backsplash bgArt={bgArt}>
         {/* ─── FILTER BAR ──────────────────────────── */}
         <section className="m-2.5 flex items-center justify-start gap-3">
           <SortDropdown

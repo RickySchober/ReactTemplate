@@ -13,6 +13,45 @@ export interface card {
   date_added?: string | number | Date;
 }
 
+export interface ScryfallPrice {
+  usd?: number;
+  usd_foil?: number;
+  usd_etched?: number;
+  eur?: number;
+  tix?: number;
+}
+
+export interface ScryfallCard {
+  id: string;
+  name: string;
+  set_name: string;
+  set?: string;
+  rarity: string;
+  prices: ScryfallPrice;
+  image_uris?: {
+    small?: string;
+  };
+  card_faces?: Array<{
+    name?: string;
+    image_uris?: {
+      small?: string;
+    };
+  }>;
+  border_color?: string;
+  promo?: boolean;
+  variation?: boolean;
+  frame_effects?: string[];
+  foil?: boolean;
+  nonfoil?: boolean;
+}
+
+export enum SortOption {
+  NAME = "name",
+  PRICE = "price",
+  DATE_ADDED = "date_added",
+  SET_NAME = "set_name",
+}
+
 export enum TradeStatus {
   PENDING = "pending",
   PROPOSE = "propose",

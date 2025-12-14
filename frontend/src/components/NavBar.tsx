@@ -9,18 +9,10 @@ import { card } from "../lib/types.js";
 import AnimatedDropDown from "./AnimatedDropDown.js";
 
 interface NavBarProps {
-  search: string;
-  setSearch?: (value: string) => void;
-  onSelect?: (card: card) => void;
-  placeholder?: string;
+  onSelect?: (card: card) => void; // Callback when a card is selected from search.
 }
 
-const NavBar: React.FC<NavBarProps> = ({
-  search,
-  setSearch,
-  onSelect,
-  placeholder,
-}) => {
+const NavBar: React.FC<NavBarProps> = ({ onSelect }) => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,42 +21,19 @@ const NavBar: React.FC<NavBarProps> = ({
     localStorage.removeItem("token");
     navigate("/login");
   }
-
-  function handleSearchSelection(card: card) {
-    if (location.pathname === "/search") {
-      setSearch?.(card?.name || "");
-      if (typeof onSelect === "function") onSelect(card);
-      return;
-    }
-    const q = encodeURIComponent(card?.name || "");
-    navigate(`/search?q=${q}`);
-  }
-
   return (
     <div className="z-30 flex w-full items-center justify-between bg-neutral-900 px-4 py-1 text-white shadow-md">
       {/* App Icon / Title */}
-      <div
-        onClick={() => navigate("/")}
-        className="flex cursor-pointer items-center gap-2"
-      >
+      <div onClick={() => navigate("/")} className="flex cursor-pointer items-center gap-2">
         <h1 className="flex items-center gap-2 text-4xl font-bold text-gray-200">
-          <img
-            src={icon}
-            alt="M"
-            className="inline-block h-12 w-12 object-contain"
-          />
+          <img src={icon} alt="M" className="inline-block h-12 w-12 object-contain" />
           <span className="-ml-1 leading-none">TGTrader</span>
         </h1>
       </div>
 
       {/* Search Bar */}
       <div className="mx-6 w-auto flex-1">
-        <SearchCard
-          value={search}
-          onChange={setSearch}
-          onSelect={handleSearchSelection}
-          placeholder={placeholder}
-        />
+        <SearchCard onSelect={onSelect} />
       </div>
 
       {/* Auth Buttons */}

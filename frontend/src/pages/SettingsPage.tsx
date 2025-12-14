@@ -19,7 +19,6 @@ const backsplashImages = [
 const SettingsPage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [saving, setSaving] = useState(false);
-  const [searchRedirect, setSearchRedirect] = useState<string>("");
   const [showBksChooser, setShowBksChooser] = useState(false);
   // Fetch profile
   useEffect(() => {
@@ -28,11 +27,7 @@ const SettingsPage: React.FC = () => {
 
   if (!profile) return <div className="p-4 text-white">Loading...</div>;
 
-  const updateField = (
-    section: "settings" | "address",
-    field: string,
-    value: any
-  ) => {
+  const updateField = (section: "settings" | "address", field: string, value: any) => {
     setProfile((prev: UserProfile) => ({
       ...prev!,
       [section]: {
@@ -53,11 +48,7 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8 text-white">
-      <NavBar
-        search={searchRedirect}
-        setSearch={setSearchRedirect}
-        placeholder="Search for a card..."
-      />
+      <NavBar />
       {/* SAVE BUTTON */}
       <button
         onClick={save}
@@ -76,9 +67,7 @@ const SettingsPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Backsplash</p>
-                <p className="text-sm text-slate-400">
-                  {profile.settings?.backsplash}
-                </p>
+                <p className="text-sm text-slate-400">{profile.settings?.backsplash}</p>
               </div>
               <button
                 className="rounded bg-blue-600 px-4 py-2"
@@ -94,19 +83,14 @@ const SettingsPage: React.FC = () => {
                   <div
                     key={img}
                     className={`cursor-pointer overflow-hidden rounded border hover:opacity-80 ${
-                      profile.settings?.backsplash === img
-                        ? "border-blue-500"
-                        : "border-slate-700"
+                      profile.settings?.backsplash === img ? "border-blue-500" : "border-slate-700"
                     }`}
                     onClick={() => {
                       updateField("settings", "backsplash", img);
                       setShowBksChooser(false);
                     }}
                   >
-                    <img
-                      src={`/backsplashes/${img}`}
-                      className="h-40 w-full object-cover"
-                    />
+                    <img src={`/backsplashes/${img}`} className="h-40 w-full object-cover" />
                     <p className="py-1 text-center text-xs">{img}</p>
                   </div>
                 ))}
@@ -144,9 +128,7 @@ const SettingsPage: React.FC = () => {
             <input
               type="checkbox"
               checked={s.email_notifications}
-              onChange={(e) =>
-                updateField("settings", "email_notifications", e.target.checked)
-              }
+              onChange={(e) => updateField("settings", "email_notifications", e.target.checked)}
             />
             Email Notifications
           </label>
@@ -158,20 +140,16 @@ const SettingsPage: React.FC = () => {
         <h2 className="mb-4 text-xl font-semibold">Mailing Address</h2>
 
         <div className="space-y-3">
-          {["full_name", "street", "city", "state", "zip_code", "country"].map(
-            (field) => (
-              <label key={field} className="block capitalize">
-                <span>{field.replace("_", " ")}</span>
-                <input
-                  className="mt-1 w-full rounded bg-slate-700 p-2"
-                  value={(a as any)[field] ?? ""}
-                  onChange={(e) =>
-                    updateField("address", field, e.target.value)
-                  }
-                />
-              </label>
-            )
-          )}
+          {["full_name", "street", "city", "state", "zip_code", "country"].map((field) => (
+            <label key={field} className="block capitalize">
+              <span>{field.replace("_", " ")}</span>
+              <input
+                className="mt-1 w-full rounded bg-slate-700 p-2"
+                value={(a as any)[field] ?? ""}
+                onChange={(e) => updateField("address", field, e.target.value)}
+              />
+            </label>
+          ))}
         </div>
       </div>
     </div>

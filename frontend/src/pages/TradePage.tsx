@@ -53,12 +53,9 @@ const TradePage: React.FC = () => {
   const [myCards, setMyCards] = useState<card[]>([]);
   const [traderCards, setTraderCards] = useState<card[]>([]);
   //UI utilities
-  const [sortOption, setSortOption] = useState<SortOption>(
-    SortOption.DATE_ADDED
-  );
+  const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
   const [ascending, setAscending] = useState<boolean>(true);
   const [autoMatch, setAutoMatch] = useState<boolean>(true);
-  const [searchRedirect, setSearchRedirect] = useState<string>("");
   const [userA, setUserA] = useState<boolean>(false);
   const [viewMyCards, setViewMyCards] = useState<boolean>(false);
   const [viewTraderCards, setViewTraderCards] = useState<boolean>(false);
@@ -158,9 +155,7 @@ const TradePage: React.FC = () => {
       const me = await api.get("/auth/me/");
       let isUserA = trade?.a_user.id == me.data.id ? true : false;
       setUserA(isUserA);
-      const my = await api.get(
-        "/cards/user/" + (isUserA ? trade?.a_user.id : trade?.b_user.id)
-      );
+      const my = await api.get("/cards/user/" + (isUserA ? trade?.a_user.id : trade?.b_user.id));
       const trader = await api.get(
         "/cards/user/" + (!isUserA ? trade?.a_user.id : trade?.b_user.id)
       );
@@ -209,8 +204,7 @@ const TradePage: React.FC = () => {
               ? ActiveUser.A
               : ActiveUser.B
             : ActiveUser.NONE;
-        status =
-          users == ActiveUser.NONE ? TradeStatus.RECEIVE : TradeStatus.SHIP;
+        status = users == ActiveUser.NONE ? TradeStatus.RECEIVE : TradeStatus.SHIP;
         updateTrade = { ...trade, status: status, activeUser: users };
         await postTrade(updateTrade);
         setTrade(updateTrade);
@@ -222,10 +216,7 @@ const TradePage: React.FC = () => {
               ? ActiveUser.A
               : ActiveUser.B
             : ActiveUser.NONE;
-        status =
-          users == ActiveUser.NONE
-            ? TradeStatus.COMPLETED
-            : TradeStatus.RECEIVE;
+        status = users == ActiveUser.NONE ? TradeStatus.COMPLETED : TradeStatus.RECEIVE;
         updateTrade = { ...trade, status: status, activeUser: users };
         await postTrade(updateTrade);
         console.log(updateTrade);
@@ -270,7 +261,6 @@ const TradePage: React.FC = () => {
       const res = await api.post("/trades/", tradePayload);
     }
   }
-  function handleSelectCard(card: card) {}
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
     let newTradeItem: TradeItem = { quantity: 1, card: card };
@@ -283,9 +273,7 @@ const TradePage: React.FC = () => {
   }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
-    let index: number = trade.trade_items.findIndex(
-      (item: TradeItem) => item.card.id == card.id
-    );
+    let index: number = trade.trade_items.findIndex((item: TradeItem) => item.card.id == card.id);
     if (index === -1) {
       console.warn("Trade item not found for update.");
       return;
@@ -307,10 +295,7 @@ const TradePage: React.FC = () => {
   function filterAutoMatch(collection: card[]): (card: card) => boolean {
     return autoMatch
       ? (card: card) =>
-          myCards.some(
-            (myCard: card) =>
-              myCard.intent === "want" && myCard.name === card.name
-          )
+          myCards.some((myCard: card) => myCard.intent === "want" && myCard.name === card.name)
       : (card: card) => true;
   }
   //Only show cards that are not already in the trade
@@ -346,12 +331,7 @@ const TradePage: React.FC = () => {
 
   return (
     <div className="position-relative z-20">
-      <NavBar
-        search={searchRedirect}
-        setSearch={setSearchRedirect}
-        onSelect={handleSelectCard}
-        placeholder="Search for a card..."
-      />
+      <NavBar />
       {showTutor && (
         <MultiTutorialPopup
           pages={tutorialSteps}

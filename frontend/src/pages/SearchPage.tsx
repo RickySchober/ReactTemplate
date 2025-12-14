@@ -17,9 +17,7 @@ const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");
   const [myID, setMyID] = useState<number>(0);
   const [results, setResults] = useState<card[]>([]);
-  const [sortOption, setSortOption] = useState<SortOption>(
-    SortOption.DATE_ADDED
-  );
+  const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
   const [ascending, setAscending] = useState<boolean>(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -70,17 +68,10 @@ const SearchPage: React.FC = () => {
     });
   }
   const notMyCards = (card: card) => card.owner_id !== myID;
-  const sortedResults = sortCards(results, sortOption, ascending, "have", [
-    notMyCards,
-  ]);
+  const sortedResults = sortCards(results, sortOption, ascending, "have", [notMyCards]);
   return (
     <>
-      <NavBar
-        search={search}
-        setSearch={setSearch}
-        onSelect={handleSearch}
-        placeholder="Search for a card..."
-      />
+      <NavBar onSelect={handleSearch} />
       <Backsplash bgArt={bgArt}>
         {/* ─── FILTER BAR ──────────────────────────── */}
         <section className="m-2.5 flex items-center justify-start gap-3">

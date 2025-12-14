@@ -12,12 +12,7 @@ interface CardItemProps {
   children?: React.ReactNode; //Adds additional elements to bottom
 }
 
-const CardItem: React.FC<CardItemProps> = ({
-  card,
-  modQuant,
-  maxQuant,
-  children,
-}) => {
+const CardItem: React.FC<CardItemProps> = ({ card, modQuant, maxQuant, children }) => {
   const navigate = useNavigate();
   function handleSelectUser() {
     console.log("Selected card:", card);
@@ -36,10 +31,7 @@ const CardItem: React.FC<CardItemProps> = ({
             <button
               className="text-md rounded bg-green-600 px-2 py-0.5 text-white hover:bg-green-700 @sm:text-lg @md:px-2.5 @md:py-1 @md:text-xl @lg:px-3 @lg:py-1.5 @lg:text-2xl"
               onClick={() =>
-                modQuant(
-                  card,
-                  maxQuant == card.quantity ? card.quantity : card.quantity + 1
-                )
+                modQuant(card, maxQuant == card.quantity ? card.quantity : card.quantity + 1)
               }
             >
               +
@@ -61,17 +53,13 @@ const CardItem: React.FC<CardItemProps> = ({
 
         {/* Card text info */}
         <div className="flex flex-col text-center">
-          <h4 className="text-md font-bold @sm:text-lg @md:text-xl @lg:text-2xl">
-            {card.name}
-          </h4>
+          <h4 className="text-md font-bold @sm:text-lg @md:text-xl @lg:text-2xl">{card.name}</h4>
           <p className="@md:text-md text-xs text-gray-400 @sm:text-sm @lg:text-lg">
             {card.set_name}
           </p>
 
           {card.print_description && (
-            <p className="mt-1 text-xs text-gray-500">
-              {card.print_description}
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{card.print_description}</p>
           )}
           {/* Owner info not passed yet
           <p className="mt-1 text-sm">
@@ -92,7 +80,7 @@ const CardItem: React.FC<CardItemProps> = ({
           </button>
         )}
       </div>
-      <div>{children}</div>
+      <div className="mb-2">{children}</div>
     </div>
   );
 };

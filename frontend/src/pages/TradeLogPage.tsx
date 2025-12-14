@@ -10,7 +10,6 @@ import { TradeStatus, trade, TradeItem } from "../lib/types.js";
 const TradeLogPage: React.FC = () => {
   const [trades, setTrades] = useState<trade[]>([]);
   const [myID, setMyID] = useState<number | null>(null);
-  const [searchRedirect, setSearchRedirect] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,10 +30,7 @@ const TradeLogPage: React.FC = () => {
   }
 
   function calculateTotal(items: TradeItem[]) {
-    return items.reduce(
-      (sum, ti) => sum + (ti.card?.price ?? 0) * ti.quantity,
-      0
-    );
+    return items.reduce((sum, ti) => sum + (ti.card?.price ?? 0) * ti.quantity, 0);
   }
 
   function getOtherUser(trade: trade) {
@@ -59,22 +55,14 @@ const TradeLogPage: React.FC = () => {
 
   return (
     <div>
-      <NavBar
-        search={searchRedirect}
-        setSearch={setSearchRedirect}
-        placeholder="Search for a card..."
-      />
+      <NavBar />
       <div className="mx-auto max-w-5xl p-6 text-white">
         <h1 className="mb-6 text-3xl font-bold">Trade Log:</h1>
 
         <div className="space-y-4">
           {trades.map((trade: trade) => {
-            const myItems = trade.trade_items.filter(
-              (ti) => ti.card?.owner_id === myID
-            );
-            const theirItems = trade.trade_items.filter(
-              (ti) => ti.card?.owner_id !== myID
-            );
+            const myItems = trade.trade_items.filter((ti) => ti.card?.owner_id === myID);
+            const theirItems = trade.trade_items.filter((ti) => ti.card?.owner_id !== myID);
 
             const myTotal = calculateTotal(myItems);
             const theirTotal = calculateTotal(theirItems);
@@ -93,9 +81,7 @@ const TradeLogPage: React.FC = () => {
                     {/* User Info */}
                     <p className="mb-2 text-xl text-gray-300">
                       Trading with:{" "}
-                      <span className="font-semibold text-white">
-                        {otherUser?.username}
-                      </span>
+                      <span className="font-semibold text-white">{otherUser?.username}</span>
                     </p>
                   </div>
                   <span className={`font-bold ${statusColor(trade.status)}`}>
@@ -107,15 +93,11 @@ const TradeLogPage: React.FC = () => {
                 <div className="mb-1 flex justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Your Value</p>
-                    <p className="text-lg font-bold text-blue-400">
-                      ${myTotal.toFixed(2)}
-                    </p>
+                    <p className="text-lg font-bold text-blue-400">${myTotal.toFixed(2)}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Their Value</p>
-                    <p className="text-lg font-bold text-green-400">
-                      ${theirTotal.toFixed(2)}
-                    </p>
+                    <p className="text-lg font-bold text-green-400">${theirTotal.toFixed(2)}</p>
                   </div>
                 </div>
 

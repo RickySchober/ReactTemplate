@@ -13,6 +13,7 @@ import NavBar from "../components/NavBar.js";
 import ToggleSwitch from "../components/ToggleSwitch.js";
 import Backsplash from "../components/Backsplash.js";
 import MultiTutorialPopup from "../components/TutorialPopup.js";
+import Button from "../components/Button.js";
 import * as React from "react";
 import { card, SortOption } from "../lib/types.js";
 import { BACKSPLASH_HEIGHT } from "../lib/constants.js";
@@ -24,12 +25,8 @@ const ProfilePage: React.FC = () => {
   const [haves, setHaves] = useState<boolean>(false); // toggle state between wants and haves
   const [bgArt, setBgArt] = useState<string>("");
   //UI utilities
-  const [searchRedirect, setSearchRedirect] = useState<string>("");
-  const [search, setSearch] = useState<string>("");
   const [showListInput, setShowListInput] = useState<boolean>(false);
-  const [sortOption, setSortOption] = useState<SortOption>(
-    SortOption.DATE_ADDED
-  );
+  const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
   const [ascending, setAscending] = useState<boolean>(true);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [listText, setListText] = useState<string>("");
@@ -48,8 +45,7 @@ const ProfilePage: React.FC = () => {
   async function fetchMyCards() {
     const me = await api.get("/auth/me");
     const myData = me.data;
-    let artUrl =
-      "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
+    let artUrl = "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
     setBgArt(artUrl);
     const res = await api.get("/auth/my_cards");
 
@@ -88,12 +84,12 @@ const ProfilePage: React.FC = () => {
     console.log(card);
     try {
       const res = await api.post("/cards/", card);
-      await fetchMyCards();
+      const cards = await api.get("/auth/my_cards");
+      setCards(cards.data);
     } catch (err) {
       alert("Failed to add card");
       return null;
     }
-    setSearch(card.name);
   }
   //Modifies quantity of a card removing it if 0
   async function modifyQuantity(card: card, quantity: number) {
@@ -104,16 +100,7 @@ const ProfilePage: React.FC = () => {
       console.error("Failed to modify quantity", err);
     }
   }
-  function handleSearchSelection(card: card) {
-    const q = encodeURIComponent(card?.name || "");
-    navigate(`/search?q=${q}`);
-  }
-  const sortedCards = sortCards(
-    cards,
-    sortOption,
-    ascending,
-    haves ? "have" : "want"
-  );
+  const sortedCards = sortCards(cards, sortOption, ascending, haves ? "have" : "want");
   const FIVE_MIN = 60 * 5 * 1000; // ms
   function isRecent(card: card): boolean {
     const cardDate = new Date(card.date_added ?? Date.now()).getTime();
@@ -121,22 +108,12 @@ const ProfilePage: React.FC = () => {
     return now - cardDate <= FIVE_MIN;
   }
   //List of cards added in last 5 minutes
-  const sortedRecent = sortCards(
-    cards,
-    sortOption,
-    ascending,
-    haves ? "have" : "want",
-    [isRecent]
-  );
+  const sortedRecent = sortCards(cards, sortOption, ascending, haves ? "have" : "want", [isRecent]);
 
   return (
     <div className="position-relative">
       <div>
-        <NavBar
-          search={searchRedirect}
-          setSearch={setSearchRedirect}
-          placeholder="Search for a card..."
-        />
+        <NavBar />
       </div>
       {showTutor && (
         <MultiTutorialPopup
@@ -149,65 +126,24 @@ const ProfilePage: React.FC = () => {
         />
       )}
       <Backsplash bgArt={bgArt}>
-        <div className="flex items-center justify-start gap-3">
-          <ToggleSwitch
-            value={haves}
-            onChange={setHaves}
-            leftLabel="Wants"
-            rightLabel="Haves"
-            id="profile-type-toggle"
-          />
-          <ToggleSwitch
-            value={add}
-            onChange={setAdd}
-            leftLabel="View"
-            rightLabel="Add"
-            id="profile-view-toggle"
-          />
-          <SortDropdown
-            sortField={sortOption}
-            setSortField={setSortOption}
-            ascending={ascending}
-            setAscending={setAscending}
-          />
-
-          {add && (
-            <button
-              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-              onClick={() => {
-                setShowListInput(false);
-                setShowSearch(true);
-              }}
-            >
-              Add by Search
-            </button>
-          )}
-          {add && (
-            <button
-              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-              onClick={() => {
-                setShowListInput(true);
-                setShowSearch(false);
-              }}
-            >
-              Add by List
-            </button>
-          )}
-          {/* Later feature add && <button>Add by Photo</button>*/}
-        </div>
+        <ProfileControls
+          haves={haves}
+          setHaves={setHaves}
+          add={add}
+          setAdd={setAdd}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+          ascending={ascending}
+          setAscending={setAscending}
+          setShowSearch={setShowSearch}
+          setShowListInput={setShowListInput}
+        />
         {showSearch && add && (
-          <SearchCard
-            value={search}
-            onChange={setSearch}
-            onSelect={addFromSearch}
-            placeholder="Search for a card to add..."
-          />
+          <SearchCard onSelect={addFromSearch} placeholder="Search for a card to add..." />
         )}
         {showListInput && add && (
           <div className="mt-4">
-            <div className="mb-1.5 text-2xl font-semibold">
-              Paste list (one card per line):
-            </div>
+            <div className="mb-1.5 text-2xl font-semibold">Paste list (one card per line):</div>
             <textarea
               value={listText}
               onChange={(e) => setListText(e.target.value)}
@@ -216,23 +152,14 @@ const ProfilePage: React.FC = () => {
               className="w-3/5 rounded-md border border-gray-700 bg-transparent p-2.5 text-base text-white"
             />
             <div className="mt-2 flex gap-2">
-              <button
-                className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-                onClick={async (e) => {
-                  e.preventDefault();
+              <Button
+                onClick={async () => {
                   await parseAndAddList();
                 }}
               >
                 Parse & Add
-              </button>
-              <button
-                className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-                onClick={() => {
-                  setListText("");
-                }}
-              >
-                Clear
-              </button>
+              </Button>
+              <Button onClick={() => setListText("")}>Clear</Button>
             </div>
           </div>
         )}
@@ -244,31 +171,15 @@ const ProfilePage: React.FC = () => {
             <CardList cards={sortedRecent} modQuant={modifyQuantity} />
           </div>
         )}
-        {!add &&
-          (sortedCards.length > 0 ? (
-            <div className="mt-4">
-              <CardList
-                cards={sortedCards}
-                modQuant={modifyQuantity}
-                children={(card: card) =>
-                  haves ? (
-                    <></>
-                  ) : (
-                    <button
-                      className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-                      onClick={() => handleSearchSelection(card)}
-                    >
-                      Trade for Card
-                    </button>
-                  )
-                }
-              />
-            </div>
-          ) : (
-            <div className="mt-3 text-xl">
-              No cards in collection select add.
-            </div>
-          ))}
+        {!add && sortedCards.length > 0 ? (
+          <ProfileCollection
+            sortedCards={sortedCards}
+            modifyQuantity={modifyQuantity}
+            haves={haves}
+          />
+        ) : (
+          <div className="mt-3 text-xl">No cards in collection select add.</div>
+        )}
       </Backsplash>
     </div>
   );
@@ -292,9 +203,7 @@ const ProfilePage: React.FC = () => {
      Quantity, name, set identifier in parentheses. Lines without quantity or without a set are ignored.
     Examples accepted: "1x Umara Wizard (ZNR)", "2 Lightning Bolt (M21)"; trailing text after the ) is ignored.
     */
-    function parseLine(
-      line: string
-    ): { qty: number; name: string; setId: string } | null {
+    function parseLine(line: string): { qty: number; name: string; setId: string } | null {
       const m = line.match(/^\s*(\d+)\s*x?\s+(.+?)\s*\(([^)]+)\)/i);
       if (!m) return null; // ignore lines that don't match the required format
       const qty = parseInt(m[1], 10);
@@ -328,8 +237,7 @@ const ProfilePage: React.FC = () => {
             `${name} set:${setId}`
           )}`;
           res = await fetch(fuzzyUrl);
-          if (!res.ok)
-            throw new Error(`Scryfall lookup failed for ${name} (${setId})`);
+          if (!res.ok) throw new Error(`Scryfall lookup failed for ${name} (${setId})`);
           const searchResult = await res.json();
           if (!searchResult.data || searchResult.data.length === 0)
             throw new Error(`No results for ${name} (${setId})`);
@@ -343,10 +251,7 @@ const ProfilePage: React.FC = () => {
           set_name: card.set_name || card.set || "",
           rarity: card.rarity || "",
           price: card.prices?.usd ? parseFloat(card.prices.usd) : 0,
-          image_url:
-            card.image_uris?.normal ||
-            card.card_faces?.[0]?.image_uris?.normal ||
-            "",
+          image_url: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal || "",
           quantity: qty,
           intent: haves ? "have" : "want",
         };
@@ -370,3 +275,103 @@ const ProfilePage: React.FC = () => {
   }
 };
 export default ProfilePage;
+
+const ProfileControls: React.FC<{
+  haves: boolean;
+  setHaves: (haves: boolean) => void;
+  add: boolean;
+  setAdd: (add: boolean) => void;
+  sortOption: SortOption;
+  setSortOption: (option: SortOption) => void;
+  ascending: boolean;
+  setAscending: (asc: boolean) => void;
+  setShowSearch: (show: boolean) => void;
+  setShowListInput: (show: boolean) => void;
+}> = ({
+  haves,
+  setHaves,
+  add,
+  setAdd,
+  sortOption,
+  setSortOption,
+  ascending,
+  setAscending,
+  setShowSearch,
+  setShowListInput,
+}) => {
+  return (
+    <div className="flex items-center justify-start gap-3">
+      <ToggleSwitch
+        value={haves}
+        onChange={setHaves}
+        leftLabel="Wants"
+        rightLabel="Haves"
+        id="profile-type-toggle"
+      />
+      <ToggleSwitch
+        value={add}
+        onChange={setAdd}
+        leftLabel="View"
+        rightLabel="Add"
+        id="profile-view-toggle"
+      />
+      <SortDropdown
+        sortField={sortOption}
+        setSortField={setSortOption}
+        ascending={ascending}
+        setAscending={setAscending}
+      />
+
+      {add && (
+        <Button
+          onClick={() => {
+            setShowListInput(false);
+            setShowSearch(true);
+          }}
+        >
+          Add by Search
+        </Button>
+      )}
+      {add && (
+        <Button
+          onClick={() => {
+            setShowListInput(true);
+            setShowSearch(false);
+          }}
+        >
+          Add by List
+        </Button>
+      )}
+      {/* Later feature add && <button>Add by Photo</button>*/}
+    </div>
+  );
+};
+
+const ProfileCollection: React.FC<{
+  sortedCards: card[];
+  modifyQuantity: (card: card, quantity: number) => void;
+  haves: boolean;
+}> = ({ sortedCards, modifyQuantity, haves }) => {
+  const navigate = useNavigate();
+  function handleSearchSelection(card: card) {
+    const q = encodeURIComponent(card?.name || "");
+    navigate(`/search?q=${q}`);
+  }
+  return sortedCards.length > 0 ? (
+    <div className="mt-4">
+      <CardList
+        cards={sortedCards}
+        modQuant={modifyQuantity}
+        children={(card: card) =>
+          haves ? (
+            <></>
+          ) : (
+            <Button onClick={() => handleSearchSelection(card)}>Trade for Card</Button>
+          )
+        }
+      />
+    </div>
+  ) : (
+    <div className="mt-3 text-xl">No cards in collection select add.</div>
+  );
+};

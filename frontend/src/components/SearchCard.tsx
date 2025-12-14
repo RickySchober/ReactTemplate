@@ -5,11 +5,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Timeout = NodeJS.Timeout;
 import axios from "axios";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { card, ScryfallCard } from "../lib/types.js";
 
 interface SearchCardProps {
-  value: string;
-  onChange?: (value: string) => void;
   onSelect?: (card: card) => void; // callback triggered when a card is selected
   placeholder?: string;
   minChars?: number;
@@ -18,14 +17,13 @@ interface SearchCardProps {
 }
 
 const SearchCard: React.FC<SearchCardProps> = ({
-  value,
-  onChange,
-  onSelect, // callback triggered when a card is selected
+  onSelect,
   placeholder = "Search for a card...",
   minChars = 3,
   maxResults = 8,
   debounceMs = 250,
 }) => {
+  const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([]);
   const [loading, setLoading] = useState<boolean>(false); // Show loading symbol when calling scryfall api
   const [activeIndex, setActiveIndex] = useState<number>(-1); //Index of cards being hovered -1 when none
@@ -35,6 +33,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
   const [suppressOpen, setSuppressOpen] = useState<boolean>(true); //Suppress search to avoid extra searching
   const [suppressMouse, setSuppressMouse] = useState<boolean>(false); //Suppress mouse scrolling when using keyboard
   const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => setSuppressOpen(false), 250); //Remove initial suppression
@@ -54,10 +53,24 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
   useEffect(() => {
     triggerSearch();
-  }, [value]);
+  }, [search]);
+
+  function handleSearchSelection(card: card) {
+    if (typeof onSelect === "function") {
+      console.log("Calling onSelect from SearchCard");
+      return onSelect(card);
+    }
+    if (location.pathname === "/search") {
+      setSearch?.(card?.name || "");
+      console.log("Already on search page");
+      return;
+    }
+    const q = encodeURIComponent(card?.name || "");
+    navigate(`/search?q=${q}`);
+  }
 
   const triggerSearch = useCallback(() => {
-    if (suppressOpen || !value || value.length < minChars) {
+    if (suppressOpen || !search || search.length < minChars) {
       setSuggestions([]);
       setLoading(false);
       return;
@@ -71,7 +84,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
 
       axios
         .get(`https://api.scryfall.com/cards/search`, {
-          params: { q: value, unique: "prints" },
+          params: { q: search, unique: "prints" },
           signal: abortRef.current.signal,
         })
         .then((res) => {
@@ -85,10 +98,10 @@ const SearchCard: React.FC<SearchCardProps> = ({
           abortRef.current = null;
         });
     }, debounceMs);
-  }, [value, suppressOpen, minChars, maxResults, debounceMs]);
+  }, [search, suppressOpen, minChars, maxResults, debounceMs]);
 
   function handleInput(e) {
-    onChange?.(e.target.value);
+    setSearch?.(e.target.value);
     setActiveIndex(-1);
   }
   // When a card is selected from the suggestions convert it to local card type and call onSelect
@@ -102,8 +115,8 @@ const SearchCard: React.FC<SearchCardProps> = ({
       quantity: 1,
     };
     setSuppressOpen(true);
-    onChange?.(convertedCard.name);
-    onSelect?.(convertedCard);
+    setSearch?.(convertedCard.name);
+    handleSearchSelection?.(convertedCard);
 
     setSuggestions([]);
     setActiveIndex(-1);
@@ -144,8 +157,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
       ) {
         parts.push("Extended Art");
       }
-      if (scryfallCard.frame_effects.includes("etched"))
-        parts.push("Etched Foil");
+      if (scryfallCard.frame_effects.includes("etched")) parts.push("Etched Foil");
     }
     if (scryfallCard.foil === true) parts.push("Foil");
     else if (scryfallCard.nonfoil === true) parts.push("Nonfoil");
@@ -174,12 +186,9 @@ const SearchCard: React.FC<SearchCardProps> = ({
     return () => document.removeEventListener("click", onDocClick);
   }, []);
   return (
-    <div
-      ref={containerRef}
-      style={{ width: "70%", padding: "10px", position: "relative" }}
-    >
+    <div ref={containerRef} style={{ width: "70%", padding: "10px", position: "relative" }}>
       <input
-        value={value}
+        value={search}
         onChange={handleInput}
         onClick={triggerSearch}
         onKeyDown={onKeyDown}
@@ -189,9 +198,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
         style={{ width: "99%", padding: 8, fontSize: 22 }}
       />
 
-      {loading && (
-        <div style={{ position: "absolute", right: 8, top: 8 }}>⏳</div>
-      )}
+      {loading && <div style={{ position: "absolute", right: 8, top: 8 }}>⏳</div>}
 
       {suggestions.length > 0 && (
         <div
@@ -211,8 +218,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
           {suggestions.map((s: ScryfallCard, idx: number) => {
             const cardName = s.name || s.card_faces?.[0]?.name || "Unknown";
             const setName = s.set_name || s.set || "";
-            const img =
-              s.image_uris?.small || s.card_faces?.[0]?.image_uris?.small || "";
+            const img = s.image_uris?.small || s.card_faces?.[0]?.image_uris?.small || "";
             const printing = makePrintDescription(s);
             const isActive = idx === activeIndex;
 

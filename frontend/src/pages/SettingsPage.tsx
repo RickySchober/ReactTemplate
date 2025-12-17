@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import api from "../api/client.js";
 import NavBar from "../components/NavBar.js";
 import { UserProfile } from "../lib/types.js";
-
+import Button from "../components/Button.js";
 const backsplashImages = [
   "Gudul_Lurker.jpg",
   "Treasure_Cruise.jpg",
@@ -53,7 +53,7 @@ const SettingsPage: React.FC = () => {
       <button
         onClick={save}
         disabled={saving}
-        className="w-4xl rounded bg-blue-600 py-3 hover:bg-blue-700 disabled:opacity-50"
+        className="w-4xl rounded bg-blue-400 py-3 hover:bg-blue-500 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Settings"}
       </button>
@@ -69,12 +69,7 @@ const SettingsPage: React.FC = () => {
                 <p className="font-medium">Backsplash</p>
                 <p className="text-sm text-slate-400">{profile.settings?.backsplash}</p>
               </div>
-              <button
-                className="rounded bg-blue-600 px-4 py-2"
-                onClick={() => setShowBksChooser(!showBksChooser)}
-              >
-                Change
-              </button>
+              <Button onClick={() => setShowBksChooser(!showBksChooser)}>Change</Button>
             </div>
             {/* IMAGE GRID */}
             {showBksChooser && (
@@ -112,18 +107,6 @@ const SettingsPage: React.FC = () => {
             />
             Enable Tutorial Popups
           </label>
-
-          {/* <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={s.dark_mode}
-              onChange={(e) =>
-                updateField("settings", "dark_mode", e.target.checked)
-              }
-            />
-            Dark Mode
-          </label>*/}
-
           <label className="flex items-center gap-2">
             <input
               type="checkbox"

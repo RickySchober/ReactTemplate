@@ -12,6 +12,7 @@ import bgArt from "../assets/Treasure_Cruise.jpg";
 import * as React from "react";
 import { card, SortOption } from "../lib/types.js";
 import { sortCards } from "../lib/utils.js";
+import Button from "../components/Button.js";
 
 const SearchPage: React.FC = () => {
   const [search, setSearch] = useState<string>("");
@@ -89,14 +90,13 @@ const SearchPage: React.FC = () => {
             <CardList
               cards={sortedResults}
               children={(card: card) => (
-                <button
-                  className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
+                <Button
                   onClick={() => {
                     token ? beginTrade(card) : navigate("/login");
                   }}
                 >
                   Begin Trade
-                </button>
+                </Button>
               )}
             />
           ) : (

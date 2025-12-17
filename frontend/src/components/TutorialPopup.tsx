@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import Button from "./Button.js";
 interface TutorialPage {
   image: string;
   title: string;
@@ -12,11 +12,7 @@ interface MultiTutorialPopupProps {
   onDisable: () => void;
 }
 
-const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
-  pages,
-  onClose,
-  onDisable,
-}) => {
+const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({ pages, onClose, onDisable }) => {
   const [index, setIndex] = React.useState(0);
 
   const isLast = index === pages.length - 1;
@@ -38,9 +34,7 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
           />
         )}
         {/* BODY */}
-        <p className="mb-2 text-xl font-semibold leading-relaxed text-slate-200">
-          {page.body}
-        </p>
+        <p className="mb-2 text-xl font-semibold leading-relaxed text-slate-200">{page.body}</p>
 
         {/* BUTTONS */}
         <div className="mt-2 flex justify-between">
@@ -53,9 +47,7 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
             <button
               disabled={isFirst}
               onClick={() => setIndex((i) => Math.max(i - 1, 0))}
-              className={
-                "cursor-default rounded-md bg-gray-500 px-4 py-2 text-lg font-semibold"
-              }
+              className={"cursor-default rounded-md bg-gray-500 px-4 py-2 text-lg font-semibold"}
             >
               Back
             </button>
@@ -72,15 +64,14 @@ const MultiTutorialPopup: React.FC<MultiTutorialPopupProps> = ({
             ))}
           </div>
           {/* Next / Finish */}
-          <button
+          <Button
             onClick={() => {
               if (isLast) onClose();
               else setIndex((i) => i + 1);
             }}
-            className="rounded-md bg-blue-400 px-4 py-2 text-lg font-semibold text-white hover:bg-blue-500"
           >
             {isLast ? "Finish" : "Next"}
-          </button>
+          </Button>
         </div>
 
         {/* DISABLE */}

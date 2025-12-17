@@ -111,10 +111,8 @@ const ProfilePage: React.FC = () => {
   const sortedRecent = sortCards(cards, sortOption, ascending, haves ? "have" : "want", [isRecent]);
 
   return (
-    <div className="position-relative">
-      <div>
-        <NavBar />
-      </div>
+    <>
+      <NavBar />
       {showTutor && (
         <MultiTutorialPopup
           pages={tutorialSteps}
@@ -167,9 +165,7 @@ const ProfilePage: React.FC = () => {
           <div className="ml-4 text-3xl font-bold">Recently Added Cards:</div>
         )}
         {add && sortedRecent.length > 0 && (
-          <div className="mt-4">
-            <CardList cards={sortedRecent} modQuant={modifyQuantity} />
-          </div>
+          <CardList cards={sortedRecent} modQuant={modifyQuantity} />
         )}
         {!add && sortedCards.length > 0 ? (
           <ProfileCollection
@@ -181,7 +177,7 @@ const ProfilePage: React.FC = () => {
           <div className="mt-3 text-xl">No cards in collection select add.</div>
         )}
       </Backsplash>
-    </div>
+    </>
   );
 
   async function parseAndAddList() {
@@ -358,19 +354,13 @@ const ProfileCollection: React.FC<{
     navigate(`/search?q=${q}`);
   }
   return sortedCards.length > 0 ? (
-    <div className="mt-4">
-      <CardList
-        cards={sortedCards}
-        modQuant={modifyQuantity}
-        children={(card: card) =>
-          haves ? (
-            <></>
-          ) : (
-            <Button onClick={() => handleSearchSelection(card)}>Trade for Card</Button>
-          )
-        }
-      />
-    </div>
+    <CardList
+      cards={sortedCards}
+      modQuant={modifyQuantity}
+      children={(card: card) =>
+        haves ? <></> : <Button onClick={() => handleSearchSelection(card)}>Trade for Card</Button>
+      }
+    />
   ) : (
     <div className="mt-3 text-xl">No cards in collection select add.</div>
   );

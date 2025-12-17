@@ -14,17 +14,15 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
     <div className="z-99 relative inline-block text-left" ref={dropdownRef}>
-      <div>
-        <button
-          type="button"
-          className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-400 px-4 py-2 text-lg font-medium shadow-sm hover:bg-blue-500 focus:outline-none"
-          onClick={toggleMenu}
-          aria-expanded={isOpen}
-          aria-haspopup="true"
-        >
-          Profile
-        </button>
-      </div>
+      <button
+        type="button"
+        className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-400 px-4 py-2 text-lg font-medium shadow-sm hover:bg-blue-500 focus:outline-none"
+        onClick={toggleMenu}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+      >
+        Profile
+      </button>
 
       <div
         className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${
@@ -36,23 +34,21 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
         aria-orientation="vertical"
         aria-labelledby="options-menu"
       >
-        <div className="py-1" role="none">
-          {options.map((option) => (
-            <a
-              key={option.name}
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                option.onClick();
-                setIsOpen(false); // Close menu after selection
-              }}
-              className="block px-4 py-2 text-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-              role="menuitem"
-            >
-              {option.name}
-            </a>
-          ))}
-        </div>
+        {options.map((option) => (
+          <a
+            key={option.name}
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              option.onClick();
+              setIsOpen(false); // Close menu after selection
+            }}
+            className="block px-4 py-3 text-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+            role="menuitem"
+          >
+            {option.name}
+          </a>
+        ))}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import icon from "/favicon.png";
 import * as React from "react";
 import { card } from "../lib/types.js";
 import AnimatedDropDown from "./AnimatedDropDown.js";
+import Button from "./Button.js";
 
 interface NavBarProps {
   onSelect?: (card: card) => void; // Callback when a card is selected from search.
@@ -37,27 +38,20 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect }) => {
       </div>
 
       {/* Auth Buttons */}
-      <div className="flex items-center gap-4">
-        {token ? (
-          <>
-            <AnimatedDropDown
-              options={[
-                { name: "Profile", onClick: () => navigate("/profile") },
-                { name: "Settings", onClick: () => navigate("/settings") },
-                { name: "Trade Log", onClick: () => navigate("/tradelog") },
-                { name: "Sign Out", onClick: handleSignOut },
-              ]}
-            />
-          </>
-        ) : (
-          <button
-            onClick={() => navigate("/login")}
-            className="whitespace-nowrap bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-          >
-            Sign In
-          </button>
-        )}
-      </div>
+      {token ? (
+        <>
+          <AnimatedDropDown
+            options={[
+              { name: "Profile", onClick: () => navigate("/profile") },
+              { name: "Settings", onClick: () => navigate("/settings") },
+              { name: "Trade Log", onClick: () => navigate("/tradelog") },
+              { name: "Sign Out", onClick: handleSignOut },
+            ]}
+          />
+        </>
+      ) : (
+        <Button onClick={() => navigate("/login")}>Sign In</Button>
+      )}
     </div>
   );
 };

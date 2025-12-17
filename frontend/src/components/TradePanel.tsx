@@ -3,13 +3,8 @@
 */
 import * as React from "react";
 import CardList from "../components/CardList.js";
-import {
-  card,
-  TradeItem,
-  trade,
-  TradeStatus,
-  ActiveUser,
-} from "../lib/types.js";
+import { card, TradeItem, trade, TradeStatus, ActiveUser } from "../lib/types.js";
+import Button from "./Button.js";
 
 interface TradePanelProps {
   trade: trade;
@@ -78,12 +73,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
         <div className="flex flex-wrap items-baseline justify-between">
           {(trade.status == TradeStatus.PROPOSE || //Can only modify trade in these phases
             trade.status == TradeStatus.PENDING) && (
-            <button
-              onClick={onAddCardsClick}
-              className="mx-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-            >
-              View Collection
-            </button>
+            <Button onClick={onAddCardsClick}>View Collection</Button>
           )}
           {getStatusMessage(trade.status).length > 0 && (
             <h1 className="text-2xl font-medium">Status:</h1>
@@ -115,17 +105,14 @@ const TradePanel: React.FC<TradePanelProps> = ({
             )}
         </div>
       </div>
-      <div
-        className={`${myOffer.length === 0 ? "" : "bg-neutral-800"} rounded-xl p-4`}
-      >
+      <div className={`${myOffer.length === 0 ? "" : "bg-neutral-800"} rounded-xl p-4`}>
         {(trade.status == TradeStatus.PENDING || //Can only modify trade in these phases
           trade.status == TradeStatus.PROPOSE) && (
           <CardList cards={myOffer} modQuant={updateAmount} />
         )}
-        {!(
-          trade.status == TradeStatus.PENDING ||
-          trade.status == TradeStatus.PROPOSE
-        ) && <CardList cards={myOffer} />}
+        {!(trade.status == TradeStatus.PENDING || trade.status == TradeStatus.PROPOSE) && (
+          <CardList cards={myOffer} />
+        )}
       </div>
     </div>
   );

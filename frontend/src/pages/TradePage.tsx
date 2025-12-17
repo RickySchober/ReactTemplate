@@ -26,6 +26,7 @@ import bgArt from "../assets/Gudul_Lurker.jpg";
 import MultiTutorialPopup from "../components/TutorialPopup.js";
 import ToggleSwitch from "../components/ToggleSwitch.js";
 import TradePanel from "../components/TradePanel.js";
+import Button from "../components/Button.js";
 
 const EmptyUser: User = {
   id: 0,
@@ -41,6 +42,18 @@ const DefaultTrade: trade = {
   b_user: EmptyUser,
   trade_items: [],
 };
+interface TradeSettings {
+  sortOption: SortOption;
+  setSortOption: (option: SortOption) => void;
+  ascending: boolean;
+  setAscending: (asc: boolean) => void;
+  autoMatch: boolean;
+  setAutoMatch: (value: boolean) => void;
+  viewMyCards: boolean;
+  setViewMyCards: (value: boolean) => void;
+  viewTraderCards: boolean;
+  setViewTraderCards: (value: boolean) => void;
+}
 const TradePage: React.FC = () => {
   //Read in parameters
   const { tradeID } = useParams();
@@ -53,13 +66,23 @@ const TradePage: React.FC = () => {
   const [myCards, setMyCards] = useState<card[]>([]);
   const [traderCards, setTraderCards] = useState<card[]>([]);
   //UI utilities
-  const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
-  const [ascending, setAscending] = useState<boolean>(true);
-  const [autoMatch, setAutoMatch] = useState<boolean>(true);
   const [userA, setUserA] = useState<boolean>(false);
-  const [viewMyCards, setViewMyCards] = useState<boolean>(false);
-  const [viewTraderCards, setViewTraderCards] = useState<boolean>(false);
   const [showTutor, setShowTutor] = useState<boolean>(false);
+  const [tradeSettings, setTradeSettings] = useState<TradeSettings>({
+    sortOption: SortOption.DATE_ADDED,
+    setSortOption: (option) => setTradeSettings((s) => ({ ...s, sortOption: option })),
+
+    ascending: true,
+    setAscending: (asc) => setTradeSettings((s) => ({ ...s, ascending: asc })),
+
+    autoMatch: true,
+    setAutoMatch: (value) => setTradeSettings((s) => ({ ...s, autoMatch: value })),
+
+    viewMyCards: false,
+    setViewMyCards: (value) => setTradeSettings((s) => ({ ...s, viewMyCards: value })),
+    viewTraderCards: false,
+    setViewTraderCards: (value) => setTradeSettings((s) => ({ ...s, viewTraderCards: value })),
+  });
 
   useEffect(() => {
     console.log(isExistingTrade);
@@ -114,8 +137,7 @@ const TradePage: React.FC = () => {
     }
   }, [trade?.a_user, trade?.b_user]);
 
-  /* If new trade being created read in arguments and create trade object
-   */
+  // If new trade being created read in arguments and create trade object
   async function initializeTrade() {
     console.log(newTradeInfo);
     let a_user = await api.get("/auth/user/" + newTradeInfo.myID);
@@ -139,17 +161,15 @@ const TradePage: React.FC = () => {
     console.log(trade);
     refreshCollection();
   }
-  /* Fetch both users' cards and the trade details.
-       Validate that all cards in trade still exist and are owned by the correct users.
-    */
+  // Fetch both users' cards and the trade details.
+  // Validate that all cards in trade still exist and are owned by the correct users.
   async function fetchTrade() {
     console.log("fetching trade");
     const tradeResponse = await api.get("/trades/" + tradeID);
     console.log(tradeResponse.data);
     setTrade(tradeResponse.data);
   }
-  /* Fetch collection of both users to view and add other cards
-   */
+  // Fetch collection of both users to view and add other cards
   async function refreshCollection() {
     if (trade) {
       const me = await api.get("/auth/me/");
@@ -234,8 +254,6 @@ const TradePage: React.FC = () => {
         break;
     }
   }
-  /* Posts a new trade to database
-   */
   async function postTrade(trade: trade) {
     console.log(trade);
     let tradeItemsPayload: TradeItemPayload[] = [];
@@ -261,16 +279,6 @@ const TradePage: React.FC = () => {
       const res = await api.post("/trades/", tradePayload);
     }
   }
-  // Moves card from user's collection to their trade offer
-  function addCardToTrade(card: card) {
-    let newTradeItem: TradeItem = { quantity: 1, card: card };
-    setTrade((prev) => ({
-      ...prev,
-      status: TradeStatus.PENDING,
-      activeUser: ActiveUser.NONE,
-      trade_items: [...prev.trade_items, newTradeItem],
-    }));
-  }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
     let index: number = trade.trade_items.findIndex((item: TradeItem) => item.card.id == card.id);
@@ -291,46 +299,9 @@ const TradePage: React.FC = () => {
       trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
     }));
   }
-  // Only show cards that the other user wants if autoMatch is on
-  function filterAutoMatch(collection: card[]): (card: card) => boolean {
-    return autoMatch
-      ? (card: card) =>
-          myCards.some((myCard: card) => myCard.intent === "want" && myCard.name === card.name)
-      : (card: card) => true;
-  }
-  //Only show cards that are not already in the trade
-  const tradeFilter = (card: card) =>
-    trade ? !trade.trade_items.some((item) => item.card.id === card.id) : true;
-
-  const sortMyCards = sortCards(myCards, sortOption, ascending, "have", [
-    tradeFilter,
-    filterAutoMatch(traderCards),
-  ]);
-
-  const sortTraderCards = sortCards(myCards, sortOption, ascending, "have", [
-    tradeFilter,
-    filterAutoMatch(myCards),
-  ]);
-
-  const currentUserPanelProps = {
-    trade: trade,
-    userA: userA, // Pass whether current user is a_user
-    close: closeTrade,
-    onAddCardsClick: () => setViewMyCards(true),
-    onProposeClick: () => updateStatus(),
-    updateAmount: updateAmount,
-  };
-
-  // Define props for the Trader's Panel
-  const traderPanelProps = {
-    trade: trade,
-    userA: !userA,
-    onAddCardsClick: () => setViewTraderCards(true),
-    updateAmount: updateAmount,
-  };
 
   return (
-    <div className="position-relative z-20">
+    <>
       <NavBar />
       {showTutor && (
         <MultiTutorialPopup
@@ -342,104 +313,117 @@ const TradePage: React.FC = () => {
           }}
         />
       )}
-      {!viewMyCards && !viewTraderCards && (
+      {!tradeSettings.viewMyCards && !tradeSettings.viewTraderCards && (
         <div className="mt-5">
           <StatusBar status={trade.status} />
           <div className="flex w-full gap-6">
-            <TradePanel {...currentUserPanelProps} />
-            <TradePanel {...traderPanelProps} />
+            <TradePanel
+              trade={trade}
+              userA={userA}
+              close={closeTrade}
+              onAddCardsClick={() => tradeSettings.setViewMyCards(true)}
+              onProposeClick={updateStatus}
+              updateAmount={updateAmount}
+            />
+            <TradePanel
+              trade={trade}
+              userA={!userA}
+              onAddCardsClick={() => tradeSettings.setViewTraderCards(true)}
+              updateAmount={updateAmount}
+            />
           </div>
         </div>
       )}
-      {/* Popupp window to add cards from my collection */}
-      <div
-        className={` ${viewMyCards ? "absolute" : "fixed"} duration-350 inset-0 z-30 flex flex-col transition-transform ease-out ${viewMyCards ? "translate-y-0" : "translate-y-full"} `}
-      >
-        <Backsplash bgArt={bgArt}>
-          <div className="flex items-center justify-start gap-3">
-            <SortDropdown
-              sortField={sortOption}
-              setSortField={setSortOption}
-              ascending={ascending}
-              setAscending={setAscending}
-            />
-            <ToggleSwitch
-              value={autoMatch}
-              onChange={setAutoMatch}
-              leftLabel="Auto Match"
-              rightLabel=""
-              id="auto-match-toggle"
-            />
-            <button
-              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-              onClick={() => {
-                setViewTraderCards(false);
-                setViewMyCards(false);
-              }}
-            >
-              close
-            </button>
-          </div>
-          <div className="mt-4">
-            <CardList
-              cards={sortMyCards}
-              children={(card) => (
-                <button
-                  className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-                  onClick={() => addCardToTrade(card)}
-                >
-                  Add to Offer
-                </button>
-              )}
-            />
-          </div>
-        </Backsplash>
-      </div>
-      {/* Popupp window to add cards from other trader's collection */}
-      <div
-        className={` ${viewTraderCards ? "absolute" : "fixed"} duration-350 inset-0 flex flex-col transition-transform ease-out ${viewTraderCards ? "translate-y-0" : "translate-y-full"} `}
-      >
-        <Backsplash bgArt={bgArt}>
-          <div className="flex items-center justify-start gap-3">
-            <SortDropdown
-              sortField={sortOption}
-              setSortField={setSortOption}
-              ascending={ascending}
-              setAscending={setAscending}
-            />
-            <ToggleSwitch
-              value={autoMatch}
-              onChange={setAutoMatch}
-              leftLabel="Auto Match"
-              rightLabel=""
-              id="auto-match-toggle"
-            />
-            <button
-              className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-              onClick={() => {
-                setViewTraderCards(false);
-                setViewMyCards(false);
-              }}
-            >
-              close
-            </button>
-          </div>
-          <div className="mt-4">
-            <CardList
-              cards={sortTraderCards}
-              children={(card: card) => (
-                <button
-                  className="bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500"
-                  onClick={() => addCardToTrade(card)}
-                >
-                  Add to Offer
-                </button>
-              )}
-            />
-          </div>
-        </Backsplash>
-      </div>
-    </div>
+      <TradeCollection
+        viewPopup={tradeSettings.viewMyCards}
+        trade={trade}
+        setTrade={setTrade}
+        cards={myCards}
+        otherUserCards={traderCards}
+        tradeSettings={tradeSettings}
+      />
+      <TradeCollection
+        viewPopup={tradeSettings.viewTraderCards}
+        trade={trade}
+        setTrade={setTrade}
+        cards={traderCards}
+        otherUserCards={myCards}
+        tradeSettings={tradeSettings}
+      />
+    </>
   );
 };
 export default TradePage;
+
+const TradeCollection: React.FC<{
+  viewPopup: boolean; //Popup visibility
+  trade: trade | null;
+  setTrade: React.Dispatch<React.SetStateAction<trade>>;
+  cards: card[];
+  otherUserCards: card[];
+  tradeSettings: TradeSettings;
+}> = ({ viewPopup, trade, setTrade, cards, otherUserCards, tradeSettings }) => {
+  // Only show cards that the other user wants if autoMatch is on
+  function filterAutoMatch(): (card: card) => boolean {
+    return tradeSettings.autoMatch
+      ? () => true
+      : (card: card) =>
+          otherUserCards.some(
+            (otherCard: card) => otherCard.intent === "want" && otherCard.name === card.name
+          );
+  }
+  //Only show cards that are not already in the trade
+  const tradeFilter = (card: card) =>
+    trade ? !trade.trade_items.some((item) => item.card.id === card.id) : true;
+  const sortedCards = sortCards(cards, tradeSettings.sortOption, tradeSettings.ascending, "have", [
+    tradeFilter,
+    filterAutoMatch(),
+  ]);
+  // Moves card from user's collection to their trade offer
+  function addCardToTrade(card: card) {
+    let newTradeItem: TradeItem = { quantity: 1, card: card };
+    setTrade((prev) => ({
+      ...prev,
+      status: TradeStatus.PENDING,
+      activeUser: ActiveUser.NONE,
+      trade_items: [...prev.trade_items, newTradeItem],
+    }));
+  }
+  return (
+    <div
+      className={` ${viewPopup ? "absolute" : "fixed"} duration-350 inset-0 flex flex-col transition-transform ease-out ${viewPopup ? "translate-y-0" : "translate-y-full"} `}
+    >
+      <Backsplash bgArt={bgArt}>
+        <div className="flex items-center justify-start gap-3">
+          <SortDropdown
+            sortField={tradeSettings.sortOption}
+            setSortField={tradeSettings.setSortOption}
+            ascending={tradeSettings.ascending}
+            setAscending={tradeSettings.setAscending}
+          />
+          <ToggleSwitch
+            value={tradeSettings.autoMatch}
+            onChange={tradeSettings.setAutoMatch}
+            leftLabel="Auto Match"
+            rightLabel=""
+            id="auto-match-toggle"
+          />
+          <Button
+            onClick={() => {
+              tradeSettings.setViewTraderCards(false);
+              tradeSettings.setViewMyCards(false);
+            }}
+          >
+            Close
+          </Button>
+        </div>
+        <CardList
+          cards={sortedCards}
+          children={(card: card) => (
+            <Button onClick={() => addCardToTrade(card)}>Add to Offer</Button>
+          )}
+        />
+      </Backsplash>
+    </div>
+  );
+};

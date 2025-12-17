@@ -12,13 +12,11 @@ const Backsplash: React.FC<BacksplashProps> = ({ children, bgArt }) => {
   return (
     <>
       <div
-        className="pointer-events-none absolute inset-0 z-0 mt-20 bg-cover bg-center bg-no-repeat"
+        className="mt-18 pointer-events-none absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${bgArt})`,
-          maskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
+          maskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%)",
         }}
       />
 

@@ -186,7 +186,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
     return () => document.removeEventListener("click", onDocClick);
   }, []);
   return (
-    <div ref={containerRef} style={{ width: "70%", padding: "10px", position: "relative" }}>
+    <div ref={containerRef} className="relative w-[70%] p-2.5">
       <input
         value={search}
         onChange={handleInput}
@@ -195,27 +195,17 @@ const SearchCard: React.FC<SearchCardProps> = ({
         placeholder={placeholder}
         aria-autocomplete="list"
         aria-expanded={suggestions.length > 0}
-        style={{ width: "99%", padding: 8, fontSize: 22 }}
+        className="w-[99%] rounded-md border border-gray-300 p-2 text-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
-      {loading && <div style={{ position: "absolute", right: 8, top: 8 }}>⏳</div>}
+      {loading && <div className="absolute right-2 top-2 text-xl">⏳</div>}
 
       {suggestions.length > 0 && (
         <div
           role="listbox"
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            background: "#fff",
-            border: "1px solid #ddd",
-            zIndex: 99,
-            maxHeight: 800,
-            overflowY: "auto",
-          }}
+          className="absolute left-0 right-0 top-full z-50 max-h-[800px] overflow-y-auto border border-gray-300 bg-white"
         >
-          {suggestions.map((s: ScryfallCard, idx: number) => {
+          {suggestions.map((s, idx) => {
             const cardName = s.name || s.card_faces?.[0]?.name || "Unknown";
             const setName = s.set_name || s.set || "";
             const img = s.image_uris?.small || s.card_faces?.[0]?.image_uris?.small || "";
@@ -230,63 +220,24 @@ const SearchCard: React.FC<SearchCardProps> = ({
                 key={s.id}
                 role="option"
                 aria-selected={isActive}
-                onMouseDown={(ev) => {
-                  ev.preventDefault();
-                }}
+                onMouseDown={(ev) => ev.preventDefault()}
                 onClick={() => handleSelect(s)}
                 onMouseEnter={() => checkMouseEnter(idx)}
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  padding: 8,
-                  cursor: "pointer",
-                  background: isActive ? "#f0f6ff" : "transparent",
-                  borderBottom: "1px solid #eee",
-                }}
+                className={`flex cursor-pointer gap-2 border-b border-gray-200 p-2 ${isActive ? "bg-blue-50" : "bg-transparent"} `}
               >
                 {img && (
                   <img
                     src={img}
                     alt={cardName}
-                    style={{
-                      width: 120,
-                      height: 180,
-                      objectFit: "cover",
-                      borderRadius: 4,
-                    }}
+                    className="h-[180px] w-[120px] rounded object-cover"
                   />
                 )}
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      fontWeight: 600,
-                      fontStyle: "italic",
-                      fontSize: 35,
-                      color: "#666",
-                    }}
-                  >
-                    {cardName}
-                  </div>
-                  <div
-                    style={{
-                      fontWeight: 600,
-                      fontSize: 22,
-                      fontStyle: "italic",
-                      color: "#666",
-                    }}
-                  >
-                    {setName}
-                  </div>
-                  <div
-                    style={{
-                      fontWeight: 600,
-                      fontSize: 22,
-                      fontStyle: "italic",
-                      color: "#666",
-                    }}
-                  >
-                    {printing}
-                  </div>
+                <div className="flex-1">
+                  <div className="text-4xl font-semibold italic text-gray-700">{cardName}</div>
+
+                  <div className="text-xl font-semibold italic text-gray-700">{setName}</div>
+
+                  <div className="text-xl font-semibold italic text-gray-700">{printing}</div>
                 </div>
               </div>
             );

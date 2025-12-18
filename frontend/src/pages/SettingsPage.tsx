@@ -100,8 +100,8 @@ const SettingsPage: React.FC = () => {
                 const enabled = e.target.checked;
                 updateField("settings", "disable_warning", !enabled);
                 if (enabled) {
-                  localStorage.removeItem("disableProfileTutorial");
-                  localStorage.removeItem("disableTradeTutorial");
+                  localStorage.removeItem("profile-tutorial");
+                  localStorage.removeItem("trade-tutorial");
                 }
               }}
             />

@@ -27,7 +27,8 @@ import MultiTutorialPopup from "../components/TutorialPopup.js";
 import ToggleSwitch from "../components/ToggleSwitch.js";
 import TradePanel from "../components/TradePanel.js";
 import Button from "../components/Button.js";
-
+import { tradeTutorialSteps } from "../lib/constants.js";
+import { useLocalStorageState } from "../lib/hooks.js";
 const EmptyUser: User = {
   id: 0,
   username: "Loading...",
@@ -67,7 +68,6 @@ const TradePage: React.FC = () => {
   const [traderCards, setTraderCards] = useState<card[]>([]);
   //UI utilities
   const [userA, setUserA] = useState<boolean>(false);
-  const [showTutor, setShowTutor] = useState<boolean>(false);
   const [tradeSettings, setTradeSettings] = useState<TradeSettings>({
     sortOption: SortOption.DATE_ADDED,
     setSortOption: (option) => setTradeSettings((s) => ({ ...s, sortOption: option })),
@@ -85,51 +85,12 @@ const TradePage: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(isExistingTrade);
-    const disabled = localStorage.getItem("disableTradeTutorial");
-    console.log(disabled);
-    if (!disabled) {
-      setShowTutor(true);
-    }
     if (isExistingTrade) {
       fetchTrade();
     } else {
       initializeTrade();
     }
   }, []);
-  const tutorialSteps = [
-    {
-      image: "/tutorials/start_trade.jpg",
-      title: "Welcome to Trading",
-      body: `Welcome to the trade interface were you negotiate with another user to settle on a mutually beneficial trade. This
-      process goes through 5 phases tracked by the progress bar at the top. The first phase is pending were you add cards from eachothers
-      collection and propose an initial trade. You may cancel a trade during this phase with the close button.`,
-    },
-    {
-      image: "/tutorials/view_collection.jpg",
-      title: "Adding from Collection",
-      body: `When viewing cards from either players collection you may add them to the trade with the button below each card. The AUTO MATCH
-      toggle only shows cards that the other user has in their wants. Using automatch to add cards will often result in more successful trades 
-      as the other user has already indicated they want that card. Once done, select close to return to the trade window.`,
-    },
-    {
-      image: "/tutorials/trader_status.jpg",
-      title: "After Initial Proposal",
-      body: `After you have proposed an initial trade the other user will review it and either accept, propose a new offer or cancel the trade.
-      You can also modify and repropose the offer before they review the trade. Either users status during a trade is listed on their trade panel.`,
-    },
-    {
-      image: "/tutorials/ship_trade.jpg",
-      title: "Shipping the Trade",
-      body: `Once both users have agreed on a trade the next phase of shipping begins. You will recieve a notification with the other users mailing address
-      and must begin the process of shipping your cards. Once both users ship their cards the receive phase begins.`,
-    },
-    {
-      image: "/tutorials/receive_trade.jpg",
-      title: "Receiving the Trade",
-      body: `On confirming you have received all the cards as listed you should mark the trade as received. Once both players receive their cards the trade is complete!`,
-    },
-  ];
   // On assigning trade users fetch their collections
   useEffect(() => {
     if (trade?.a_user && trade.b_user) {
@@ -303,16 +264,7 @@ const TradePage: React.FC = () => {
   return (
     <>
       <NavBar />
-      {showTutor && (
-        <MultiTutorialPopup
-          pages={tutorialSteps}
-          onClose={() => setShowTutor(false)}
-          onDisable={() => {
-            localStorage.setItem("disableTradeTutorial", "true");
-            setShowTutor(false);
-          }}
-        />
-      )}
+      <MultiTutorialPopup pages={tradeTutorialSteps} keyName="trade-tutorial" />
       {!tradeSettings.viewMyCards && !tradeSettings.viewTraderCards && (
         <div className="mt-5">
           <StatusBar status={trade.status} />

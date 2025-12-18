@@ -54,7 +54,7 @@ const TradeLogPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <NavBar />
       <div className="mx-auto max-w-5xl p-6 text-white">
         <h1 className="mb-6 text-3xl font-bold">Trade Log:</h1>
@@ -136,7 +136,7 @@ const TradeLogPage: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

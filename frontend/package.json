@@ -18,7 +18,9 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.5",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "clsx": "^1.2.1",
+    "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.16",

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function redirectWhenLoggedIn() {
@@ -33,4 +33,22 @@ export function redirectWhenLoggedIn() {
     }
     localStorage.removeItem("token");
   }, [navigate]);
+}
+// Use local storage to persist a boolean state. True if key exists, false otherwise.
+export function useLocalStorageState(
+  key: string
+): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+  const [state, setState] = useState<boolean>(() => {
+    return localStorage.getItem(key) !== null;
+  });
+
+  useEffect(() => {
+    if (state) {
+      localStorage.setItem(key, "true");
+    } else {
+      localStorage.removeItem(key);
+    }
+  }, [key, state]);
+
+  return [state, setState];
 }

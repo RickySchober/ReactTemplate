@@ -16,8 +16,9 @@ import MultiTutorialPopup from "../components/TutorialPopup.js";
 import Button from "../components/Button.js";
 import * as React from "react";
 import { card, SortOption } from "../lib/types.js";
-import { BACKSPLASH_HEIGHT } from "../lib/constants.js";
 import { sortCards } from "../lib/utils.js";
+import { profileTutorialSteps } from "../lib/constants.js";
+import { useLocalStorageState } from "../lib/hooks.js";
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
@@ -30,15 +31,8 @@ const ProfilePage: React.FC = () => {
   const [ascending, setAscending] = useState<boolean>(true);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [listText, setListText] = useState<string>("");
-  const [showTutor, setShowTutor] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const disabled = localStorage.getItem("disableProfileTutorial");
-    console.log(disabled);
-    if (!disabled) {
-      setShowTutor(true);
-    }
     fetchMyCards();
   }, []);
 
@@ -51,34 +45,6 @@ const ProfilePage: React.FC = () => {
 
     setCards(res.data);
   }
-  const tutorialSteps = [
-    {
-      image: "/tutorials/wants_haves_tutorial.jpg",
-      title: "Wants & Haves",
-      body: `Welcome to your profile page. This is where you list cards in your collection
-      that you own as HAVES and list cards you want to aquire as WANTS. Click the toggle to switch
-      between these two.`,
-    },
-    {
-      image: "/tutorials/view_sort_tutorial.jpg",
-      title: "View Your Collection",
-      body: `You can view the cards you've added to your WANTS and HAVES in view mode and sort
-      them based on different parameters using the sort dropdown.`,
-    },
-    {
-      image: "/tutorials/add_tutorial.jpg",
-      title: "Adding to Your Profile",
-      body: `To add to your profile click the toggle to select add mode. You can either add
-      cards by searching there name or paste in a decklist from a Magic the Gathering deckbuilding website.
-      Cards that you have recently added will appear below.`,
-    },
-    {
-      image: "/tutorials/begin_trade_tutorial.jpg",
-      title: "Begin a Trade",
-      body: `Once you have added a few cards to your profile you can begin a trade. Either search
-      for a card name in the search bar above or click the Trade for Card button on cards in your WANT list.`,
-    },
-  ];
 
   async function addFromSearch(card: card) {
     console.log(card);
@@ -113,16 +79,7 @@ const ProfilePage: React.FC = () => {
   return (
     <>
       <NavBar />
-      {showTutor && (
-        <MultiTutorialPopup
-          pages={tutorialSteps}
-          onClose={() => setShowTutor(false)}
-          onDisable={() => {
-            localStorage.setItem("disableProfileTutorial", "true");
-            setShowTutor(false);
-          }}
-        />
-      )}
+      <MultiTutorialPopup pages={profileTutorialSteps} keyName="profile-tutorial" />
       <Backsplash bgArt={bgArt}>
         <ProfileControls
           haves={haves}

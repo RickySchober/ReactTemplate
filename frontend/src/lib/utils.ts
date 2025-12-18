@@ -1,4 +1,11 @@
+import { clsx, ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { card, SortOption } from "./types.js";
+
+// Credit to ByteGrad https://www.youtube.com/watch?v=5r25Y9Vg2P4
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 // Function to sort and filter cards based on the provided options. Additional filters can be applied using the `filters` parameter.
 export function sortCards(

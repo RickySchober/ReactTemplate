@@ -1,12 +1,18 @@
 import axios from "axios";
 
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    requestId?: string;
+  }
+}
+
 // Setter functions to be registered from App component
-export let setGlobalSlowPopup = () => {};
-export let setGlobal404 = () => {};
-export const registerSlowPopupSetter = (setterFn) => {
+export let setGlobalSlowPopup = (show: boolean) => {};
+export let setGlobal404 = (show: boolean) => {};
+export const registerSlowPopupSetter = (setterFn: (show: boolean) => {}) => {
   setGlobalSlowPopup = setterFn;
 };
-export const register404 = (setterFn) => {
+export const register404 = (setterFn: (show: boolean) => {}) => {
   setGlobal404 = setterFn;
 };
 
@@ -28,7 +34,7 @@ api.interceptors.request.use((config) => {
   }
 
   // Start 3s slow loading timer
-  const requestId = Symbol();
+  const requestId = Symbol().toString();
   config.requestId = requestId;
 
   const timer = setTimeout(() => {

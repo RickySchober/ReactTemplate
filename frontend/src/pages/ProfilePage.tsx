@@ -295,7 +295,6 @@ const ProfileControls: React.FC<{
           Add by List
         </Button>
       )}
-      {/* Later feature add && <button>Add by Photo</button>*/}
     </div>
   );
 };

@@ -2,7 +2,7 @@
  */
 import * as React from "react";
 import { useState, useRef, useEffect } from "react";
-
+import Button from "./Button.js";
 interface AnimatedDropDownProps {
   options: { name: string; onClick: () => void }[];
 }
@@ -14,7 +14,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   return (
     <div className="z-99 relative inline-block text-left" ref={dropdownRef}>
-      <button
+      <Button
         type="button"
         className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-400 px-4 py-2 text-lg font-medium shadow-sm hover:bg-blue-500 focus:outline-none"
         onClick={toggleMenu}
@@ -22,7 +22,7 @@ const AnimatedDropDown: React.FC<AnimatedDropDownProps> = ({ options }) => {
         aria-haspopup="true"
       >
         Profile
-      </button>
+      </Button>
 
       <div
         className={`absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out ${

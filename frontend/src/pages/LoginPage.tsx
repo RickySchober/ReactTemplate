@@ -103,16 +103,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit" className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500">
+      <Button type="submit" className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500">
         Login
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
         onClick={() => setIsRegister(true)}
-        className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
+        className="bg-transparent text-blue-400 underline hover:bg-transparent"
       >
         Create an account
-      </button>
+      </Button>
     </form>
   );
 };
@@ -159,16 +158,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         onChange={(e) => setPassword(e.target.value)}
         className="rounded-md p-3 text-base"
       />
-      <button type="submit" className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500">
+      <Button type="submit" className="mb-2 bg-blue-400 px-4 py-2 text-lg hover:bg-blue-500">
         Register
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
         onClick={() => setIsRegister(false)}
-        className="cursor-pointer border-none bg-transparent text-lg text-blue-400 underline"
+        className="bg-transparent text-blue-400 underline hover:bg-transparent"
       >
         Already have an account? Login
-      </button>
+      </Button>
     </form>
   );
 };

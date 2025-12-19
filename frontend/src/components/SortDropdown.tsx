@@ -3,7 +3,7 @@
 */
 import * as React from "react";
 import { SortOption } from "../lib/types.js";
-
+import Button from "./Button.js";
 interface SortDropdownProps {
   sortField: SortOption;
   setSortField: (field: SortOption) => void;
@@ -32,17 +32,14 @@ const SortDropown: React.FC<SortDropdownProps> = ({
       </select>
 
       {/* Asc/Desc Toggle Button */}
-      <button
-        onClick={() => setAscending(!ascending)}
-        className="flex cursor-pointer items-center justify-center bg-blue-400 px-4 hover:bg-blue-500"
-      >
+      <Button onClick={() => setAscending(!ascending)}>
         <span className="text-3xl" style={{ opacity: ascending ? 1 : 0.25 }}>
           ↑
         </span>
         <span className="text-3xl" style={{ opacity: ascending ? 0.25 : 1 }}>
           ↓
         </span>
-      </button>
+      </Button>
     </div>
   );
 };

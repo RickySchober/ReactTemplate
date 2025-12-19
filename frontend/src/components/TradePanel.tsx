@@ -79,7 +79,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             <h1 className="text-2xl font-medium">Status:</h1>
           )}
           {getStatusMessage(trade.status).length !== 0 && (
-            <button
+            <Button
               disabled={active || !close}
               onClick={printStatus}
               className={`mx-2 px-4 py-2 text-lg font-semibold transition-colors duration-150 ease-in-out ${
@@ -91,17 +91,14 @@ const TradePanel: React.FC<TradePanelProps> = ({
               } `}
             >
               {getStatusMessage(trade.status)}
-            </button>
+            </Button>
           )}
           {close &&
             (trade.status == TradeStatus.PENDING || //Can only modify trade in these phases
               trade.status == TradeStatus.PROPOSE) && (
-              <button
-                className="mx-2 bg-red-600 px-4 py-2 text-lg hover:bg-red-700"
-                onClick={close}
-              >
+              <Button className="mx-2 bg-red-600 hover:bg-red-700" onClick={close}>
                 Close
-              </button>
+              </Button>
             )}
         </div>
       </div>

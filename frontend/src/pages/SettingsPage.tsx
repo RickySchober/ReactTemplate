@@ -50,13 +50,9 @@ const SettingsPage: React.FC = () => {
     <div className="flex flex-col items-center justify-center space-y-8 text-white">
       <NavBar />
       {/* SAVE BUTTON */}
-      <button
-        onClick={save}
-        disabled={saving}
-        className="w-4xl rounded bg-blue-400 py-3 hover:bg-blue-500 disabled:opacity-50"
-      >
+      <Button onClick={save} disabled={saving} className="w-4xl disabled:opacity-50">
         {saving ? "Saving..." : "Save Settings"}
-      </button>
+      </Button>
       {/* SETTINGS */}
       <div className="w-4xl rounded-xl bg-slate-800 p-6 shadow">
         <h2 className="mb-4 text-xl font-semibold">User Settings</h2>

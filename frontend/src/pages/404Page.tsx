@@ -1,5 +1,5 @@
-import NavBar from "../components/NavBar.js";
-import * as React from "react";
+import React from "react";
+import NavBar from "@/components/NavBar.js";
 
 const NotFoundPage: React.FC = () => {
   return (

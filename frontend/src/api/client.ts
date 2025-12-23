@@ -2,7 +2,7 @@ import axios from "axios";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
-    requestId?: string;
+    requestId?: symbol;
   }
 }
 
@@ -34,9 +34,8 @@ api.interceptors.request.use((config) => {
   }
 
   // Start 3s slow loading timer
-  const requestId = Symbol().toString();
+  const requestId = Symbol();
   config.requestId = requestId;
-
   const timer = setTimeout(() => {
     setGlobalSlowPopup(true); // Show popup globally
   }, 3000);

@@ -1,4 +1,4 @@
-export const tradeTutorialSteps = [
+export const TRADE_TUTORIAL_STEPS = [
   {
     image: "/tutorials/start_trade.jpg",
     title: "Welcome to Trading",
@@ -31,7 +31,7 @@ export const tradeTutorialSteps = [
     body: `On confirming you have received all the cards as listed you should mark the trade as received. Once both players receive their cards the trade is complete!`,
   },
 ];
-export const profileTutorialSteps = [
+export const PROFILE_TUTORIAL_STEPS = [
   {
     image: "/tutorials/wants_haves_tutorial.jpg",
     title: "Wants & Haves",
@@ -58,4 +58,17 @@ export const profileTutorialSteps = [
     body: `Once you have added a few cards to your profile you can begin a trade. Either search
       for a card name in the search bar above or click the Trade for Card button on cards in your WANT list.`,
   },
+];
+export const RECENT_ADDED_WINDOW = 60 * 5 * 1000; // timeframe cards will appear in recent added in ms (currently 5 minutes)
+
+export const TRADE_DEFAULT_BG = "/backsplashes/Gudul_Lurker.jpg";
+export const SEARCH_DEFAULT_BG = "/backsplashes/Treasure_Cruise.jpg";
+
+export const ALL_BGS = [
+  "Gudul_Lurker.jpg",
+  "Treasure_Cruise.jpg",
+  "Lightning_Bolt.jpg",
+  "Nissa.jpg",
+  "Soul_Herder.jpg",
+  "Evolving_Wilds.jpg",
 ];

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import api from "../api/client.js";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as React from "react";
-import { redirectWhenLoggedIn } from "../lib/hooks.js";
-import Button from "../components/Button.js";
+import React from "react";
+import api from "@/api/client.js";
+import { redirectWhenLoggedIn } from "@/lib/hooks.js";
+import Button from "@/components/Button.js";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");

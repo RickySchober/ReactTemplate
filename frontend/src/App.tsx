@@ -1,13 +1,13 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import LoginPage from "./pages/LoginPage.js";
-import ProfilePage from "./pages/ProfilePage.js";
-import SearchPage from "./pages/SearchPage.js";
-import TradePage from "./pages/TradePage.js";
-import TradeLog from "./pages/TradeLogPage.js";
-import SettingsPage from "./pages/SettingsPage.js";
-import LandingPage from "./pages/LandingPage.js";
-import NotFoundPage from "./pages/404Page.js";
-import * as React from "react";
+import LoginPage from "@/pages/LoginPage.js";
+import ProfilePage from "@/pages/ProfilePage/ProfilePage.js";
+import SearchPage from "@/pages/SearchPage.js";
+import TradePage from "@/pages/TradePage/TradePage.js";
+import TradeLog from "@/pages/TradeLogPage.js";
+import SettingsPage from "@/pages/SettingsPage.js";
+import LandingPage from "@/pages/LandingPage.js";
+import NotFoundPage from "@/pages/404Page.js";
+import React from "react";
 import { useState, useEffect } from "react";
 import { registerSlowPopupSetter, register404 } from "./api/client.js";
 
@@ -15,8 +15,8 @@ export default function App() {
   const [showSlowPopup, setShowSlowPopup] = useState(false);
   const [show404, setShow404] = useState(false);
   // Allow Axios to control the popup
-  registerSlowPopupSetter(setShowSlowPopup);
-  register404(setShow404);
+  registerSlowPopupSetter(setShowSlowPopup as () => boolean);
+  register404(setShow404 as () => boolean);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,12 +28,8 @@ export default function App() {
       {showSlowPopup && (
         <div className="z-9999 fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="rounded-xl bg-slate-900 p-16 text-center shadow-xl">
-            <p className="text-2xl font-medium">
-              Request is taking longer than expected.
-            </p>
-            <p className="text-2xl font-medium">
-              Server may be booting up please be patient.
-            </p>
+            <p className="text-2xl font-medium">Request is taking longer than expected.</p>
+            <p className="text-2xl font-medium">Server may be booting up please be patient.</p>
           </div>
         </div>
       )}

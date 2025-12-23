@@ -30,11 +30,13 @@ export interface ScryfallCard {
   prices: ScryfallPrice;
   image_uris?: {
     small?: string;
+    png?: string;
   };
   card_faces?: Array<{
     name?: string;
     image_uris?: {
       small?: string;
+      png?: string;
     };
   }>;
   border_color?: string;
@@ -104,7 +106,7 @@ export interface TradeItem {
 }
 
 export interface trade {
-  id?: number;
+  id?: string;
 
   status: TradeStatus;
   activeUser: ActiveUser;
@@ -129,4 +131,17 @@ export interface TradePayload {
 
   status: TradeStatus;
   activeUser: ActiveUser;
+}
+
+export interface TradeSettings {
+  sortOption: SortOption;
+  setSortOption: (option: SortOption) => void;
+  ascending: boolean;
+  setAscending: (asc: boolean) => void;
+  autoMatch: boolean;
+  setAutoMatch: (value: boolean) => void;
+  viewMyCards: boolean;
+  setViewMyCards: (value: boolean) => void;
+  viewTraderCards: boolean;
+  setViewTraderCards: (value: boolean) => void;
 }

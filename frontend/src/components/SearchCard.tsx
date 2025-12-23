@@ -4,9 +4,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Timeout = NodeJS.Timeout;
 import axios from "axios";
-import * as React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { card, ScryfallCard } from "../lib/types.js";
+import { card, ScryfallCard } from "@/lib/types.js";
 
 interface SearchCardProps {
   onSelect?: (card: card) => void; // callback triggered when a card is selected
@@ -110,7 +110,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
     let convertedCard: card = {
       ...rest,
       price: card.prices?.usd || 0,
-      image_url: card.image_uris?.small || "",
+      image_url: card.image_uris?.png || "",
       intent: "have",
       quantity: 1,
     };

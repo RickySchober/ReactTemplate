@@ -1,8 +1,8 @@
 /* Dropdwon menu used for sorting cards based on certain filters.
    Still requires the parent components to filter card arrays.
 */
-import * as React from "react";
-import { SortOption } from "../lib/types.js";
+import React from "react";
+import { SortOption } from "@/lib/types.js";
 import Button from "./Button.js";
 interface SortDropdownProps {
   sortField: SortOption;
@@ -11,7 +11,7 @@ interface SortDropdownProps {
   setAscending: (asc: boolean) => void;
 }
 
-const SortDropown: React.FC<SortDropdownProps> = ({
+const SortDropdown: React.FC<SortDropdownProps> = ({
   sortField,
   setSortField,
   ascending,
@@ -43,4 +43,4 @@ const SortDropown: React.FC<SortDropdownProps> = ({
     </div>
   );
 };
-export default SortDropown;
+export default SortDropdown;

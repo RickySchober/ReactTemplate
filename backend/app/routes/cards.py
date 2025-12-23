@@ -55,7 +55,7 @@ def modify_quantity(card_id: int, update: CardUpdate, session: Session = Depends
     return 
 
 #Get all cards owned by a certain user
-@router.get("/user/{user_id}/", response_model=list[Card])
+@router.get("/user/{user_id}", response_model=list[Card])
 def get_user_cards(user_id: int, session: Session = Depends(get_session)):
     return session.exec(select(Card).where(Card.owner_id == user_id)).all()
 

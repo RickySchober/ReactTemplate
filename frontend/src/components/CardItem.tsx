@@ -1,8 +1,8 @@
 /* Component for displaying cards. Is designed to be adaptable to 
    different card interfaces allowing you to pass in child components.
 */
-import * as React from "react";
-import { card } from "../lib/types.js";
+import React from "react";
+import { card } from "@/lib/types.js";
 import Button from "./Button.js";
 
 interface CardItemProps {
@@ -47,7 +47,7 @@ const CardItem: React.FC<CardItemProps> = ({ card, modQuant, maxQuant, children 
         )}
 
         {/* Card text info */}
-        <div className="flex max-w-[50%] flex-col text-center">
+        <div className="flex flex-col text-center">
           <h4 className="text-md font-bold @sm:text-lg @md:text-xl @lg:text-2xl">{card.name}</h4>
           <p className="@md:text-md text-xs text-gray-400 @sm:text-sm @lg:text-lg">
             {card.set_name}

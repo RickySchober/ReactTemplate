@@ -1,21 +1,21 @@
 /* Search page to show all listing of a card from other users.
    This page is redirected to when using the search bar in NavBar.
 */
+import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import api from "../api/client.js";
-import CardList from "../components/CardList.js";
-import NavBar from "../components/NavBar.js";
-import SortDropdown from "../components/SortDropdown.js";
-import Backsplash from "../components/Backsplash.js";
-import bgArt from "../assets/Treasure_Cruise.jpg";
-import * as React from "react";
-import { card, SortOption } from "../lib/types.js";
-import { sortCards } from "../lib/utils.js";
-import Button from "../components/Button.js";
+import api from "@/api/client.js";
+import { SEARCH_DEFAULT_BG } from "@/lib/constants.js";
+import { card, SortOption } from "@/lib/types.js";
+import { sortCards } from "@/lib/utils.js";
+import CardList from "@/components/CardList.js";
+import NavBar from "@/components/NavBar.js";
+import SortDropdown from "@/components/SortDropdown.js";
+import Backsplash from "@/components/Backsplash.js";
+
+import Button from "@/components/Button.js";
 
 const SearchPage: React.FC = () => {
-  const [search, setSearch] = useState<string>("");
   const [myID, setMyID] = useState<number>(0);
   const [results, setResults] = useState<card[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
@@ -25,35 +25,38 @@ const SearchPage: React.FC = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        setMyID(response.data.id);
-      } catch (error) {
-        console.error("Failed to fetch user ID", error);
-      }
-    };
-
     fetchUserId();
+  }, []);
+
+  useEffect(() => {
     const q = searchParams.get("q") || "";
+    console.log(q);
     if (q && q.length > 0) {
-      setSearch(q);
-      // run search using current filters
       handleSearch({ name: q });
     }
   }, [searchParams]);
 
-  async function handleSearch(card: card | { name: string }) {
+  async function fetchUserId() {
     try {
-      const name = typeof card === "string" ? card : card?.name;
+      const response = await api.get("/auth/me");
+      setMyID(response.data.id);
+    } catch (error) {
+      console.error("Failed to fetch user ID", error);
+    }
+  }
+
+  async function handleSearch(card: card | { name: string }) {
+    const name = typeof card === "string" ? card : card?.name;
+    try {
       const res = await api.get(`/cards/search/`, {
         params: { name: name },
       });
+      console.log(res.data);
       setResults(res.data);
     } catch (err) {
       console.error("Search failed", err);
     }
-    setSearch(card.name);
+    console.log(name);
   }
   // Begin a trade with the owner of the selected card
   async function beginTrade(card: card) {
@@ -73,7 +76,7 @@ const SearchPage: React.FC = () => {
   return (
     <>
       <NavBar onSelect={handleSearch} />
-      <Backsplash bgArt={bgArt}>
+      <Backsplash bgArt={SEARCH_DEFAULT_BG}>
         {/* ─── FILTER BAR ──────────────────────────── */}
         <section className="m-2.5 flex items-center justify-start gap-3">
           <SortDropdown

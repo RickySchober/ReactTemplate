@@ -3,9 +3,9 @@
 */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/client.js";
-import NavBar from "../components/NavBar.js";
-import { TradeStatus, trade, TradeItem } from "../lib/types.js";
+import api from "@/api/client.js";
+import { TradeStatus, trade, TradeItem } from "@/lib/types.js";
+import NavBar from "@/components/NavBar.js";
 
 const TradeLogPage: React.FC = () => {
   const [trades, setTrades] = useState<trade[]>([]);

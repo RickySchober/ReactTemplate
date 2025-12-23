@@ -1,7 +1,7 @@
 /* Simple component to display trade status as a progress bar.
  */
-import * as React from "react";
-import { TradeStatus } from "../lib/types.js";
+import React from "react";
+import { TradeStatus } from "@/lib/types.js";
 
 export const TRADE_STEPS: TradeStatus[] = [
   TradeStatus.PENDING,
@@ -50,11 +50,7 @@ const StatusBar: React.FC<Props> = ({ status }) => {
               {idx < TRADE_STEPS.length - 1 && (
                 <div
                   className={`h-1 flex-1 ${
-                    isCanceled
-                      ? "bg-red-300"
-                      : idx < currentIndex
-                        ? "bg-green-400"
-                        : "bg-gray-300"
+                    isCanceled ? "bg-red-300" : idx < currentIndex ? "bg-green-400" : "bg-gray-300"
                   }`}
                 />
               )}
@@ -69,11 +65,7 @@ const StatusBar: React.FC<Props> = ({ status }) => {
           <div
             key={step}
             className={`flex-1 text-center ${
-              isCanceled
-                ? "text-red-600"
-                : step === status
-                  ? "text-blue-600"
-                  : "text-gray-600"
+              isCanceled ? "text-red-600" : step === status ? "text-blue-600" : "text-gray-600"
             }`}
           >
             {step.toUpperCase()}
@@ -81,11 +73,7 @@ const StatusBar: React.FC<Props> = ({ status }) => {
         ))}
       </div>
 
-      {isCanceled && (
-        <div className="mt-1 text-sm font-bold text-red-600">
-          TRADE CANCELED
-        </div>
-      )}
+      {isCanceled && <div className="mt-1 text-sm font-bold text-red-600">TRADE CANCELED</div>}
     </div>
   );
 };

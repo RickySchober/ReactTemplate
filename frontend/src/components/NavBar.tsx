@@ -2,10 +2,10 @@
    If user is logged in will display profile dropdown otherwise show sign in.
 */
 import { useNavigate } from "react-router-dom";
-import SearchCard from "./SearchCard.js";
+import React from "react";
 import icon from "/favicon.png";
-import * as React from "react";
-import { card } from "../lib/types.js";
+import { card } from "@/lib/types.js";
+import SearchCard from "./SearchCard.js";
 import AnimatedDropDown from "./AnimatedDropDown.js";
 import Button from "./Button.js";
 

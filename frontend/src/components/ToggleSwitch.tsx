@@ -1,6 +1,6 @@
 /* Stylized toggle switch to toggle between 2 options.
  */
-import * as React from "react";
+import React from "react";
 
 interface ToggleSwitchProps {
   value: boolean;

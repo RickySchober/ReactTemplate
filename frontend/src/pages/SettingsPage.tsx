@@ -1,20 +1,13 @@
 /* Settings page to modify user profile information such as settings
    mailing address, and backsplash.
 */
-import * as React from "react";
+import React from "react";
 import { useState, useEffect } from "react";
-import api from "../api/client.js";
-import NavBar from "../components/NavBar.js";
-import { UserProfile } from "../lib/types.js";
-import Button from "../components/Button.js";
-const backsplashImages = [
-  "Gudul_Lurker.jpg",
-  "Treasure_Cruise.jpg",
-  "Lightning_Bolt.jpg",
-  "Nissa.jpg",
-  "Soul_Herder.jpg",
-  "Evolving_Wilds.jpg",
-];
+import api from "@/api/client.js";
+import { ALL_BGS } from "@/lib/constants.js";
+import { UserProfile } from "@/lib/types.js";
+import NavBar from "@/components/NavBar.js";
+import Button from "@/components/Button.js";
 
 const SettingsPage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -70,7 +63,7 @@ const SettingsPage: React.FC = () => {
             {/* IMAGE GRID */}
             {showBksChooser && (
               <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {backsplashImages.map((img) => (
+                {ALL_BGS.map((img) => (
                   <div
                     key={img}
                     className={`cursor-pointer overflow-hidden rounded border hover:opacity-80 ${

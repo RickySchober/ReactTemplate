@@ -1,6 +1,6 @@
 /* Dropdown menu for selecting from list such as profile button
  */
-import * as React from "react";
+import React from "react";
 import { useState, useRef, useEffect } from "react";
 import Button from "./Button.js";
 interface AnimatedDropDownProps {

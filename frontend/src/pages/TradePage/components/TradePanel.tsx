@@ -1,27 +1,27 @@
 /* Component to break up trade window. Displays all of users cards offered
    in trade as well as buttons for status and adding cards.
 */
-import * as React from "react";
-import CardList from "../components/CardList.js";
-import { card, TradeItem, trade, TradeStatus, ActiveUser } from "../lib/types.js";
-import Button from "./Button.js";
+import React from "react";
+import { card, TradeItem, trade, TradeStatus, ActiveUser } from "@/lib/types.js";
+import CardList from "@/components/CardList.js";
+import Button from "@/components/Button.js";
 
 interface TradePanelProps {
   trade: trade;
+  setTrade: React.Dispatch<React.SetStateAction<trade>>;
   userA: boolean; // True if panel is for userA false for userB
   close?: () => void; //Close button which only exists for current user's panel
   onAddCardsClick: () => void;
   onProposeClick?: () => void;
-  updateAmount: (card: card, amount: number) => void;
 }
 
 const TradePanel: React.FC<TradePanelProps> = ({
   trade,
+  setTrade,
   userA,
   close,
   onAddCardsClick,
   onProposeClick,
-  updateAmount,
 }) => {
   const userID: number = userA ? trade.a_user.id : trade.b_user.id;
   const myOffer: TradeItem[] = trade.trade_items.filter(
@@ -60,6 +60,26 @@ const TradePanel: React.FC<TradePanelProps> = ({
     if (onProposeClick) {
       onProposeClick();
     }
+  }
+  // This function updates the quantity of a card in either offer removing if 0
+  function updateAmount(card: card, amount: number) {
+    let index: number = trade.trade_items.findIndex((item: TradeItem) => item.card.id == card.id);
+    if (index === -1) {
+      console.warn("Trade item not found for update.");
+      return;
+    }
+    const updatedTradeItems = trade.trade_items.map((item, ind) => {
+      if (ind === index) {
+        return { ...item, quantity: amount };
+      }
+      return item;
+    });
+    setTrade((prev) => ({
+      ...prev,
+      status: TradeStatus.PENDING,
+      activeUser: ActiveUser.NONE,
+      trade_items: updatedTradeItems.filter((item) => item.quantity > 0),
+    }));
   }
   return (
     <div className="m-4 w-1/2 rounded-2xl bg-neutral-900 p-4 shadow-lg">

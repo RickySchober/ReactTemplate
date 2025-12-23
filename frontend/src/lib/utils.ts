@@ -1,6 +1,6 @@
 import { clsx, ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { card, SortOption } from "./types.js";
+import { card, SortOption, trade, TradeItemPayload, TradePayload } from "./types.js";
 
 // Credit to ByteGrad https://www.youtube.com/watch?v=5r25Y9Vg2P4
 export function cn(...inputs: ClassValue[]) {
@@ -40,4 +40,22 @@ export function sortCards(
     return sortedCards.filter((c) => filters.every((fn) => fn(c)));
   }
   return sortedCards;
+}
+
+export function createTradePayload(trade: trade): TradePayload {
+  let tradeItemsPayload: TradeItemPayload[] = [];
+  trade?.trade_items.forEach((item) =>
+    tradeItemsPayload.push({
+      card_id: item.card.id ?? 0,
+      quantity: item.quantity,
+    })
+  );
+  let tradePayload: TradePayload = {
+    a_user_id: trade.a_user.id,
+    b_user_id: trade.b_user.id,
+    status: trade.status,
+    activeUser: trade.activeUser,
+    trade_items: tradeItemsPayload,
+  };
+  return tradePayload;
 }

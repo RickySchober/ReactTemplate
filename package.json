@@ -1,14 +1,14 @@
 {
-  "devDependencies": {
-    "source-map-loader": "^5.0.0",
-    "ts-loader": "^9.5.4",
-    "typescript": "^5.9.3"
+  "name": "mtg-trader",
+  "private": true,
+  "version": "0.9.0",
+  "description": "A website for trading Magic the Gathering cards.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "vitest"
   },
-  "dependencies": {
-    "@tailwindcss/container-queries": "^0.1.1",
-    "@tailwindcss/vite": "^4.1.17",
-    "@types/react": "^19.2.4",
-    "@types/react-dom": "^19.2.3",
-    "tailwindcss": "^4.1.17"
-  }
+  "author": "RickySchober"
 }

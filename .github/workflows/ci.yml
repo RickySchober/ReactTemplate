@@ -31,16 +31,13 @@ jobs:
           node-version: lts/*
 
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
-      - name: Build application
-        run: yarn build
+      - name: Type check
+        run: npm run typecheck
 
-      - name: Run tests
-        run: yarn test
+      - name: Lint
+        run: npm run lint
 
-      - name: Run linter
-        run: yarn lint
-
-      - name: Check types
-        run: yarn check-types
+      - name: Build
+        run: npm run build

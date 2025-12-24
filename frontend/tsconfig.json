@@ -6,6 +6,7 @@
     "module": "nodenext", // specify module code generation
     "jsx": "react", // use typescript to transpile jsx to js
     "target": "es2016", // specify ECMAScript target version
+    "types": ["vite/client"],
     "lib": ["DOM", "ES2020"],
     "allowJs": true, // allow a partial TypeScript and JavaScript codebase
     "moduleResolution": "nodenext",

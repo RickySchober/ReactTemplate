@@ -2,7 +2,6 @@
  api to provide card autocomplete information.
 */
 import { useState, useEffect, useRef, useCallback } from "react";
-import Timeout = NodeJS.Timeout;
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +27,7 @@ const SearchCard: React.FC<SearchCardProps> = ({
   const [loading, setLoading] = useState<boolean>(false); // Show loading symbol when calling scryfall api
   const [activeIndex, setActiveIndex] = useState<number>(-1); //Index of cards being hovered -1 when none
   const abortRef = useRef<AbortController>(null); //Signal to abort scyrfall api call
-  const debounceRef = useRef<Timeout>(null); //Timer to abort slow api response
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null); //Timer to abort slow api response
   const containerRef = useRef<HTMLDivElement | null>(null); //used for closing box when clicking out
   const [suppressOpen, setSuppressOpen] = useState<boolean>(true); //Suppress search to avoid extra searching
   const [suppressMouse, setSuppressMouse] = useState<boolean>(false); //Suppress mouse scrolling when using keyboard

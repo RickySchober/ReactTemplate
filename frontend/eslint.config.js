@@ -34,7 +34,7 @@ export default [
       },
     },
     rules: {
-      "linebreak-style": ["error", "windows"],
+      "linebreak-style": ["error", "ubuntu"],
 
       "react/react-in-jsx-scope": "off", // Vite + React 17+
       "react/jsx-uses-react": "off",

@@ -1,6 +1,7 @@
 /* Simple component to display trade status as a progress bar.
  */
 import React from "react";
+
 import { TradeStatus } from "@/lib/types.js";
 
 export const TRADE_STEPS: TradeStatus[] = [

@@ -1,10 +1,11 @@
 /* Search card component is the search bar which calls Scryfall (MTGDatabase)
  api to provide card autocomplete information.
 */
-import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
+import { useState, useEffect, useRef, useCallback } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import { card, ScryfallCard } from "@/lib/types.js";
 
 interface SearchCardProps {
@@ -105,8 +106,9 @@ const SearchCard: React.FC<SearchCardProps> = ({
   }
   // When a card is selected from the suggestions convert it to local card type and call onSelect
   function handleSelect(card: ScryfallCard) {
-    const { id, ...rest } = card;
-    let convertedCard: card = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...rest } = card; //extract card info minus id
+    const convertedCard: card = {
       ...rest,
       price: card.prices?.usd || 0,
       image_url: card.image_uris?.png || "",

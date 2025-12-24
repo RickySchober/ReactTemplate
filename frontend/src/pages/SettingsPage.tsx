@@ -3,11 +3,12 @@
 */
 import React from "react";
 import { useState, useEffect } from "react";
+
 import api from "@/api/client.js";
-import { ALL_BGS } from "@/lib/constants.js";
-import { UserProfile } from "@/lib/types.js";
-import NavBar from "@/components/NavBar.js";
 import Button from "@/components/Button.js";
+import NavBar from "@/components/NavBar.js";
+import { ALL_BGS } from "@/lib/constants.js";
+import { UserAddress, UserProfile } from "@/lib/types.js";
 
 const SettingsPage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -20,7 +21,7 @@ const SettingsPage: React.FC = () => {
 
   if (!profile) return <div className="p-4 text-white">Loading...</div>;
 
-  const updateField = (section: "settings" | "address", field: string, value: any) => {
+  const updateField = (section: "settings" | "address", field: string, value: string | boolean) => {
     setProfile((prev: UserProfile) => ({
       ...prev!,
       [section]: {
@@ -117,7 +118,7 @@ const SettingsPage: React.FC = () => {
               <span>{field.replace("_", " ")}</span>
               <input
                 className="mt-1 w-full rounded bg-slate-700 p-2"
-                value={(a as any)[field] ?? ""}
+                value={(a as UserAddress)[field] ?? ""}
                 onChange={(e) => updateField("address", field, e.target.value)}
               />
             </label>

@@ -1,5 +1,7 @@
 import React from "react";
+
 import Button from "./Button.js";
+
 import { useLocalStorageState } from "@/lib/hooks.js";
 interface TutorialPage {
   image: string;

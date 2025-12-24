@@ -18,7 +18,6 @@ export default [
       parser: tseslint.parser,
       parserOptions: {
         project: "./tsconfig.json",
-        tsconfigRootDir: process.cwd(),
         ecmaVersion: "latest",
         sourceType: "module",
       },
@@ -35,11 +34,12 @@ export default [
       },
     },
     rules: {
+      "linebreak-style": ["error", "windows"],
+
       "react/react-in-jsx-scope": "off", // Vite + React 17+
       "react/jsx-uses-react": "off",
 
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
 
       "import/order": [
         "warn",
@@ -53,7 +53,7 @@ export default [
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",
 
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      //"no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
   {

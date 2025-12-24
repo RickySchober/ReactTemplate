@@ -1,11 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import api from "@/api/client.js";
-import { card } from "@/lib/types.js";
-import SearchCard from "@/components/SearchCard.js";
-import Button from "@/components/Button.js";
-import { addOption } from "./ProfileCollection.js";
+
 import { parseAndAddList } from "../api/ParseList.js";
+
+import { addOption } from "./ProfileCollection.js";
+
+import api from "@/api/client.js";
+import Button from "@/components/Button.js";
+import SearchCard from "@/components/SearchCard.js";
+import { card } from "@/lib/types.js";
 
 interface ProfileAddProps {
   add: boolean;
@@ -19,9 +22,9 @@ const ProfileAdd: React.FC<ProfileAddProps> = ({ add, haves, addOption, refreshC
   async function addFromSearch(card: card) {
     console.log(card);
     try {
-      const res = await api.post("/cards/", card);
+      await api.post("/cards/", card);
       refreshCards();
-    } catch (err) {
+    } catch {
       alert("Failed to add card");
       return null;
     }

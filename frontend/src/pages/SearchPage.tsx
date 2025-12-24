@@ -4,16 +4,16 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
 import api from "@/api/client.js";
-import { SEARCH_DEFAULT_BG } from "@/lib/constants.js";
-import { card, SortOption } from "@/lib/types.js";
-import { sortCards } from "@/lib/utils.js";
+import Backsplash from "@/components/Backsplash.js";
+import Button from "@/components/Button.js";
 import CardList from "@/components/CardList.js";
 import NavBar from "@/components/NavBar.js";
 import SortDropdown from "@/components/SortDropdown.js";
-import Backsplash from "@/components/Backsplash.js";
-
-import Button from "@/components/Button.js";
+import { SEARCH_DEFAULT_BG } from "@/lib/constants.js";
+import { card, SortOption } from "@/lib/types.js";
+import { sortCards } from "@/lib/utils.js";
 
 const SearchPage: React.FC = () => {
   const [myID, setMyID] = useState<number>(0);
@@ -93,11 +93,7 @@ const SearchPage: React.FC = () => {
             <CardList
               cards={sortedResults}
               children={(card: card) => (
-                <Button
-                  onClick={() => {
-                    token ? beginTrade(card) : navigate("/login");
-                  }}
-                >
+                <Button onClick={() => (token ? beginTrade(card) : navigate("/login"))}>
                   Begin Trade
                 </Button>
               )}

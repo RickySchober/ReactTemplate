@@ -1,13 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { card, trade, TradeItem, TradeStatus, ActiveUser, SortOption } from "@/lib/types.js";
-import { sortCards } from "@/lib/utils.js";
-import { TRADE_DEFAULT_BG } from "@/lib/constants.js";
-import Button from "@/components/Button.js";
+
 import Backsplash from "@/components/Backsplash.js";
+import Button from "@/components/Button.js";
 import CardList from "@/components/CardList.js";
 import SortDropdown from "@/components/SortDropdown.js";
 import ToggleSwitch from "@/components/ToggleSwitch.js";
+import { TRADE_DEFAULT_BG } from "@/lib/constants.js";
+import { card, trade, TradeItem, TradeStatus, ActiveUser, SortOption } from "@/lib/types.js";
+import { sortCards } from "@/lib/utils.js";
 
 interface TradeCollectionProps {
   viewPopup: boolean;
@@ -48,7 +49,7 @@ const TradeCollection: React.FC<TradeCollectionProps> = ({
   ]);
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
-    let newTradeItem: TradeItem = { quantity: 1, card: card };
+    const newTradeItem: TradeItem = { quantity: 1, card: card };
     setTrade((prev) => ({
       ...prev,
       status: TradeStatus.PENDING,

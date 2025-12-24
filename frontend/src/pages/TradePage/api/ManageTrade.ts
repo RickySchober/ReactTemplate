@@ -1,20 +1,22 @@
+import { NewTradeInfo } from "../TradePage.js";
+
 import { api } from "@/api/client.js";
 import { TradeStatus, ActiveUser, TradeItem, trade, card, TradePayload } from "@/lib/types.js";
 import { createTradePayload } from "@/lib/utils.js";
 
 // If new trade being created read in arguments and create trade object
-export async function initializeTrade(newTradeInfo: any): Promise<trade> {
-  let a_user = await api.get("/auth/user/" + newTradeInfo.myID);
-  let b_user = await api.get("/auth/user/" + newTradeInfo.traderID);
-  let cards = newTradeInfo.traderOffer;
-  let trade_items: TradeItem[] = [];
+export async function initializeTrade(newTradeInfo: NewTradeInfo): Promise<trade> {
+  const a_user = await api.get("/auth/user/" + newTradeInfo.myID);
+  const b_user = await api.get("/auth/user/" + newTradeInfo.traderID);
+  const cards = newTradeInfo.traderOffer;
+  const trade_items: TradeItem[] = [];
   cards.forEach((card: card) =>
     trade_items.push({
       card: card,
       quantity: 1,
     })
   );
-  let trade: trade = {
+  const trade: trade = {
     status: TradeStatus.PENDING,
     activeUser: ActiveUser.NONE,
     a_user: a_user.data,
@@ -24,14 +26,14 @@ export async function initializeTrade(newTradeInfo: any): Promise<trade> {
   return trade;
 }
 export async function postTrade(trade: trade, tradeID: string | undefined) {
-  let tradePayload: TradePayload = createTradePayload(trade);
+  const tradePayload: TradePayload = createTradePayload(trade);
   if (tradeID && (await api.get("/trades/" + tradeID))) {
     console.log("trade found patching");
-    const res = await api.patch("/trades/" + tradeID, tradePayload);
+    await api.patch("/trades/" + tradeID, tradePayload);
   } else if (trade.status !== TradeStatus.CANCELED) {
     //Do not post trade if its immediately canceled
     console.log("trade not found creating new one");
-    const res = await api.post("/trades/", tradePayload);
+    await api.post("/trades/", tradePayload);
   }
 }
 // Fetch both users' cards and the trade details.
@@ -44,8 +46,8 @@ export async function fetchTrade(tradeID: string): Promise<trade> {
 }
 
 export async function closeTrade(trade: trade, userA: boolean): Promise<trade> {
-  let users = userA ? ActiveUser.A : ActiveUser.B;
-  let updateTrade = {
+  const users = userA ? ActiveUser.A : ActiveUser.B;
+  const updateTrade = {
     ...trade,
     status: TradeStatus.CANCELED,
     activeUser: users,

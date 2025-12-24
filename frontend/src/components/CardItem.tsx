@@ -2,8 +2,10 @@
    different card interfaces allowing you to pass in child components.
 */
 import React from "react";
-import { card } from "@/lib/types.js";
+
 import Button from "./Button.js";
+
+import { card } from "@/lib/types.js";
 
 interface CardItemProps {
   card: card;

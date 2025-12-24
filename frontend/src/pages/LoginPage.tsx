@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import api from "@/api/client.js";
-import { redirectWhenLoggedIn } from "@/lib/hooks.js";
 import Button from "@/components/Button.js";
+import { useRedirectWhenLoggedIn } from "@/lib/hooks.js";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -12,7 +13,7 @@ const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  redirectWhenLoggedIn();
+  useRedirectWhenLoggedIn();
 
   async function tryRegister(e) {
     e.preventDefault();
@@ -22,7 +23,7 @@ const LoginPage: React.FC = () => {
       });
       localStorage.setItem("token", res.data.access_token);
       navigate("/profile");
-    } catch (err) {
+    } catch {
       alert("Registration failed");
     }
   }
@@ -35,7 +36,7 @@ const LoginPage: React.FC = () => {
       });
       localStorage.setItem("token", res.data.access_token);
       navigate("/profile");
-    } catch (err) {
+    } catch {
       alert("Login failed");
     }
   }

@@ -2,9 +2,10 @@
    in trade as well as buttons for status and adding cards.
 */
 import React from "react";
-import { card, TradeItem, trade, TradeStatus, ActiveUser } from "@/lib/types.js";
-import CardList from "@/components/CardList.js";
+
 import Button from "@/components/Button.js";
+import CardList from "@/components/CardList.js";
+import { card, TradeItem, trade, TradeStatus, ActiveUser } from "@/lib/types.js";
 
 interface TradePanelProps {
   trade: trade;
@@ -63,7 +64,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
   }
   // This function updates the quantity of a card in either offer removing if 0
   function updateAmount(card: card, amount: number) {
-    let index: number = trade.trade_items.findIndex((item: TradeItem) => item.card.id == card.id);
+    const index: number = trade.trade_items.findIndex((item: TradeItem) => item.card.id == card.id);
     if (index === -1) {
       console.warn("Trade item not found for update.");
       return;

@@ -1,5 +1,6 @@
 import { clsx, ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+
 import { card, SortOption, trade, TradeItemPayload, TradePayload } from "./types.js";
 
 // Credit to ByteGrad https://www.youtube.com/watch?v=5r25Y9Vg2P4
@@ -43,14 +44,14 @@ export function sortCards(
 }
 
 export function createTradePayload(trade: trade): TradePayload {
-  let tradeItemsPayload: TradeItemPayload[] = [];
+  const tradeItemsPayload: TradeItemPayload[] = [];
   trade?.trade_items.forEach((item) =>
     tradeItemsPayload.push({
       card_id: item.card.id ?? 0,
       quantity: item.quantity,
     })
   );
-  let tradePayload: TradePayload = {
+  const tradePayload: TradePayload = {
     a_user_id: trade.a_user.id,
     b_user_id: trade.b_user.id,
     status: trade.status,

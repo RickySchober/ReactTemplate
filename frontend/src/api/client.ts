@@ -7,12 +7,12 @@ declare module "axios" {
 }
 
 // Setter functions to be registered from App component
-export let setGlobalSlowPopup = (show: boolean) => {};
-export let setGlobal404 = (show: boolean) => {};
-export const registerSlowPopupSetter = (setterFn: (show: boolean) => {}) => {
+export let setGlobalSlowPopup: (show: boolean) => void;
+export let setGlobal404: (show: boolean) => void;
+export const registerSlowPopupSetter = (setterFn: (show: boolean) => void) => {
   setGlobalSlowPopup = setterFn;
 };
-export const register404 = (setterFn: (show: boolean) => {}) => {
+export const register404 = (setterFn: (show: boolean) => void) => {
   setGlobal404 = setterFn;
 };
 

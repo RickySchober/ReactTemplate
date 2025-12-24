@@ -2,8 +2,10 @@
 rows to best fit cards. Accepts either cards or TradeItems adjusting 
 quantity values as necessary. 
 */
-import CardItem from "./CardItem.js";
 import React from "react";
+
+import CardItem from "./CardItem.js";
+
 import { card, TradeItem } from "@/lib/types.js";
 
 function isTradeItem(item: card | TradeItem): item is TradeItem {
@@ -25,7 +27,7 @@ const CardList: React.FC<CardListProps> = ({ cards, modQuant, children }) => {
         {cards.map((item: card | TradeItem) => {
           if (isTradeItem(item)) {
             //If elements are trade items set card quantity to maxQuant
-            let maxQuant = item.card.quantity;
+            const maxQuant = item.card.quantity;
             let cardData = item.card;
             cardData = { ...cardData, quantity: item.quantity };
             return (
@@ -37,7 +39,7 @@ const CardList: React.FC<CardListProps> = ({ cards, modQuant, children }) => {
               />
             );
           } else {
-            let cardData = item;
+            const cardData = item;
             return <CardItem card={cardData} modQuant={modQuant} children={children?.(cardData)} />;
           }
         })}

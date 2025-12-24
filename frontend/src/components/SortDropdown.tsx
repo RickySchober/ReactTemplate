@@ -2,8 +2,10 @@
    Still requires the parent components to filter card arrays.
 */
 import React from "react";
-import { SortOption } from "@/lib/types.js";
+
 import Button from "./Button.js";
+
+import { SortOption } from "@/lib/types.js";
 interface SortDropdownProps {
   sortField: SortOption;
   setSortField: (field: SortOption) => void;

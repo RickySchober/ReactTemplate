@@ -2,8 +2,9 @@
  */
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "@/components/NavBar.js";
+
 import Button from "@/components/Button.js";
+import NavBar from "@/components/NavBar.js";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();

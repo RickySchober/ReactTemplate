@@ -1,7 +1,7 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function redirectWhenLoggedIn() {
+export function useRedirectWhenLoggedIn() {
   const navigate = useNavigate();
   //Helper function for parsing token
   function parseJwt(token: string) {
@@ -15,7 +15,7 @@ export function redirectWhenLoggedIn() {
           .join("")
       );
       return JSON.parse(json);
-    } catch (e) {
+    } catch {
       return null;
     }
   }

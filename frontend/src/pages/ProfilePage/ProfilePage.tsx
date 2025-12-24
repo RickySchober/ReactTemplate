@@ -4,15 +4,17 @@
   validate cards.
 */
 import { useState, useEffect } from "react";
-import api from "@/api/client.js";
-import { card } from "@/lib/types.js";
-import { PROFILE_TUTORIAL_STEPS } from "@/lib/constants.js";
-import NavBar from "@/components/NavBar.js";
-import Backsplash from "@/components/Backsplash.js";
-import MultiTutorialPopup from "@/components/TutorialPopup.js";
 import React from "react";
 
 import ProfileCollection from "./components/ProfileCollection.js";
+
+import api from "@/api/client.js";
+import Backsplash from "@/components/Backsplash.js";
+import NavBar from "@/components/NavBar.js";
+import MultiTutorialPopup from "@/components/TutorialPopup.js";
+import { PROFILE_TUTORIAL_STEPS } from "@/lib/constants.js";
+import { card } from "@/lib/types.js";
+
 
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
@@ -25,7 +27,7 @@ const ProfilePage: React.FC = () => {
   async function fetchMyProfile() {
     const me = await api.get("/auth/me");
     const myData = me.data;
-    let artUrl = "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
+    const artUrl = "/backsplashes/" + (myData.settings?.backsplash ?? "Gudul_Lurker.jpg");
     setBgArt(artUrl);
     const res = await api.get("/auth/my_cards");
     setCards(res.data);

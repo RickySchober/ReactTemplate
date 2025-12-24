@@ -1,13 +1,15 @@
 /* Navigation bar on the top of most pages to easily navigate between them.
    If user is logged in will display profile dropdown otherwise show sign in.
 */
-import { useNavigate } from "react-router-dom";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import icon from "/favicon.png";
-import { card } from "@/lib/types.js";
-import SearchCard from "./SearchCard.js";
 import AnimatedDropDown from "./AnimatedDropDown.js";
 import Button from "./Button.js";
+import SearchCard from "./SearchCard.js";
+
+import { card } from "@/lib/types.js";
 
 interface NavBarProps {
   onSelect?: (card: card) => void; // Callback when a card is selected from search.

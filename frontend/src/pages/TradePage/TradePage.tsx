@@ -5,16 +5,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { ActiveUser, card, trade, TradeStatus, User } from "@/lib/types.js";
-import { TRADE_TUTORIAL_STEPS } from "@/lib/constants.js";
+
+import { initializeTrade, postTrade, fetchTrade, closeTrade } from "./api/ManageTrade.js";
+import { updateStatus } from "./api/UpdateStatus.js";
+import TradeCollection from "./components/TradeCollection.js";
+import TradePanel from "./components/TradePanel.js";
+
+import api from "@/api/client.js";
+import NavBar from "@/components/NavBar.js";
 import StatusBar from "@/components/StatusBar.js";
 import MultiTutorialPopup from "@/components/TutorialPopup.js";
-import NavBar from "@/components/NavBar.js";
-import api from "@/api/client.js";
-import TradePanel from "./components/TradePanel.js";
-import TradeCollection from "./components/TradeCollection.js";
-import { updateStatus } from "./api/UpdateStatus.js";
-import { initializeTrade, postTrade, fetchTrade, closeTrade } from "./api/ManageTrade.js";
+import { TRADE_TUTORIAL_STEPS } from "@/lib/constants.js";
+import { ActiveUser, card, trade, TradeStatus, User } from "@/lib/types.js";
 
 const EmptyUser: User = {
   id: 0,
@@ -29,12 +31,17 @@ const DefaultTrade: trade = {
   b_user: EmptyUser,
   trade_items: [],
 };
+export interface NewTradeInfo {
+  myID: number;
+  traderID: number;
+  traderOffer: card[];
+}
 type collectionView = "myCards" | "traderCards" | "none";
 const TradePage: React.FC = () => {
   //Read in parameters
   const { tradeID } = useParams();
   const location = useLocation();
-  const newTradeInfo = location.state || {};
+  const newTradeInfo = (location.state as NewTradeInfo) ?? undefined;
   //Main trade object
   const [trade, setTrade] = useState<trade>(DefaultTrade);
   //Both users collection
@@ -66,7 +73,7 @@ const TradePage: React.FC = () => {
   async function refreshCollection() {
     if (trade) {
       const me = await api.get("/auth/me");
-      let isUserA = trade?.a_user.id == me.data.id ? true : false;
+      const isUserA = trade?.a_user.id == me.data.id ? true : false;
       setUserA(isUserA);
       const my = await api.get("/cards/user/" + (isUserA ? trade?.a_user.id : trade?.b_user.id));
       const trader = await api.get(
@@ -77,7 +84,7 @@ const TradePage: React.FC = () => {
     }
   }
   async function updateTrade() {
-    let updatedTrade = updateStatus(trade, userA);
+    const updatedTrade = updateStatus(trade, userA);
     await postTrade(updatedTrade, tradeID);
   }
   async function removeTrade() {

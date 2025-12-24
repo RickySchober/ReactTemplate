@@ -1,6 +1,4 @@
 import api from "@/api/client.js";
-import { card } from "@/lib/types.js";
-
 /*  Function to parse lines of the exact required format:
     Quantity, name, set identifier in parentheses. Lines without quantity or without a set are ignored.
     Examples accepted: "1x Umara Wizard (ZNR)", "2 Lightning Bolt (M21)"; trailing text after the ) is ignored.
@@ -73,7 +71,7 @@ export async function parseAndAddList(listText: string, haves: boolean) {
       };
 
       try {
-        const res: card = await api.post("/cards/", payload);
+        await api.post("/cards/", payload);
         added += 1;
       } catch (err) {
         console.error("Failed to add line:", raw, err);
@@ -84,5 +82,7 @@ export async function parseAndAddList(listText: string, haves: boolean) {
       failed += 1;
     }
   }
-  alert(`Added ${added} cards. ${failed ? `${failed} failed.` : ""}`);
+  alert(
+    `Added ${added} cards. ${failed ? `${failed} failed.` : ""} ${ignored ? `${ignored} failed.` : ""}`
+  );
 }

@@ -1,15 +1,18 @@
 import React from "react";
 import { useState } from "react";
-import api from "@/api/client.js";
-import { card, SortOption } from "@/lib/types.js";
-import { RECENT_ADDED_WINDOW } from "@/lib/constants.js";
-import { sortCards } from "@/lib/utils.js";
 import { useNavigate } from "react-router-dom";
+
+import ProfileAdd from "./ProfileAdd.js";
+
+import api from "@/api/client.js";
 import Button from "@/components/Button.js";
 import CardList from "@/components/CardList.js";
-import ToggleSwitch from "@/components/ToggleSwitch.js";
 import SortDropdown from "@/components/SortDropdown.js";
-import ProfileAdd from "./ProfileAdd.js";
+import ToggleSwitch from "@/components/ToggleSwitch.js";
+import { RECENT_ADDED_WINDOW } from "@/lib/constants.js";
+import { card, SortOption } from "@/lib/types.js";
+import { sortCards } from "@/lib/utils.js";
+
 
 export type addOption = "list" | "search";
 

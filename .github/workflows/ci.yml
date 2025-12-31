@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: npm run build
   e2e:
-    timeout-minutes: 3
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -62,7 +62,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Start frontend
-        run: npm run dev
+        run: npm run dev &
 
       - name: Wait for frontend
         run: npx wait-on http://localhost:5173

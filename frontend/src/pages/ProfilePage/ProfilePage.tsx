@@ -15,7 +15,6 @@ import MultiTutorialPopup from "@/components/TutorialPopup.js";
 import { PROFILE_TUTORIAL_STEPS } from "@/lib/constants.js";
 import { card } from "@/lib/types.js";
 
-
 const ProfilePage: React.FC = () => {
   const [cards, setCards] = useState<card[]>([]);
   const [bgArt, setBgArt] = useState<string>("");

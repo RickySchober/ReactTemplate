@@ -13,7 +13,6 @@ import { RECENT_ADDED_WINDOW } from "@/lib/constants.js";
 import { card, SortOption } from "@/lib/types.js";
 import { sortCards } from "@/lib/utils.js";
 
-
 export type addOption = "list" | "search";
 
 interface ProfileCollectionProps {

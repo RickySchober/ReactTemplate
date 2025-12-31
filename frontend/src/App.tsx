@@ -13,7 +13,6 @@ import SettingsPage from "@/pages/SettingsPage.js";
 import TradeLog from "@/pages/TradeLogPage.js";
 import TradePage from "@/pages/TradePage/TradePage.js";
 
-
 export default function App() {
   const [showSlowPopup, setShowSlowPopup] = useState(false);
   const [show404, setShow404] = useState(false);

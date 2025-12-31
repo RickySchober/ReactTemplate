@@ -7,7 +7,7 @@
   "arrowParens": "always",
   "bracketSpacing": true,
   "jsxSingleQuote": false,
-  "endOfLine": "crlf",
+  "endOfLine": "lf",
   "tailwindConfig": "./tailwind.config.js",
   "plugins": ["prettier-plugin-tailwindcss"],
   "overrides": [

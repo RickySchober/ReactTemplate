@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+import prettier from "eslint-plugin-prettier";
 import importPlugin from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 
@@ -13,7 +14,7 @@ export default [
   ...tseslint.configs.recommended,
 
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -27,6 +28,7 @@ export default [
       "react-hooks": reactHooks,
       import: importPlugin,
       "jsx-a11y": jsxA11y,
+      prettier,
     },
     settings: {
       react: {
@@ -36,9 +38,9 @@ export default [
     rules: {
       "linebreak-style": ["error", "unix"],
 
-      "react/react-in-jsx-scope": "off", // Vite + React 17+
+      "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
-
+      "react/prop-types": "off",
       "react-hooks/rules-of-hooks": "error",
 
       "import/order": [
@@ -52,6 +54,8 @@ export default [
 
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",
+
+      "prettier/prettier": ["error", {}, { usePrettierrc: true }],
 
       //"no-console": ["warn", { allow: ["warn", "error"] }],
     },

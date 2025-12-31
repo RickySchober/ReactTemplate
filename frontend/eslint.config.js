@@ -53,7 +53,7 @@ export default [
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",
 
-      "prettier/prettier": ["error", {}, { usePrettierrc: true }],
+      //"prettier/prettier": ["error", {}, { usePrettierrc: true }],
 
       //"no-console": ["warn", { allow: ["warn", "error"] }],
     },

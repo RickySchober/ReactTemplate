@@ -1,4 +1,8 @@
 import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { tryLogin } from "../api/Login.js";
 
 import Button from "@/components/Button.js";
 interface LoginFormProps {
@@ -7,15 +11,16 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ setIsRegister }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
   const navigate = useNavigate();
 
-  async function submitForm() {
-    const success = await tryRegister(username, email, password);
+  async function submitForm(e: React.FormEvent) {
+    e.preventDefault();
+    const success = await tryLogin(email, password);
+    console.log(success);
     if (success) navigate("/profile");
   }
   return (
-    <form onSubmit={handleLogin} className="flex flex-col gap-3">
+    <form onSubmit={submitForm} className="flex flex-col gap-3">
       <input
         type="email"
         placeholder="Email"

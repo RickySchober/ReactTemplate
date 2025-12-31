@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { tryRegister } from "../api/Register.js";
@@ -15,7 +14,8 @@ const RegisterForm: React.FC<RegisterProps> = ({ setIsRegister }) => {
   const [username, setUsername] = useState<string>("");
   const navigate = useNavigate();
 
-  async function submitForm() {
+  async function submitForm(e: React.FormEvent) {
+    e.preventDefault();
     const success = await tryRegister(username, email, password);
     if (success) navigate("/profile");
   }

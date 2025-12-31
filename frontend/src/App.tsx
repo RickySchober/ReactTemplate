@@ -6,7 +6,7 @@ import { registerSlowPopupSetter, register404 } from "./api/client.js";
 
 import NotFoundPage from "@/pages/404Page.js";
 import LandingPage from "@/pages/LandingPage.js";
-import LoginPage from "@/pages/LoginPage.js";
+import LoginPage from "@/pages/LoginPage/LoginPage.js";
 import ProfilePage from "@/pages/ProfilePage/ProfilePage.js";
 import SearchPage from "@/pages/SearchPage.js";
 import SettingsPage from "@/pages/SettingsPage.js";

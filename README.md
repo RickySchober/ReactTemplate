@@ -7,7 +7,7 @@ you have that the other wants in order to setup a mutually beneficial trade.
 
 ## Live Demo
 
-You can view the live, deployed version of the application here:
+You can view the live, deployed version of the application here (may not avaliable at all times as I am using free service):
 
 [**https://mtgtrader.netlify.app/**](https://mtgtrader.netlify.app/)
 

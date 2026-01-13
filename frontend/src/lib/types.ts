@@ -1,13 +1,13 @@
 // Types defined across whole frontend
 export interface card {
-  id?: number;
+  id: string;
   name: string;
   set_name: string;
   rarity: string;
   price: number;
   print_description?: string;
   image_url: string;
-  owner_id?: number;
+  owner_id: string;
   quantity: number;
   intent: "have" | "want";
   date_added?: string | number | Date;
@@ -21,6 +21,7 @@ export interface ScryfallPrice {
   tix?: number;
 }
 
+// Many of these fields are optional as Scryfall returns different fields for different cards
 export interface ScryfallCard {
   id: string;
   name: string;
@@ -71,7 +72,7 @@ export enum ActiveUser {
 }
 
 export interface User {
-  id: number;
+  id: string;
   username: string;
 }
 
@@ -92,21 +93,21 @@ export interface UserAddress {
 }
 
 export interface UserProfile {
-  id: number;
+  id: string;
   username: string;
   email: string;
-  settings?: UserSettings;
-  address?: UserAddress;
+  settings: UserSettings;
+  address: UserAddress;
 }
 
 export interface TradeItem {
-  id?: number;
+  id: string;
   card: card;
   quantity: number;
 }
 
 export interface trade {
-  id?: string;
+  id: string;
 
   status: TradeStatus;
   activeUser: ActiveUser;
@@ -119,13 +120,12 @@ export interface trade {
 
 // When creating new trades just link to elements with id
 export interface TradeItemPayload {
-  id?: number;
-  card_id: number;
+  card_id: string;
   quantity: number;
 }
 export interface TradePayload {
-  a_user_id: number;
-  b_user_id: number;
+  a_user_id: string;
+  b_user_id: string;
 
   trade_items: TradeItemPayload[];
 

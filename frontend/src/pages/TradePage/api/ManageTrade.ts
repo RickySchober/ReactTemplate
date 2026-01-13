@@ -12,11 +12,13 @@ export async function initializeTrade(newTradeInfo: NewTradeInfo): Promise<trade
   const trade_items: TradeItem[] = [];
   cards.forEach((card: card) =>
     trade_items.push({
+      id: "",
       card: card,
       quantity: 1,
     })
   );
   const trade: trade = {
+    id: "",
     status: TradeStatus.PENDING,
     activeUser: ActiveUser.NONE,
     a_user: a_user.data,

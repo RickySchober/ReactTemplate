@@ -49,7 +49,7 @@ const TradeCollection: React.FC<TradeCollectionProps> = ({
   ]);
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
-    const newTradeItem: TradeItem = { quantity: 1, card: card };
+    const newTradeItem: TradeItem = { id: "", quantity: 1, card: card };
     setTrade((prev) => ({
       ...prev,
       status: TradeStatus.PENDING,

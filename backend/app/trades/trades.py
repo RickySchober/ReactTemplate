@@ -2,8 +2,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
-from ..database import get_session
-from ..models import TradeOffer, TradeItem, TradeOfferWrite, TradeOfferRead
+from app.database import get_session
+from .models import TradeOffer, TradeItem, TradeOfferWrite, TradeOfferRead
+from uuid import UUID
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 
@@ -47,7 +48,7 @@ def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_ses
 
 # Get a single trade by its trade ID
 @router.get("/{trade_id}", response_model=TradeOfferRead)
-def get_single_trade_offer(trade_id: int, session: Session = Depends(get_session)):
+def get_single_trade_offer(trade_id: UUID, session: Session = Depends(get_session)):
     trade = (select(TradeOffer)
             .where(TradeOffer.id == trade_id)
             .options(
@@ -63,7 +64,7 @@ def get_single_trade_offer(trade_id: int, session: Session = Depends(get_session
 
 # Get all trades for a specific user ID
 @router.get("/user/{user_id}", response_model=list[TradeOfferRead]) 
-def get_user_trades(user_id: int, session: Session = Depends(get_session)):
+def get_user_trades(user_id: UUID, session: Session = Depends(get_session)):
     statement = (
         select(TradeOffer)
         .where(
@@ -80,7 +81,7 @@ def get_user_trades(user_id: int, session: Session = Depends(get_session)):
 
 #Modify a specfic trade based on its ID
 @router.patch("/{trade_id}", response_model=TradeOfferRead)
-def patch_trade_offer(trade_id: int, data: TradeOfferWrite, session: Session = Depends(get_session),):
+def patch_trade_offer(trade_id: UUID, data: TradeOfferWrite, session: Session = Depends(get_session),):
     stmt = (
         select(TradeOffer)
         .where(TradeOffer.id == trade_id)

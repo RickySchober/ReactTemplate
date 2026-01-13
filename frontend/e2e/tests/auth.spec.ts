@@ -1,3 +1,4 @@
+/* This test ensures registration and login works correctly simulating expected API responses */
 import { test, expect } from "@playwright/test";
 
 test("user can register and is redirected to profile", async ({ page }) => {

@@ -24,7 +24,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
   onAddCardsClick,
   onProposeClick,
 }) => {
-  const userID: number = userA ? trade.a_user.id : trade.b_user.id;
+  const userID: string = userA ? trade.a_user.id : trade.b_user.id;
   const myOffer: TradeItem[] = trade.trade_items.filter(
     (item: TradeItem) => item.card.owner_id === userID
   );

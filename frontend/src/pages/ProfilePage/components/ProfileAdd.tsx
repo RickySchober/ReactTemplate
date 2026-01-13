@@ -20,6 +20,7 @@ const ProfileAdd: React.FC<ProfileAddProps> = ({ add, haves, addOption, refreshC
   const [listText, setListText] = useState<string>("");
 
   async function addFromSearch(card: card) {
+    card.intent = haves ? "have" : "want";
     console.log(card);
     try {
       await api.post("/cards/", card);

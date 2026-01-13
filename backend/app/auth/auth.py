@@ -2,35 +2,20 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 import logging
-import sys
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
-from ..database import get_session
-from ..models import User, Card, UserProfileRead, UserRead, UserAddress, UserSettings
-from ..auth import hash_password, verify_password, create_access_token
-from jose import jwt, JWTError
-from fastapi.security import OAuth2PasswordBearer
-from ..auth import SECRET_KEY, ALGORITHM
+from app.database import get_session
+from .models import User, UserProfileRead, UserRead, UserAddress, UserSettings
+from app.cards.models import Card
+from .services import hash_password, verify_password, create_access_token, get_current_user
+
+from uuid import UUID
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 logger = logging.getLogger(__name__)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-#Gets current user ensuring they have a valid authentication token to access user information
-def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)):
-    credentials_exception = HTTPException(status_code=401, detail="Invalid token")
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = int(payload.get("sub"))
-    except JWTError:
-        raise credentials_exception
-
-    user = session.get(User, user_id)
-    if not user:
-        raise credentials_exception
-    return user
 
 #Creates user in database with all default account settings and returns token
 @router.post("/signup")
@@ -71,7 +56,7 @@ def signup(username: str, email: str, password: str, session: Session = Depends(
     )
     session.refresh(user)
 
-    token = create_access_token({"sub": str(user.id)})
+    token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "message": "User created", "user_id": user.id}
 
 #Login and return authentication token
@@ -81,7 +66,7 @@ def login(email: str, password: str, session: Session = Depends(get_session)):
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": str(user.id)})
+    token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
 #Get user profile
@@ -106,12 +91,12 @@ def my_cards(user: User = Depends(get_current_user), session: Session = Depends(
 
 #Minimal get user that doesn't require authentication
 @router.get("/user/{user_id}", response_model=UserRead)
-def get_user(user_id: int, session: Session = Depends(get_session)):
+def get_user(user_id: UUID, session: Session = Depends(get_session)):
     return session.get(User, user_id)
 
 #Verbose get user which requires authentication
 @router.get("/user_full/{user_id}", response_model=UserProfileRead)
-def get_user(user_id: int, session: Session = Depends(get_session), user: User = Depends(get_current_user)):
+def get_user(user_id: UUID, session: Session = Depends(get_session), user: User = Depends(get_current_user)):
     stmt = (
         select(User)
         .where(User.id == user_id)

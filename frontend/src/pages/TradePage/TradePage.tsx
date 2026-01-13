@@ -19,12 +19,12 @@ import { TRADE_TUTORIAL_STEPS } from "@/lib/constants.js";
 import { ActiveUser, card, trade, TradeStatus, User } from "@/lib/types.js";
 
 const EmptyUser: User = {
-  id: 0,
+  id: "",
   username: "Loading...",
 };
 // Define the default trade object when creating new trade
 const DefaultTrade: trade = {
-  id: "0",
+  id: "",
   status: TradeStatus.PENDING,
   activeUser: ActiveUser.NONE,
   a_user: EmptyUser,

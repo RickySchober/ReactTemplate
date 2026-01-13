@@ -16,7 +16,7 @@ import { card, SortOption } from "@/lib/types.js";
 import { sortCards } from "@/lib/utils.js";
 
 const SearchPage: React.FC = () => {
-  const [myID, setMyID] = useState<number>(0);
+  const [myID, setMyID] = useState<string>("");
   const [results, setResults] = useState<card[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>(SortOption.DATE_ADDED);
   const [ascending, setAscending] = useState<boolean>(true);

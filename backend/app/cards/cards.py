@@ -1,9 +1,11 @@
 # Card route handles creating, updating, and retrieving cards from database
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from .auth import get_current_user
-from ..database import get_session
-from ..models import User, Card, CardUpdate
+from app.auth.services import get_current_user
+from app.database import get_session
+from .models import Card, CardUpdate
+from app.auth.models import User
+from uuid import UUID
 
 router = APIRouter(prefix="/cards", tags=["cards"])
 
@@ -36,7 +38,7 @@ def create_card(card: Card, user: User = Depends(get_current_user), session: Ses
 
 #Update modifiable information on card which right now is just its quantity
 @router.patch("/{card_id}")
-def modify_quantity(card_id: int, update: CardUpdate, session: Session = Depends(get_session)):
+def modify_quantity(card_id: UUID, update: CardUpdate, session: Session = Depends(get_session)):
     card = session.get(Card, card_id)
     if not card:
         raise HTTPException(status_code=404, detail="Card not found")
@@ -56,7 +58,7 @@ def modify_quantity(card_id: int, update: CardUpdate, session: Session = Depends
 
 #Get all cards owned by a certain user
 @router.get("/user/{user_id}", response_model=list[Card])
-def get_user_cards(user_id: int, session: Session = Depends(get_session)):
+def get_user_cards(user_id: UUID, session: Session = Depends(get_session)):
     return session.exec(select(Card).where(Card.owner_id == user_id)).all()
 
 #Return all cards in database with specified name/setname ignoring user

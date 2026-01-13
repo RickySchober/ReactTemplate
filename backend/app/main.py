@@ -1,10 +1,11 @@
+from app.trades import trades
+from app.auth import auth
 from fastapi import FastAPI, Depends, HTTPException
-from .database import init_db
-from .routes import cards, auth, trades
+from app.cards import cards
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
-from .database import get_session
-from .models import User
+from app.database import get_session, init_db
+from app.auth.models import User
 import os
 
 app = FastAPI(title="MTG Trader API")

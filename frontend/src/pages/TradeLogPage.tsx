@@ -10,7 +10,7 @@ import { TradeStatus, trade, TradeItem } from "@/lib/types.js";
 
 const TradeLogPage: React.FC = () => {
   const [trades, setTrades] = useState<trade[]>([]);
-  const [myID, setMyID] = useState<number | null>(null);
+  const [myID, setMyID] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const TradeLogPage: React.FC = () => {
   }
 
   function getOtherUser(trade: trade) {
-    return trade.a_user?.id === myID ? trade.b_user : trade.a_user;
+    return trade.a_user.id === myID ? trade.b_user : trade.a_user;
   }
 
   function statusColor(status: TradeStatus) {
@@ -62,8 +62,8 @@ const TradeLogPage: React.FC = () => {
 
         <div className="space-y-4">
           {trades.map((trade: trade) => {
-            const myItems = trade.trade_items.filter((ti) => ti.card?.owner_id === myID);
-            const theirItems = trade.trade_items.filter((ti) => ti.card?.owner_id !== myID);
+            const myItems = trade.trade_items.filter((ti) => ti.card.owner_id === myID);
+            const theirItems = trade.trade_items.filter((ti) => ti.card.owner_id !== myID);
 
             const myTotal = calculateTotal(myItems);
             const theirTotal = calculateTotal(theirItems);

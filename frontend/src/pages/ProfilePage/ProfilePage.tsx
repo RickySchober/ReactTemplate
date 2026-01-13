@@ -30,6 +30,7 @@ const ProfilePage: React.FC = () => {
     setBgArt(artUrl);
     const res = await api.get("/auth/my_cards");
     setCards(res.data);
+    console.log(res.data);
   }
   async function refreshCards() {
     const res = await api.get("/auth/my_cards");

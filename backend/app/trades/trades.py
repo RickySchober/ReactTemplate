@@ -2,15 +2,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
-from .models import TradeOffer, TradeItem, TradeOfferWrite, TradeOfferRead
+from .models import TradeOffer, TradeItem
+from .schemas import TradeOfferWrite, TradeOfferRead
 from uuid import UUID
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 
 #Create new trade and link related trade items and users
-@router.post("/", response_model=TradeOffer)
-def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_session)):
+@router.post("/", response_model=TradeOfferRead)
+async def create_trade_offer(data: TradeOfferWrite, session: AsyncSession = Depends(get_session)):
     trade = TradeOffer(
         a_user_id=data.a_user_id,
         b_user_id=data.b_user_id,
@@ -18,8 +20,8 @@ def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_ses
         activeUser=data.activeUser
     )
     session.add(trade)
-    session.commit()
-    session.refresh(trade)
+    await session.commit()
+    await session.refresh(trade)
 
     for item in data.trade_items:
         trade_item = TradeItem(
@@ -29,7 +31,7 @@ def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_ses
         )
         session.add(trade_item)
 
-    session.commit()
+    await session.commit()
     # reload WITH nested relationships
     query = (
         select(TradeOffer)
@@ -41,14 +43,16 @@ def create_trade_offer(data: TradeOfferWrite, session: Session = Depends(get_ses
                 .selectinload(TradeItem.card)
         )
     )
-    session.refresh(trade)
+    await session.refresh(trade)
 
-    return session.exec(query).one()
+    result = await session.exec(query)
+    trade = result.one()
+    return trade
 
 
 # Get a single trade by its trade ID
 @router.get("/{trade_id}", response_model=TradeOfferRead)
-def get_single_trade_offer(trade_id: UUID, session: Session = Depends(get_session)):
+async def get_single_trade_offer(trade_id: UUID, session: AsyncSession = Depends(get_session)):
     trade = (select(TradeOffer)
             .where(TradeOffer.id == trade_id)
             .options(
@@ -57,14 +61,15 @@ def get_single_trade_offer(trade_id: UUID, session: Session = Depends(get_sessio
             selectinload(TradeOffer.trade_items)
                 .selectinload(TradeItem.card)
             ))
-    trade = session.exec(trade).one_or_none()
+    trade = await session.exec(trade)
+    trade = trade.one_or_none()
     if not trade:
         raise HTTPException(status_code=404, detail="Trade not found")
     return trade
 
 # Get all trades for a specific user ID
 @router.get("/user/{user_id}", response_model=list[TradeOfferRead]) 
-def get_user_trades(user_id: UUID, session: Session = Depends(get_session)):
+async def get_user_trades(user_id: UUID, session: AsyncSession = Depends(get_session)):
     statement = (
         select(TradeOffer)
         .where(
@@ -75,13 +80,15 @@ def get_user_trades(user_id: UUID, session: Session = Depends(get_session)):
             selectinload(TradeOffer.a_user),
             selectinload(TradeOffer.b_user),
             selectinload(TradeOffer.trade_items)
-                .selectinload(TradeItem.card)
+                .selectinload(TradeItem.card),
         ))
-    return session.exec(statement).all() 
+    result = await session.exec(statement)
+    trades = result.all()
+    return trades
 
 #Modify a specfic trade based on its ID
 @router.patch("/{trade_id}", response_model=TradeOfferRead)
-def patch_trade_offer(trade_id: UUID, data: TradeOfferWrite, session: Session = Depends(get_session),):
+async def patch_trade_offer(trade_id: UUID, data: TradeOffer, session: AsyncSession = Depends(get_session),):
     stmt = (
         select(TradeOffer)
         .where(TradeOffer.id == trade_id)
@@ -91,7 +98,8 @@ def patch_trade_offer(trade_id: UUID, data: TradeOfferWrite, session: Session = 
             selectinload(TradeOffer.b_user),
         )
     )
-    trade = session.exec(stmt).one_or_none()
+    trade = await session.exec(stmt)
+    trade = trade.one_or_none()
     if not trade:
         raise HTTPException(status_code=404, detail="Trade not found")
 
@@ -108,7 +116,7 @@ def patch_trade_offer(trade_id: UUID, data: TradeOfferWrite, session: Session = 
         #Update existing items or remove if missing
         for existing_id, existing_item in list(existing_items.items()):
             if existing_id not in incoming_items:
-                session.delete(existing_item)
+                await session.delete(existing_item)
             else:
                 inc = incoming_items[existing_id]
                 existing_item.quantity = inc.quantity
@@ -124,8 +132,8 @@ def patch_trade_offer(trade_id: UUID, data: TradeOfferWrite, session: Session = 
                 )
                 session.add(new_item)
 
-    session.commit()
-    session.refresh(trade)
+    await session.commit()
+    await session.refresh(trade)
 
     return trade
 

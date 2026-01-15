@@ -25,6 +25,7 @@ const TradeLogPage: React.FC = () => {
 
       const tradesResponse = await api.get(`/trades/user/${currentUserId}`);
       setTrades(tradesResponse.data);
+      console.log(tradesResponse.data);
     } catch (error) {
       console.error("Error fetching trades:", error);
     }

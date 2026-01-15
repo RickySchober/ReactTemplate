@@ -2,12 +2,16 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 import logging
-from sqlmodel import Session, select
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.database import get_session
-from .models import User, UserProfileRead, UserRead, UserAddress, UserSettings
 from app.cards.models import Card
+from app.cards.schemas import CardRead
+from .models import User, UserAddress, UserSettings
+from .schemas import UserProfileRead, UserRead
 from .services import hash_password, verify_password, create_access_token, get_current_user
+
 
 from uuid import UUID
 
@@ -15,11 +19,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 logger = logging.getLogger(__name__)
 
-
-
 #Creates user in database with all default account settings and returns token
 @router.post("/signup")
-def signup(username: str, email: str, password: str, session: Session = Depends(get_session)):
+async def signup(username: str, email: str, password: str, session: AsyncSession = Depends(get_session)):
     try:
         pw_bytes = password.encode("utf-8")
     except Exception:
@@ -32,20 +34,21 @@ def signup(username: str, email: str, password: str, session: Session = Depends(
             detail="Password is too long (max 72 bytes for bcrypt). Please choose a shorter password.",
         )
 
-    existing = session.exec(select(User).where(User.email == email)).first()
+    existing = await session.exec(select(User).where(User.email == email))
+    existing = existing.first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     user = User(username=username, email=email, hashed_password=hash_password(password))
     session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     settings = UserSettings(user_id=user.id, disable_warning=False,backsplash="Gudul_Lurker.jpg",dark_mode=True,email_notifications=False)
     address = UserAddress(user_id=user.id, full_name="", street="",city="",state="",zip_code="",country="")
     session.add(settings)
     session.add(address)
-    session.commit()
+    await session.commit()
     query = (
         select(User)
         .where(User.id == user.id)
@@ -54,15 +57,16 @@ def signup(username: str, email: str, password: str, session: Session = Depends(
             selectinload(User.settings),
         )
     )
-    session.refresh(user)
+    await session.refresh(user)
 
     token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "message": "User created", "user_id": user.id}
 
 #Login and return authentication token
 @router.post("/login")
-def login(email: str, password: str, session: Session = Depends(get_session)):
-    user = session.exec(select(User).where(User.email == email)).first()
+async def login(email: str, password: str, session: AsyncSession = Depends(get_session)):
+    user = await session.exec(select(User).where(User.email == email))
+    user = user.first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -71,7 +75,7 @@ def login(email: str, password: str, session: Session = Depends(get_session)):
 
 #Get user profile
 @router.get("/me", response_model=UserProfileRead)
-def read_users_me(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+async def read_users_me(current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     stmt = (
         select(User)
         .where(User.id == current_user.id)
@@ -80,23 +84,25 @@ def read_users_me(current_user: User = Depends(get_current_user), session: Sessi
             selectinload(User.address),
         )
     )
-    db_user = session.exec(stmt).one()
+    result = await session.exec(stmt)
+    db_user = result.one()
 
     return db_user
 
 #Get user cards
-@router.get("/my_cards", response_model=list[Card])
-def my_cards(user: User = Depends(get_current_user), session: Session = Depends(get_session)):
-    return session.exec(select(Card).where(Card.owner_id == user.id)).all()
+@router.get("/my_cards", response_model=list[CardRead])
+async def my_cards(user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    result = await session.exec(select(Card).where(Card.owner_id == user.id))
+    return result.all()
 
 #Minimal get user that doesn't require authentication
 @router.get("/user/{user_id}", response_model=UserRead)
-def get_user(user_id: UUID, session: Session = Depends(get_session)):
-    return session.get(User, user_id)
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session)):
+    return await session.get(User, user_id)
 
 #Verbose get user which requires authentication
 @router.get("/user_full/{user_id}", response_model=UserProfileRead)
-def get_user(user_id: UUID, session: Session = Depends(get_session), user: User = Depends(get_current_user)):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session), user: User = Depends(get_current_user)):
     stmt = (
         select(User)
         .where(User.id == user_id)
@@ -105,19 +111,24 @@ def get_user(user_id: UUID, session: Session = Depends(get_session), user: User 
             selectinload(User.address),
         )
     )
-    db_user = session.exec(stmt).one()
+    result = await session.exec(stmt)
+    db_user = result.one()
 
     return db_user
 
 #Update user profile including settings
 @router.patch("/me", response_model=UserProfileRead)
-def update_profile(
-    data: UserProfileRead,
-    session: Session = Depends(get_session),
-    user=Depends(get_current_user),
-):
-    db_user = session.get(User, user.id)
-    print("db_user")
+async def update_profile(data: UserProfileRead, session: AsyncSession = Depends(get_session), user=Depends(get_current_user)):
+    stmt = (
+        select(User)
+        .where(User.id == user.id)
+        .options(
+            selectinload(User.settings),
+            selectinload(User.address),
+        )
+    )
+    result = await session.exec(stmt)
+    db_user = result.one()
     if data.settings:
         if not db_user.settings:
             db_user.settings = UserSettings(user_id=db_user.id)
@@ -135,9 +146,6 @@ def update_profile(
             setattr(db_user.address, key, value)
 
     session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
+    await session.commit()
 
     return db_user
-
-

@@ -8,7 +8,7 @@ import { addOption } from "./ProfileCollection.js";
 import api from "@/api/client.js";
 import Button from "@/components/Button.js";
 import SearchCard from "@/components/SearchCard.js";
-import { card } from "@/lib/types.js";
+import { card, CardPayload } from "@/lib/types.js";
 
 interface ProfileAddProps {
   add: boolean;
@@ -21,9 +21,18 @@ const ProfileAdd: React.FC<ProfileAddProps> = ({ add, haves, addOption, refreshC
 
   async function addFromSearch(card: card) {
     card.intent = haves ? "have" : "want";
-    console.log(card);
+    const cardPayload: CardPayload = {
+      name: card.name,
+      set_name: card.set_name,
+      rarity: card.rarity,
+      price: card.price,
+      print_description: card.print_description,
+      image_url: card.image_url,
+      quantity: card.quantity,
+      intent: card.intent,
+    };
     try {
-      await api.post("/cards/", card);
+      await api.post("/cards/", cardPayload);
       refreshCards();
     } catch {
       alert("Failed to add card");

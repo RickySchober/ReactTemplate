@@ -1,12 +1,11 @@
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from enum import Enum
-from pydantic import Field as PydanticField
 from uuid import UUID, uuid4
 
 if TYPE_CHECKING:
-    from app.auth.models import User, UserRead
-    from app.cards.models import Card, CardRead
+    from app.auth.models import User
+    from app.cards.models import Card
 
 #All possible trade statuses
 class TradeStatus(str, Enum):
@@ -54,33 +53,3 @@ class TradeOffer(SQLModel, table=True):
     status: TradeStatus = Field(default=TradeStatus.CANCELED)
     activeUser: ActiveUser = Field(default=ActiveUser.NONE)
 
-
-# Models for reading and writing to relational DB entries
-# limiting data to what is accessible to end user.
-
-class TradeItemWrite(SQLModel):
-    id: UUID 
-    card_id: UUID
-    quantity: int
-
-class TradeOfferWrite(SQLModel):
-    a_user_id: UUID
-    b_user_id: UUID
-    status: TradeStatus = TradeStatus.PENDING
-    activeUser: ActiveUser = ActiveUser.NONE
-    trade_items: List[TradeItemWrite]
-
-class TradeItemRead(SQLModel):
-    id: UUID
-    card: Optional["CardRead"]
-    quantity: int
-
-class TradeOfferRead(SQLModel):
-    id: UUID
-    status: TradeStatus
-    activeUser: ActiveUser
-
-    a_user: Optional["UserRead"]
-    b_user: Optional["UserRead"]
-
-    trade_items: List[TradeItemRead] = PydanticField(default_factory=list)

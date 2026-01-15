@@ -47,13 +47,13 @@ export function createTradePayload(trade: trade): TradePayload {
   const tradeItemsPayload: TradeItemPayload[] = [];
   trade?.trade_items.forEach((item) =>
     tradeItemsPayload.push({
-      card_id: item.card.id ?? 0,
+      card_id: item.card.id!,
       quantity: item.quantity,
     })
   );
   const tradePayload: TradePayload = {
-    a_user_id: trade.a_user.id,
-    b_user_id: trade.b_user.id,
+    a_user_id: trade.a_user.id!,
+    b_user_id: trade.b_user.id!,
     status: trade.status,
     activeUser: trade.activeUser,
     trade_items: tradeItemsPayload,

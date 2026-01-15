@@ -3,7 +3,7 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
-from sqlmodel import Session
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
 from .models import User
 from uuid import UUID
@@ -17,7 +17,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 #Gets current user ensuring they have a valid authentication token to access user information
-def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session),) -> User:
+async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)) -> User:
     credentials_exception = HTTPException(
         status_code=401,
         detail="Invalid token",
@@ -33,7 +33,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Dep
     except (JWTError, ValueError):
         raise credentials_exception
 
-    user = session.get(User, user_id)
+    user = await session.get(User, user_id)
     if not user:
         raise credentials_exception
 

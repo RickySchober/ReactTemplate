@@ -1,11 +1,9 @@
 from app.trades import trades
 from app.auth import auth
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI
 from app.cards import cards
 from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import Session
-from app.database import get_session, init_db
-from app.auth.models import User
+from app.database import init_db
 import os
 
 app = FastAPI(title="MTG Trader API")
@@ -27,16 +25,9 @@ app.add_middleware(
 )
 
 @app.on_event("startup")
-def on_startup():
-    init_db()
+async def on_startup():
+    await init_db()
 
 app.include_router(cards.router)
 app.include_router(auth.router)
 app.include_router(trades.router)
-
-@app.get("/users/{user_id}")
-def get_user(user_id: int, session: Session = Depends(get_session)):
-    user = session.get(User, user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"id": user.id, "username": user.username, "email": user.email}

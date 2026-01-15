@@ -104,7 +104,7 @@ const TradePage: React.FC = () => {
               userA={userA}
               close={() => removeTrade}
               onAddCardsClick={() => setCollectionView("myCards")}
-              onProposeClick={() => updateTrade}
+              onProposeClick={async () => await updateTrade()}
             />
             <TradePanel
               trade={trade}

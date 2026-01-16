@@ -1,5 +1,5 @@
 # Card route handles creating, updating, and retrieving cards from database
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.auth.services import get_current_user

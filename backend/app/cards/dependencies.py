@@ -4,6 +4,7 @@ from app.cards.models import Card
 from app.auth.services import get_current_user
 from app.auth.models import User
 from app.database import get_session
+from uuid import UUID
 
 async def verify_card(card: Card, user: User = Depends(get_current_user)) -> Card:
     card.owner_id = user.id
@@ -15,7 +16,7 @@ async def verify_card(card: Card, user: User = Depends(get_current_user)) -> Car
 
     return card
 
-async def verify_card_by_id(card_id: str, session: AsyncSession = Depends(get_session)) -> Card:
+async def verify_card_by_id(card_id: UUID, session: AsyncSession = Depends(get_session)) -> Card:
     card = await session.get(Card, card_id)
     if not card:
         raise HTTPException(status_code=404, detail="Card not found")

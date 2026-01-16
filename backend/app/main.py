@@ -31,3 +31,4 @@ async def on_startup():
 app.include_router(cards.router)
 app.include_router(auth.router)
 app.include_router(trades.router)
+

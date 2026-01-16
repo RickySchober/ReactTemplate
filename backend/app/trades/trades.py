@@ -6,13 +6,14 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
 from .models import TradeOffer, TradeItem
 from .schemas import TradeOfferWrite, TradeOfferRead
+from .dependencies import validate_trade_users
 from uuid import UUID
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 
 #Create new trade and link related trade items and users
 @router.post("/", response_model=TradeOfferRead)
-async def create_trade_offer(data: TradeOfferWrite, session: AsyncSession = Depends(get_session)):
+async def create_trade_offer(data: TradeOfferWrite, users: tuple = Depends(validate_trade_users), session: AsyncSession = Depends(get_session)):
     trade = TradeOffer(
         a_user_id=data.a_user_id,
         b_user_id=data.b_user_id,

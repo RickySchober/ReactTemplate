@@ -8,3 +8,4 @@ python-dotenv
 pydantic
 bcrypt==4.3.0 #Latest version has compatibility issues
 python-jose
+email-validator

@@ -1,45 +1,24 @@
 #Auth route handles user signup, login, and fetching user-specific data
-
-from fastapi import APIRouter, Depends, HTTPException
-import logging
+from fastapi import APIRouter, Depends
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.database import get_session
-from app.cards.models import Card
 from app.cards.schemas import CardRead
+from app.cards.models import Card
 from .models import User, UserAddress, UserSettings
-from .schemas import UserProfileRead, UserRead
-from .services import hash_password, verify_password, create_access_token, get_current_user
-
+from .schemas import UserProfileRead, UserRead, SignupRequest
+from .services import hash_password, create_access_token, get_current_user
+from .dependencies import validate_signup, validate_login
 
 from uuid import UUID
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-logger = logging.getLogger(__name__)
-
 #Creates user in database with all default account settings and returns token
 @router.post("/signup")
-async def signup(username: str, email: str, password: str, session: AsyncSession = Depends(get_session)):
-    try:
-        pw_bytes = password.encode("utf-8")
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid password encoding")
-
-    if len(pw_bytes) > 72:
-        logger.warning("Password too long for bcrypt: %d bytes (user=%r)", len(pw_bytes), username)
-        raise HTTPException(
-            status_code=400,
-            detail="Password is too long (max 72 bytes for bcrypt). Please choose a shorter password.",
-        )
-
-    existing = await session.exec(select(User).where(User.email == email))
-    existing = existing.first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    user = User(username=username, email=email, hashed_password=hash_password(password))
+async def signup(data: SignupRequest = Depends(validate_signup), session: AsyncSession = Depends(get_session)):
+    user = User(username=data.username, email=data.email, hashed_password=hash_password(data.password))
     session.add(user)
     await session.commit()
     await session.refresh(user)
@@ -49,27 +28,13 @@ async def signup(username: str, email: str, password: str, session: AsyncSession
     session.add(settings)
     session.add(address)
     await session.commit()
-    query = (
-        select(User)
-        .where(User.id == user.id)
-        .options(
-            selectinload(User.address),
-            selectinload(User.settings),
-        )
-    )
-    await session.refresh(user)
 
     token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "message": "User created", "user_id": user.id}
 
 #Login and return authentication token
 @router.post("/login")
-async def login(email: str, password: str, session: AsyncSession = Depends(get_session)):
-    user = await session.exec(select(User).where(User.email == email))
-    user = user.first()
-    if not user or not verify_password(password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
+async def login(user: User = Depends(validate_login)):
     token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
@@ -102,7 +67,7 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session)):
 
 #Verbose get user which requires authentication
 @router.get("/user_full/{user_id}", response_model=UserProfileRead)
-async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session), user: User = Depends(get_current_user)):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session)):
     stmt = (
         select(User)
         .where(User.id == user_id)
@@ -118,7 +83,7 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_session), 
 
 #Update user profile including settings
 @router.patch("/me", response_model=UserProfileRead)
-async def update_profile(data: UserProfileRead, session: AsyncSession = Depends(get_session), user=Depends(get_current_user)):
+async def update_profile(data: UserProfileRead, session: AsyncSession = Depends(get_session), user: User=Depends(get_current_user)):
     stmt = (
         select(User)
         .where(User.id == user.id)

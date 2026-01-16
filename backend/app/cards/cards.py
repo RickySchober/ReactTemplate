@@ -6,6 +6,7 @@ from app.auth.services import get_current_user
 from app.database import get_session
 from .models import Card
 from .schemas import CardUpdate, CardRead
+from .dependencies import verify_card, verify_card_by_id
 from app.auth.models import User
 from uuid import UUID
 
@@ -13,14 +14,7 @@ router = APIRouter(prefix="/cards", tags=["cards"])
 
 #Create new card and relate to its owner
 @router.post("/", response_model=CardRead)
-async def create_card(card: Card, user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
-    card.owner_id = user.id
-    card.owner = user
-    if card.intent not in ("have", "want"):
-        raise HTTPException(status_code=400, detail="intent must be 'have' or 'want'")
-    if card.quantity is None or card.quantity < 1:
-        card.quantity = 1
-    # If card already exists for user with same name, set_name, and intent, update quantity instead
+async def create_card(card: Card = Depends(verify_card), user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     statement = select(Card).where(Card.owner_id == user.id,
                                    Card.name == card.name,
                                    Card.set_name == card.set_name,
@@ -41,10 +35,7 @@ async def create_card(card: Card, user: User = Depends(get_current_user), sessio
 
 #Update modifiable information on card which right now is just its quantity
 @router.patch("/{card_id}")
-async def modify_quantity(card_id: UUID, update: CardUpdate, session: AsyncSession = Depends(get_session)):
-    card = await session.get(Card, card_id)
-    if not card:
-        raise HTTPException(status_code=404, detail="Card not found")
+async def modify_quantity(update: CardUpdate, card: Card = Depends(verify_card_by_id), session: AsyncSession = Depends(get_session)):
     update_data = update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         #Remove from db if quantity 0

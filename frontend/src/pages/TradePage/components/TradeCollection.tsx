@@ -27,7 +27,7 @@ const TradeCollection: React.FC<TradeCollectionProps> = ({
   otherUserCards,
   closePopup,
 }) => {
-  const [autoMatch, setAutoMatch] = useState(false);
+  const [autoMatch, setAutoMatch] = useState(true); // Have auto match off by default
   const [sortOption, setSortOption] = useState(SortOption.NAME);
   const [ascending, setAscending] = useState(true);
 
@@ -49,7 +49,7 @@ const TradeCollection: React.FC<TradeCollectionProps> = ({
   ]);
   // Moves card from user's collection to their trade offer
   function addCardToTrade(card: card) {
-    const newTradeItem: TradeItem = { id: "", quantity: 1, card: card };
+    const newTradeItem: TradeItem = { quantity: 1, card: card };
     setTrade((prev) => ({
       ...prev,
       status: TradeStatus.PENDING,

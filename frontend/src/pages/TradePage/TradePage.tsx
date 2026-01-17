@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import { initializeTrade, postTrade, fetchTrade, closeTrade } from "./api/ManageTrade.js";
 import { updateStatus } from "./api/UpdateStatus.js";
@@ -50,6 +50,7 @@ const TradePage: React.FC = () => {
   //UI utilities
   const [userA, setUserA] = useState<boolean>(false);
   const [viewCollection, setCollectionView] = useState<collectionView>("none");
+  const navigate = useNavigate();
 
   useEffect(() => {
     openTrade();
@@ -85,10 +86,15 @@ const TradePage: React.FC = () => {
   }
   async function updateTrade() {
     const updatedTrade = updateStatus(trade, userA);
-    await postTrade(updatedTrade, tradeID);
+    const returned = await postTrade(updatedTrade, tradeID);
+    setTrade(returned);
+    if (!tradeID) {
+      navigate(`/trade/${returned.id}`);
+    }
   }
   async function removeTrade() {
-    postTrade(await closeTrade(trade, userA), tradeID);
+    console.log("closing trade");
+    setTrade(await closeTrade(trade, userA));
   }
   return (
     <>
@@ -102,7 +108,7 @@ const TradePage: React.FC = () => {
               trade={trade}
               setTrade={setTrade}
               userA={userA}
-              close={() => removeTrade}
+              close={async () => await removeTrade()}
               onAddCardsClick={() => setCollectionView("myCards")}
               onProposeClick={async () => await updateTrade()}
             />

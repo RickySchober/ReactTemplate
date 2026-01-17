@@ -97,7 +97,7 @@ const TradePanel: React.FC<TradePanelProps> = ({
             <Button onClick={onAddCardsClick}>View Collection</Button>
           )}
           {getStatusMessage(trade.status).length > 0 && (
-            <h1 className="text-2xl font-medium">Status:</h1>
+            <h1 className="pl-2 text-2xl font-medium">Status:</h1>
           )}
           {getStatusMessage(trade.status).length !== 0 && (
             <Button

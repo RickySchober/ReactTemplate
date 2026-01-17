@@ -1,7 +1,7 @@
 import { NewTradeInfo } from "../TradePage.js";
 
 import { api } from "@/api/client.js";
-import { TradeStatus, ActiveUser, TradeItem, trade, card, TradePayload } from "@/lib/types.js";
+import { TradeStatus, ActiveUser, TradeItem, trade, card, TradeWrite } from "@/lib/types.js";
 import { createTradePayload } from "@/lib/utils.js";
 
 // If new trade being created read in arguments and create trade object
@@ -27,16 +27,20 @@ export async function initializeTrade(newTradeInfo: NewTradeInfo): Promise<trade
   };
   return trade;
 }
-export async function postTrade(trade: trade, tradeID: string | undefined) {
-  const tradePayload: TradePayload = createTradePayload(trade);
+export async function postTrade(trade: trade, tradeID: string | undefined): Promise<trade> {
+  const tradePayload: TradeWrite = createTradePayload(trade);
+  let returnedTrade: trade = trade;
   if (tradeID && (await api.get("/trades/" + tradeID))) {
     console.log("trade found patching");
-    await api.patch("/trades/" + tradeID, tradePayload);
+    console.log(tradePayload);
+    returnedTrade = (await api.patch("/trades/" + tradeID, tradePayload)).data;
   } else if (trade.status !== TradeStatus.CANCELED) {
     //Do not post trade if its immediately canceled
     console.log("trade not found creating new one");
-    await api.post("/trades/", tradePayload);
+    console.log(tradePayload);
+    returnedTrade = (await api.post("/trades/", tradePayload)).data;
   }
+  return returnedTrade;
 }
 // Fetch both users' cards and the trade details.
 // Validate that all cards in trade still exist and are owned by the correct users.
@@ -54,6 +58,6 @@ export async function closeTrade(trade: trade, userA: boolean): Promise<trade> {
     status: TradeStatus.CANCELED,
     activeUser: users,
   };
-  await postTrade(updateTrade, trade.id);
-  return updateTrade;
+
+  return await postTrade(updateTrade, trade.id);
 }

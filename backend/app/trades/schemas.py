@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 from app.cards.schemas import CardRead
 from app.auth.schemas import UserRead
@@ -21,7 +21,6 @@ class TradeItemRead(SQLModel):
     quantity: int
     card: "CardRead"
 
-
 class TradeOfferRead(SQLModel):
     id: UUID
     a_user: "UserRead"
@@ -30,5 +29,19 @@ class TradeOfferRead(SQLModel):
     status: TradeStatus
     activeUser: ActiveUser
 
+class TradeItemPatch(SQLModel):
+    id: Optional[UUID] = None
+    quantity: int
+    card_id: UUID
+
+class TradeOfferPatch(SQLModel):
+    id: Optional[UUID] = None
+    a_user_id: UUID
+    b_user_id: UUID
+    trade_items: list["TradeItemPatch"]
+    status: TradeStatus
+    activeUser: ActiveUser
+
 TradeItemRead.model_rebuild()
 TradeOfferRead.model_rebuild()
+

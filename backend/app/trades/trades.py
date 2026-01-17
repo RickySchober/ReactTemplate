@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
 from .models import TradeOffer, TradeItem
-from .schemas import TradeOfferWrite, TradeOfferRead
+from .schemas import TradeOfferWrite, TradeOfferRead, TradeOfferPatch
 from .dependencies import validate_trade_users
 from uuid import UUID
 
@@ -89,7 +89,7 @@ async def get_user_trades(user_id: UUID, session: AsyncSession = Depends(get_ses
 
 #Modify a specfic trade based on its ID
 @router.patch("/{trade_id}", response_model=TradeOfferRead)
-async def patch_trade_offer(trade_id: UUID, data: TradeOffer, session: AsyncSession = Depends(get_session),):
+async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: AsyncSession = Depends(get_session),):
     stmt = (
         select(TradeOffer)
         .where(TradeOffer.id == trade_id)
@@ -98,9 +98,10 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOffer, session: AsyncSess
             selectinload(TradeOffer.a_user),
             selectinload(TradeOffer.b_user),
         )
+        .execution_options(populate_existing=True)
     )
-    trade = await session.exec(stmt)
-    trade = trade.one_or_none()
+    result = await session.exec(stmt)
+    trade = result.one_or_none()
     if not trade:
         raise HTTPException(status_code=404, detail="Trade not found")
 
@@ -109,7 +110,6 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOffer, session: AsyncSess
         trade.status = update_data["status"]
     if "activeUser" in update_data:
         trade.activeUser = update_data["activeUser"]
-
     if data.trade_items is not None:
         incoming_items = {item.id: item for item in data.trade_items if item.id}
         existing_items = {item.id: item for item in trade.trade_items}
@@ -127,14 +127,15 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOffer, session: AsyncSess
         for inc in data.trade_items:
             if inc.id is None:
                 new_item = TradeItem(
-                    trade_id=trade.id,
+                    trade_id=trade_id,
                     card_id=inc.card_id,
                     quantity=inc.quantity,
                 )
                 session.add(new_item)
 
     await session.commit()
-    await session.refresh(trade)
+    result = await session.exec(stmt)
+    trade = result.one()
 
     return trade
 

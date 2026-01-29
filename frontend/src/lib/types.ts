@@ -11,7 +11,7 @@ export interface card {
   quantity: number;
   intent: "have" | "want";
   date_added?: string | number | Date;
-  locked: boolean;
+  locked?: boolean;
 }
 
 export interface ScryfallPrice {

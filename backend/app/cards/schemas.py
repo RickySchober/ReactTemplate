@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel
 from typing import Optional
 from uuid import UUID
+from datetime import datetime
 
 class CardUpdate(SQLModel, table=False):
     quantity: Optional[int] = None
@@ -16,3 +17,4 @@ class CardRead(SQLModel):
     quantity: int
     owner_id: UUID 
     intent: str
+    date_added: datetime

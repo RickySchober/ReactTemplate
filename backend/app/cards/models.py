@@ -25,6 +25,6 @@ class Card(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),  # client-side default
         sa_column=Column(DateTime(timezone=True), server_default=func.now())
     )
-
+    
 
 

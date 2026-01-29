@@ -32,7 +32,8 @@ const ProfileAdd: React.FC<ProfileAddProps> = ({ add, haves, addOption, refreshC
       intent: card.intent,
     };
     try {
-      await api.post("/cards/", cardPayload);
+      const response = await api.post("/cards/", cardPayload);
+      console.log("Added card:", response.data);
       refreshCards();
     } catch {
       alert("Failed to add card");

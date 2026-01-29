@@ -17,6 +17,7 @@ export function sortCards(
   filters?: Array<(card: card) => boolean>
 ): card[] {
   const sortedCards = [...cards]
+    .filter((card) => !card.locked)
     .filter((card) => (intent === undefined ? true : card.intent === intent))
     .sort((a, b) => {
       const dir = ascending ? 1 : -1;

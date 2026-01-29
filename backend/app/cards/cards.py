@@ -4,9 +4,11 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.auth.services import get_current_user
 from app.database import get_session
+from app.trades.models import TradeOffer, TradeItem, TradeStatus
 from .models import Card
 from .schemas import CardUpdate, CardRead
-from .dependencies import verify_card, verify_card_by_id
+from .dependencies import verify_card, verify_card_by_id, verify_not_locked_in_trade
+from .services import remove_from_trades, modify_trade_quantity
 from app.auth.models import User
 from uuid import UUID
 
@@ -37,18 +39,22 @@ async def create_card(card: Card = Depends(verify_card), user: User = Depends(ge
 @router.patch("/{card_id}")
 async def modify_quantity(update: CardUpdate, card: Card = Depends(verify_card_by_id), session: AsyncSession = Depends(get_session)):
     update_data = update.model_dump(exclude_unset=True)
+    if "quantity" in update_data:
+        await modify_trade_quantity(card, update_data.get("quantity", card.quantity), session)
     for key, value in update_data.items():
-        #Remove from db if quantity 0
-        if(key == "quantity" and value < 1):
-            await session.delete(card)
-            await session.commit()
-            return card
-        else:
-            setattr(card, key, value)
+        setattr(card, key, value)
     session.add(card)
     await session.commit()
     await session.refresh(card)
     return card
+
+#Delete a card from the database as long as its not locked in a confirmed trade. Also removes relations to trade items in pending/proposed trades.
+@router.delete("/{card_id}")
+async def delete_card(card: Card = Depends(verify_not_locked_in_trade), session: AsyncSession = Depends(get_session)):
+    await remove_from_trades(card, session)
+    await session.delete(card)
+    await session.commit()
+    return {"detail": "Card deleted"}
 
 #Get all cards owned by a certain user
 @router.get("/user/{user_id}", response_model=list[CardRead])

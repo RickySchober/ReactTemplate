@@ -34,6 +34,7 @@ class UserSettings(SQLModel, table=True):
     backsplash: str
     dark_mode: bool = Field(default=True)
     email_notifications: bool = Field(default=True)
+    add_cards_to_collection_after_trade: bool = Field(default=True)
 
     user: "User" = Relationship(back_populates="settings")
 

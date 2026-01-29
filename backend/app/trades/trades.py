@@ -4,9 +4,10 @@ from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
-from .models import TradeOffer, TradeItem
+from .models import TradeOffer, TradeItem, TradeStatus
 from .schemas import TradeOfferWrite, TradeOfferRead, TradeOfferPatch
 from .dependencies import validate_trade_users
+from .services import check_status_update
 from uuid import UUID
 
 router = APIRouter(prefix="/trades", tags=["trades"])
@@ -104,12 +105,16 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: Asyn
     trade = result.one_or_none()
     if not trade:
         raise HTTPException(status_code=404, detail="Trade not found")
-
+    
+    previous_status = trade.status
     update_data = data.model_dump(exclude_unset=True)
     if "status" in update_data:
         trade.status = update_data["status"]
+        # If trade status changed handle side effects
+        await check_status_update(trade, previous_status, session)
     if "activeUser" in update_data:
         trade.activeUser = update_data["activeUser"]
+
     if data.trade_items is not None:
         incoming_items = {item.id: item for item in data.trade_items if item.id}
         existing_items = {item.id: item for item in trade.trade_items}

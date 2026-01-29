@@ -18,3 +18,4 @@ class CardRead(SQLModel):
     owner_id: UUID 
     intent: str
     date_added: datetime
+    locked: bool

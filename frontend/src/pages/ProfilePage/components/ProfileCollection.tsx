@@ -44,7 +44,9 @@ const ProfileCollection: React.FC<ProfileCollectionProps> = ({ cards, refreshCar
   //Modifies quantity of a card removing it if 0
   async function modifyQuantity(card: card, quantity: number) {
     try {
-      await api.patch(`/cards/${card.id}`, { quantity });
+      if (quantity <= 0) {
+        await api.delete(`/cards/${card.id}`);
+      } else await api.patch(`/cards/${card.id}`, { quantity });
       refreshCards();
     } catch (err) {
       console.error("Failed to modify quantity", err);

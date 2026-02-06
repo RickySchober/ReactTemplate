@@ -1,7 +1,7 @@
 /* Navigation bar on the top of most pages to easily navigate between them.
    If user is logged in will display profile dropdown otherwise show sign in.
 */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import icon from "/favicon.png";

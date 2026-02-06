@@ -1,7 +1,7 @@
 import { clsx, ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { card, SortOption, trade, TradeItemWrite, TradeWrite } from "./types.js";
+import { card, SortOption, trade, TradeItemWrite, TradeWrite, User } from "./types.js";
 
 // Credit to ByteGrad https://www.youtube.com/watch?v=5r25Y9Vg2P4
 export function cn(...inputs: ClassValue[]) {
@@ -60,4 +60,22 @@ export function createTradePayload(trade: trade): TradeWrite {
     trade_items: tradeItemsPayload,
   };
   return tradePayload;
+}
+
+export function haveViewedTrade(trade: trade, user: User): boolean {
+  const d1 = new Date(trade.last_updated!);
+  const d2 = new Date(trade.b_viewed!);
+
+  const diffMs = Math.abs(d2.getTime() - d1.getTime());
+  const diffSeconds = diffMs / 1000;
+
+  console.log("difference in time (seconds):", diffSeconds);
+  if (trade.a_user.id === user.id) {
+    console.log("Checking a_viewed");
+    return trade.a_viewed! >= trade.last_updated!;
+  } else if (trade.b_user.id === user.id) {
+    console.log("Checking b_viewed");
+    return trade.b_viewed! >= trade.last_updated!;
+  }
+  return false;
 }

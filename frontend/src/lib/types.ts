@@ -117,6 +117,10 @@ export interface trade {
   b_user: User;
 
   trade_items: TradeItem[];
+  date_added?: string | number | Date;
+  last_updated?: string | number | Date;
+  a_viewed?: string | number | Date;
+  b_viewed?: string | number | Date;
 }
 
 // When creating new trades just link to elements with id

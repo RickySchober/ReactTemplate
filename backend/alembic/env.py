@@ -1,7 +1,8 @@
 from logging.config import fileConfig
-from app.auth.models import *
-from app.cards.models import *
-from app.trades.models import *
+from app.auth.models import User, UserAddress, UserSettings
+from app.cards.models import Card
+from app.trades.models import TradeOffer, TradeItem
+from app.database import engine
 from sqlmodel import SQLModel
 from sqlalchemy import pool
 import os
@@ -30,6 +31,8 @@ def run_migrations_offline():
         target_metadata=target_metadata,
         literal_binds=True,
         compare_type=True,
+        compare_server_default=True,
+        render_as_batch=True, 
     )
 
     with context.begin_transaction():

@@ -4,11 +4,14 @@ from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
-from .models import TradeOffer, TradeItem, TradeStatus
+from app.auth.services import get_current_user
+from app.auth.models import User
+from .models import TradeOffer, TradeItem
 from .schemas import TradeOfferWrite, TradeOfferRead, TradeOfferPatch
 from .dependencies import validate_trade_users
-from .services import check_status_update
+from .services import check_status_update, view_trade
 from uuid import UUID
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 
@@ -90,7 +93,7 @@ async def get_user_trades(user_id: UUID, session: AsyncSession = Depends(get_ses
 
 #Modify a specfic trade based on its ID
 @router.patch("/{trade_id}", response_model=TradeOfferRead)
-async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: AsyncSession = Depends(get_session),):
+async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
     stmt = (
         select(TradeOffer)
         .where(TradeOffer.id == trade_id)
@@ -111,7 +114,7 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: Asyn
     if "status" in update_data:
         trade.status = update_data["status"]
         # If trade status changed handle side effects
-        await check_status_update(trade, previous_status, session)
+        await check_status_update(trade, previous_status, session)      
     if "activeUser" in update_data:
         trade.activeUser = update_data["activeUser"]
 
@@ -137,6 +140,10 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: Asyn
                     quantity=inc.quantity,
                 )
                 session.add(new_item)
+    # If a user has uptaded trade  change timestamps to notify other user
+    if "status" in update_data or "activeUser" in update_data:
+        trade.last_updated = datetime.now(timezone.utc)
+        await view_trade(trade, user)
 
     await session.commit()
     result = await session.exec(stmt)
@@ -144,3 +151,28 @@ async def patch_trade_offer(trade_id: UUID, data: TradeOfferPatch, session: Asyn
 
     return trade
 
+
+
+@router.patch("/view/{trade_id}", response_model=TradeOfferRead)
+async def mark_trade_viewed(trade_id: UUID, user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    stmt = (
+        select(TradeOffer)
+        .where(TradeOffer.id == trade_id)
+        .options(
+            selectinload(TradeOffer.trade_items).selectinload(TradeItem.card),
+            selectinload(TradeOffer.a_user),
+            selectinload(TradeOffer.b_user),
+        )
+        .execution_options(populate_existing=True)
+    )
+    result = await session.exec(stmt)
+    trade = result.one_or_none()
+    if not trade:
+        raise HTTPException(status_code=404, detail="Trade not found")
+    
+    await view_trade(trade, user)
+    await session.commit()
+    result = await session.exec(stmt)
+    trade = result.one()
+
+    return trade

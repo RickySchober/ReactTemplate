@@ -2,7 +2,9 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import List, TYPE_CHECKING
 from enum import Enum
 from uuid import UUID, uuid4
-
+from datetime import datetime, timezone
+from sqlalchemy.sql import func
+from sqlalchemy import Column, DateTime
 if TYPE_CHECKING:
     from app.auth.models import User
     from app.cards.models import Card
@@ -37,7 +39,6 @@ class TradeOffer(SQLModel, table=True):
 
     a_user_id: UUID = Field(foreign_key="user.id")
     b_user_id: UUID = Field(foreign_key="user.id")
-
     a_user: "User" = Relationship(
         back_populates="sent_offers",
         sa_relationship_kwargs={"foreign_keys": "TradeOffer.a_user_id"},
@@ -52,4 +53,21 @@ class TradeOffer(SQLModel, table=True):
 
     status: TradeStatus = Field(default=TradeStatus.CANCELED)
     activeUser: ActiveUser = Field(default=ActiveUser.NONE)
-
+    date_added: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),  
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    # Timestamp of last update
+    last_updated: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), 
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    # Timestamp when the non-active user last viewed the trade
+    a_viewed: datetime = Field( 
+        default_factory=lambda: datetime.now(timezone.utc),  
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    b_viewed: datetime = Field( 
+        default_factory=lambda: datetime.now(timezone.utc),  
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )

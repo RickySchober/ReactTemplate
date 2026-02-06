@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 
 import api from "@/api/client.js";
 import Button from "@/components/Button.js";
-import NavBar from "@/components/NavBar.js";
 import { ALL_BGS } from "@/lib/constants.js";
 import { UserAddress, UserProfile } from "@/lib/types.js";
 
@@ -42,7 +41,6 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8 text-white">
-      <NavBar />
       {/* SAVE BUTTON */}
       <Button onClick={save} disabled={saving} className="w-4xl disabled:opacity-50">
         {saving ? "Saving..." : "Save Settings"}

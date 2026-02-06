@@ -6,9 +6,7 @@ export async function tryRegister(
   password: string
 ): Promise<boolean> {
   try {
-    const res = await api.post("/auth/signup", null, {
-      params: { username, email, password },
-    });
+    const res = await api.post("/auth/signup", { username, email, password });
     localStorage.setItem("token", res.data.access_token);
     return true;
   } catch {

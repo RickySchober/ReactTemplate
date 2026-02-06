@@ -29,7 +29,7 @@ class UserProfileRead(SQLModel):
     address: UserAddressRead
 
 
-class SignupRequest(BaseModel):
+class SignupRequest(SQLModel):
     username: str
     email: EmailStr
     password: str

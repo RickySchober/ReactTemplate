@@ -25,3 +25,14 @@ async def validate_trade_users(
         )
     user_map = {user.id: user for user in users}
     return user_map[data.a_user_id], user_map[data.b_user_id]
+
+async def validate_trade_participant(
+        trade: TradeOfferWrite,
+        user: User,
+    ) -> User:
+    if user.id != trade.a_user_id and user.id != trade.b_user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="User is not a participant in this trade",
+        )
+    return user

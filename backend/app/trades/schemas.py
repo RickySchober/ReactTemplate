@@ -4,6 +4,7 @@ from uuid import UUID
 from app.cards.schemas import CardRead
 from app.auth.schemas import UserRead
 from .models import TradeStatus, ActiveUser
+from datetime import datetime
 
 class TradeItemWrite(SQLModel):
     card_id: UUID
@@ -28,6 +29,10 @@ class TradeOfferRead(SQLModel):
     trade_items: list["TradeItemRead"]
     status: TradeStatus
     activeUser: ActiveUser
+    date_added: datetime
+    last_updated: datetime
+    a_viewed: datetime
+    b_viewed: datetime
 
 class TradeItemPatch(SQLModel):
     id: Optional[UUID] = None

@@ -10,7 +10,6 @@ import ProfileCollection from "./components/ProfileCollection.js";
 
 import api from "@/api/client.js";
 import Backsplash from "@/components/Backsplash.js";
-import NavBar from "@/components/NavBar.js";
 import MultiTutorialPopup from "@/components/TutorialPopup.js";
 import { PROFILE_TUTORIAL_STEPS } from "@/lib/constants.js";
 import { card } from "@/lib/types.js";
@@ -38,7 +37,6 @@ const ProfilePage: React.FC = () => {
   }
   return (
     <>
-      <NavBar />
       <MultiTutorialPopup pages={PROFILE_TUTORIAL_STEPS} keyName="profile-tutorial" />
       <Backsplash bgArt={bgArt}>
         <ProfileCollection cards={cards} refreshCards={refreshCards} />

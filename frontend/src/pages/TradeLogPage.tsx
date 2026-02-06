@@ -1,17 +1,20 @@
 /* Tradelog page displays the entire trade history of the user 
    with a short summary of each trade allowing easy navigate to trades.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "@/api/client.js";
-import NavBar from "@/components/NavBar.js";
+import { TradeContext } from "@/context/TradeProvider.js";
 import { TradeStatus, trade, TradeItem } from "@/lib/types.js";
+import { haveViewedTrade } from "@/lib/utils.js";
 
 const TradeLogPage: React.FC = () => {
   const [trades, setTrades] = useState<trade[]>([]);
   const [myID, setMyID] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const { fetchTrades } = useContext(TradeContext);
 
   useEffect(() => {
     fetchLogs();
@@ -54,10 +57,16 @@ const TradeLogPage: React.FC = () => {
         return "text-gray-300";
     }
   }
+  async function selectTrade(trade: trade) {
+    if (!haveViewedTrade(trade, { id: myID!, username: "" })) {
+      await api.patch(`/trades/view/${trade.id}`);
+    }
+    navigate(`/trade/${trade.id}`);
+    fetchTrades(); // Refresh trade list to update notification badge
+  }
 
   return (
     <>
-      <NavBar />
       <div className="mx-auto max-w-5xl p-6 text-white">
         <h1 className="mb-6 text-3xl font-bold">Trade Log:</h1>
 
@@ -69,12 +78,12 @@ const TradeLogPage: React.FC = () => {
             const myTotal = calculateTotal(myItems);
             const theirTotal = calculateTotal(theirItems);
             const otherUser = getOtherUser(trade);
-
+            const showBadge = !haveViewedTrade(trade, { id: myID!, username: "" });
             return (
               <div
                 key={trade.id}
-                onClick={() => navigate(`/trade/${trade.id}`)}
-                className="cursor-pointer rounded border border-gray-700 bg-[#111318] p-4 transition hover:bg-[#1a1d22]"
+                onClick={() => selectTrade(trade)}
+                className="relative cursor-pointer rounded border border-gray-700 bg-[#111318] p-4 transition hover:bg-[#1a1d22]"
               >
                 {/* Header Row */}
                 <div className="mb-1 flex items-center justify-between">
@@ -129,6 +138,9 @@ const TradeLogPage: React.FC = () => {
                     ))}
                   </div>
                 </div>
+                {showBadge && (
+                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500" />
+                )}
               </div>
             );
           })}

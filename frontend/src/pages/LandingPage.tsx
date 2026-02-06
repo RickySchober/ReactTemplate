@@ -4,14 +4,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "@/components/Button.js";
-import NavBar from "@/components/NavBar.js";
-
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#0f1720] text-white">
-      <NavBar />
       {/* Title Section */}
       <section className="flex flex-col items-center justify-center gap-6 px-6 py-24 text-center">
         <h1 className="text-5xl font-bold text-white drop-shadow-lg">

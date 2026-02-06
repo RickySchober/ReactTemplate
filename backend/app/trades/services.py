@@ -6,6 +6,7 @@ from app.auth.models import User
 from app.trades.models import TradeStatus
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
+from datetime import datetime, timezone
 
 # Lock cards confirmed in trade or split them if quantity used is less than total quantity
 async def handle_trade_confirmed(trade: TradeOffer, session: AsyncSession):
@@ -89,3 +90,11 @@ async def check_status_update(trade: TradeOffer, previous_status: TradeStatus, s
         await handle_trade_confirmed(trade, session)
     elif previous_status != TradeStatus.COMPLETED and trade.status == TradeStatus.COMPLETED:
         await handle_trade_completed(trade, session)
+
+async def view_trade(trade: TradeOffer, user: User):
+    if user.id == trade.a_user_id:
+        trade.a_viewed = datetime.now(timezone.utc)
+    elif user.id == trade.b_user_id:
+        trade.b_viewed = datetime.now(timezone.utc)
+    else:
+        raise HTTPException(status_code=403, detail="Not a participant in this trade")

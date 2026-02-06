@@ -12,7 +12,6 @@ import TradeCollection from "./components/TradeCollection.js";
 import TradePanel from "./components/TradePanel.js";
 
 import api from "@/api/client.js";
-import NavBar from "@/components/NavBar.js";
 import StatusBar from "@/components/StatusBar.js";
 import MultiTutorialPopup from "@/components/TutorialPopup.js";
 import { TRADE_TUTORIAL_STEPS } from "@/lib/constants.js";
@@ -98,7 +97,6 @@ const TradePage: React.FC = () => {
   }
   return (
     <>
-      <NavBar />
       <MultiTutorialPopup pages={TRADE_TUTORIAL_STEPS} keyName="trade-tutorial" />
       {viewCollection === "none" && (
         <div className="mt-5">

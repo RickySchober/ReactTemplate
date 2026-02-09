@@ -1,5 +1,5 @@
 {
-  "name": "React-Template",
+  "name": "react-template",
   "private": true,
   "version": "0.9.0",
   "description": "A React template with Vite, TypeScript, Tailwind CSS, ESLint, Prettier, and Playwright for end-to-end testing.",

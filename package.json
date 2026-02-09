@@ -1,7 +1,7 @@
 {
-  "name": "mtg-trader",
+  "name": "React-Template",
   "private": true,
   "version": "0.9.0",
-  "description": "A website for trading Magic the Gathering cards.",
+  "description": "A React template with Vite, TypeScript, Tailwind CSS, ESLint, Prettier, and Playwright for end-to-end testing.",
   "author": "RickySchober"
 }

@@ -7,16 +7,18 @@ import { cn } from "@/lib/utils.js";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   children: React.ReactNode;
+  variant?: "toolbar" | "primary";
 }
-const Button: React.FC<ButtonProps> = ({ className, children, ...props }) => {
+const baseStyles = "cursor-pointer rounded transition-all";
+
+const variantStyles = {
+  default: "",
+  toolbar: "hover:bg-gray-100 px-2 py-0.5 text-sm text-gray-700",
+  primary: "bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white",
+};
+const Button: React.FC<ButtonProps> = ({ className, children, variant = "default", ...props }) => {
   return (
-    <button
-      className={cn(
-        "cursor-pointer rounded bg-blue-400 px-4 py-2 text-lg text-white transition-all hover:bg-blue-500",
-        className
-      )}
-      {...props}
-    >
+    <button className={cn(baseStyles, variantStyles[variant], className)} {...props}>
       {children}
     </button>
   );
